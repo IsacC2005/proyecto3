@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('enrollment_id')->constrained()->onDelete('restrict');
             $table->string('title');
             $table->text('content');
-            $table->date('date');
+            $table->integer('year');
             $table->integer('school_moment');
             $table->timestamps();
         });

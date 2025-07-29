@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('average')->length(2);
             $table->text('personaliti');
             $table->text('content');
-            $table->text('suggestion')->nullable();
+            $table->text('suggestions')->nullable();
             $table->timestamps();
         });
     }

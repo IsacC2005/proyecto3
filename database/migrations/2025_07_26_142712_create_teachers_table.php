@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('restrict');
             $table->string('name')->length(100);
             $table->string('surname')->length(100);
             $table->integer('phone')->nullable();
