@@ -6,16 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Enrollment extends Model
 {
+    use HasFactory;
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'schoole_year',
+        'school_year',
+        'school_moment',
         'section',
         'classroom'
     ];
@@ -24,8 +28,8 @@ class Enrollment extends Model
         return $this->belongsTo(Teacher::class);
     }
 
-    public function learning_project(): HasMany{
-        return $this->hasMany(LearningProject::class);
+    public function learning_project(): HasOne{
+        return $this->hasOne(LearningProject::class);
     }
 
     public function students(): BelongsToMany{

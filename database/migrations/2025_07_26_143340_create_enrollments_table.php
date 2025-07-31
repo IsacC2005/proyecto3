@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('enrollments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('teacher_id')->constrained()->onDelete('restrict');
-            $table->integer('school_year');
+            $table->string('school_year')->length(9); // Format: YYYY-YYYY
+            $table->integer('school_moment')->length(1); // 1: First moment, 2: Second moment, etc.
             $table->string('section')->length(2);
             $table->string('classroom')->length(3);
             $table->timestamps();
