@@ -14,6 +14,10 @@ const mainNavItems: NavItem[] = [
         href: '/dashboard',
         icon: LayoutGrid,
     },
+    {
+        title: 'Crear Usuario',
+        href: '/create-user'
+    }
 ];
 
 const footerNavItems: NavItem[] = [

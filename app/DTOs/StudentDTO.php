@@ -13,7 +13,7 @@ class StudentDTO
         public int $id,
         public string $name,
         public string $surname,
-        public ?RepresentativeDTO $representative = null,
+        public int $representative_id,
     ) {}
 
 

@@ -10,14 +10,24 @@ class TeacherDTO extends Userable
     private $learning_projects = [];
     private $enrollments = [];
 
-    public function __construct(
-        public int $id,
-        public string $name,
-        public string $surname,
-        public string $phone,
-        public ?UserDTO $user = null,
-    ) {}
+    public int $id;
+    public int $phone;
+    public string $name;
+    public string $surname;
 
+    public function __construct(
+        int $id,
+        string $name,
+        string $surname,
+        int $phone,
+        ?int $user = null
+    ) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->surname = $surname;
+        $this->phone = $phone;
+        $this->user_id = $user;
+    }
 
     public function addLearningProject(LearningProjectDTO $learningProject): void
     {

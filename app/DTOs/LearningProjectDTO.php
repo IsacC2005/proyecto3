@@ -13,9 +13,10 @@ class LearningProjectDTO
         public int $id,
         public string $title,
         public string $content,
-        public ?TeacherDTO $teacher = null,
-        public ?DailyClassDTO $daily_class = null,
-        public ?EnrollmentDTO $enrollment = null,
+        public int $teacher_id,
+        public int $enrollment_id,
+//        public ?DailyClassDTO $daily_class = null,
+//        public ?EnrollmentDTO $enrollment = null,
     ) {}
 
     public function addTicket(TicketDTO $ticket): void

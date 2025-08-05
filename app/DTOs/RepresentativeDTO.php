@@ -9,6 +9,7 @@ class RepresentativeDTO
     private $students = [];
 
     public function __construct(
+        public int $id,
         public int $idcard,
         public int $phone,
         public string $name,

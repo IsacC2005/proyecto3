@@ -17,7 +17,7 @@ class Student extends Model
         return $this->belongsTo(Representative::class);
     }
 
-    public function enrollment(): BelongsToMany{
+    public function enrollments(): BelongsToMany{
         return $this->belongsToMany(Enrollment::class);
     }
 

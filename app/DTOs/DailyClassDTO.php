@@ -16,7 +16,7 @@ class DailyClassDTO
         public DateTime $date,
         public string $title,
         public string $content,
-        public ?LearningProjectDTO $learning_project = null
+        public int $learning_project_id
     ) {}
 
     public function addItemEvaluation(ItemEvaluationDTO $itemEvaluation): void

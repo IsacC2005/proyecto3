@@ -5,8 +5,8 @@ namespace App\DTOs;
 class EvaluationItemsStudentDTO
 {
     public function __construct(
-        public ItemEvaluationDTO $item_evaluation,
-        public StudentDTO $student,
+        public int $item_evaluation_id,
+        public int $student_id,
     ) {}
 }
 ?>

@@ -10,8 +10,8 @@ class TicketDTO
         public string $average,
         public string $content,
         public string $suggestions,
-        public ?LearningProjectDTO $learning_project = null,
-        public ?StudentDTO $student = null
+        public int $learning_project_id,
+        public int $student_id
     ) {}
 }
 ?>

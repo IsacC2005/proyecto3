@@ -12,8 +12,8 @@ class EnrollmentDTO
         public string $school_moment,
         public string $section,
         public int $classroom,
-        public ?TeacherDTO $teacher = null,
-        public ?LearningProjectDTO $learning_project = null,
+        public int $teacher_id,
+        public ?int $learning_project = null,
     ) {}
 
     public function addStudent(StudentDTO $student): void
