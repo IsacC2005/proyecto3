@@ -1,8 +1,8 @@
 <?php 
 
-namespace App\DTOs;
+namespace App\DTOs\Searches;
 
-class StudentDTO
+class StudentSearchDTO
 {
     private $enrollment_ids = [];
     private $ticket_ids = [];
@@ -10,11 +10,11 @@ class StudentDTO
 
 
     public function __construct(
-        public int $id,
-        public int $degree,
-        public string $name,
-        public string $surname,
-        public ?int $representative_id = 0,
+        public ?int $id = null,
+        public ?int $degree = null,
+        public ?string $name = null,
+        public ?string $surname = null,
+        public ?int $representative_id = null,
     ) {}
 
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\DTOs;
+namespace App\DTOs\Details;
 
-use App\DTOs\Userable\UserableInterface;
+use App\DTOs\Details\Userable\UserableDetailInterface;
 
-class UserDTO
+class UserDetailDTO
 {
     public function __construct(
         public int $id,
@@ -12,7 +12,7 @@ class UserDTO
         public string $email,
         public string $password,
         public ?int $rol_id = -1,
-        public ?UserableInterface $userable = null
+        public ?UserableDetailInterface $userable = null
     ) {}
 }
 ?>

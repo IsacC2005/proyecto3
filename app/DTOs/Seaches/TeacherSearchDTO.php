@@ -1,13 +1,13 @@
 <?php
 
 
-namespace App\DTOs;
+namespace App\DTOs\Searches;
 
 use App\DTOs\Userable\UserableInterface;
 use App\DTOs\Userable\UserableTrait;
 
 
-class TeacherDTO implements UserableInterface
+class TeacherSearchDTO implements UserableInterface
 {
 
     use UserableTrait;
@@ -15,13 +15,24 @@ class TeacherDTO implements UserableInterface
     private $learning_project_ids = [];
     private $enrollment_ids = [];
 
+    public int $id;
+    public int $phone;
+    public string $name;
+    public string $surname;
+
     public function __construct(
-        public int $id,
-        public string $name,
-        public string $surname,
-        public int $phone,
-        public ?int $user_id = 0
-    ) {}
+        ?int $id = null,
+        ?string $name = null,
+        ?string $surname = null,
+        ?int $phone = null,
+        ?int $user_id = null
+    ) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->surname = $surname;
+        $this->phone = $phone;
+        $this->user_id = $user_id;
+    }
 
     public function addLearningProject(int $project_id): void
     {

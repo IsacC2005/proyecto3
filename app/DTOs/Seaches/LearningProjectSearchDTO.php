@@ -1,19 +1,20 @@
 <?php
 
 
-namespace App\DTOs;
+namespace App\DTOs\Searches;
 
+use App\Models\Enrollment;
 
-class LearningProjectDTO
+class LearningProjectSearchDTO
 {
     private $ticket_ids = [];
 
     public function __construct(
-        public int $id,
-        public string $title,
-        public string $content,
-        public ?int $teacher_id = 0,
-        public ?int $enrollment_id = 0,
+        public ?int $id = null,
+        public ?string $title = null,
+        public ?string $content = null,
+        public ?int $teacher_id = null,
+        public ?int $enrollment_id = null,
 //        public ?DailyClassDTO $daily_class = null,
 //        public ?EnrollmentDTO $enrollment = null,
     ) {}

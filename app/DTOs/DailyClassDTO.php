@@ -3,13 +3,12 @@
 
 namespace App\DTOs;
 
-use App\DTOs\ItemEvaluationDTO;
 use DateTime;
 
 class DailyClassDTO
 {
 
-    private $item_evaluations = [];
+    private $item_evaluation_ids = [];
 
     public function __construct(
         public int $id,
@@ -19,14 +18,14 @@ class DailyClassDTO
         public int $learning_project_id
     ) {}
 
-    public function addItemEvaluation(ItemEvaluationDTO $itemEvaluation): void
+    public function addItemEvaluation(int $itemEvaluation_id): void
     {
-        $this->item_evaluations[] = $itemEvaluation;
+        $this->item_evaluation_ids[] = $itemEvaluation_id;
     }
 
     public function getItemEvaluations(): array
     {
-        return $this->item_evaluations;
+        return $this->item_evaluation_ids;
     }
 }
 ?>

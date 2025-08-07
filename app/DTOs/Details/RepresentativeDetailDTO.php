@@ -1,12 +1,12 @@
 <?php
 
 
-namespace App\DTOs;
+namespace App\DTOs\Details;
 
-class RepresentativeDTO
+class RepresentativeDetailDTO
 {
 
-    private $student_ids = [];
+    private $students = [];
 
     public function __construct(
         public int $id,
@@ -17,14 +17,14 @@ class RepresentativeDTO
         public string $direction,
     ) {}
 
-    public function addStudent(int $student_id): void
+    public function addStudent(StudentDetailDTO $student): void
     {
-        $this->student_ids[] = $student_id;
+        $this->students[] = $student;
     }
 
     public function getStudents(): array
     {
-        return $this->student_ids;
+        return $this->students;
     }
 }
 ?>

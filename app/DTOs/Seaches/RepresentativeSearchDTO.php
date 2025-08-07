@@ -1,20 +1,20 @@
 <?php
 
 
-namespace App\DTOs;
+namespace App\DTOs\Searches;
 
-class RepresentativeDTO
+class RepresentativeSearchDTO
 {
 
     private $student_ids = [];
 
     public function __construct(
-        public int $id,
-        public int $idcard,
-        public int $phone,
-        public string $name,
-        public string $surname,
-        public string $direction,
+        public ?int $id = null,
+        public ?int $idcard = null,
+        public ?int $phone = null,
+        public ?string $name = null,
+        public ?string $surname = null,
+        public ?string $direction = null,
     ) {}
 
     public function addStudent(int $student_id): void
