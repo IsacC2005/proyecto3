@@ -9,9 +9,9 @@ use App\Models\Representative;
 
 interface RepresentativeInterface {
 
-    public function create(RepresentativeDTO $representative): bool;
+    public function create(RepresentativeDTO $representative): RepresentativeDTO;
 
-    public function find($id): RepresentativeDTO | null;
+    public function find($id): RepresentativeDTO;
 
     public function findAll(): array;
 
@@ -19,8 +19,8 @@ interface RepresentativeInterface {
 
     public function findByName($name): array;
 
-    public function update(RepresentativeDTO $representative): bool;
+    public function update(RepresentativeDTO $representative): RepresentativeDTO;
 
-    public function delete($id): bool;
+    public function delete($id): void;
 }
 ?>

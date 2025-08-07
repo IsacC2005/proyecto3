@@ -11,6 +11,7 @@ class StudentDTO
 
     public function __construct(
         public int $id,
+        public int $degree,
         public string $name,
         public string $surname,
         public int $representative_id,

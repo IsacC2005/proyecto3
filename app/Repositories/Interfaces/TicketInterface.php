@@ -8,9 +8,9 @@ use App\DTOs\TicketDTO;
 
 interface TicketInterface
 {
-    public function create(TicketDTO $ticket): bool;
+    public function create(TicketDTO $ticket): TicketDTO;
 
-    public function find($id): TicketDTO | null;
+    public function find($id): TicketDTO;
 
     public function findAll(): array;
 
@@ -18,8 +18,8 @@ interface TicketInterface
 
     public function findByLearningProject(LearningProjectDTO $learningProject): array;
 
-    public function update(TicketDTO $ticket): bool;
+    public function update(TicketDTO $ticket): TicketDTO;
 
-    public function delete($id): bool;
+    public function delete($id): void;
 }
 ?>

@@ -10,6 +10,7 @@ class EnrollmentDTO
         public int $id,
         public string $school_year,
         public string $school_moment,
+        public int $degree,
         public string $section,
         public int $classroom,
         public int $teacher_id,

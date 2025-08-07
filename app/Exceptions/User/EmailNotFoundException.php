@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Exceptions;
+namespace App\Exceptions\User;
 
 use Exception;
 
-class EmailNotFoundExeption extends Exception
+class EmailNotFoundException extends Exception
 {
     protected $message = "El formato del correo no es correto";
 }

@@ -5,6 +5,9 @@ namespace App\Repositories;
 
 use App\DTOs\RepresentativeDTO;
 use App\DTOs\StudentDTO;
+use App\Exceptions\Representative\RepresentativeNotExistException;
+use App\Exceptions\Representative\RepresentativeNotFindException;
+use App\Exceptions\Representative\RepresentativeNotUpdateException;
 use App\Models\Representative;
 use App\Repositories\Interfaces\RepresentativeInterface;
 use App\Repositories\Traits\RepresentativeTrait;
@@ -16,90 +19,127 @@ class RepresentativeRepository implements RepresentativeInterface
     use RepresentativeTrait;
 
 
-    public function create(RepresentativeDTO $representative): bool
+    public function create(RepresentativeDTO $representative): RepresentativeDTO
     {
-        $representativeModel = Representative::create([
-            'idcard' => $representative->idcard,
-            'phone' => $representative->phone,
-            'name' => $representative->name,
-            'surname' => $representative->surname,
-            'direction' => $representative->direction
-        ]);
+        try {
+            $representativeModel = Representative::create([
+                'idcard' => $representative->idcard,
+                'phone' => $representative->phone,
+                'name' => $representative->name,
+                'surname' => $representative->surname,
+                'direction' => $representative->direction
+            ]);
 
-        if (!$representativeModel) {
-            return false;
+            if (!$representativeModel) {
+                throw new RepresentativeNotFindException();
+            }
+
+            return $this->transformToDTO($representativeModel);
+        } catch (\Throwable $th) {
+            throw new RepresentativeNotFindException();
         }
-
-        return true;
     }
 
 
 
-    public function find($id): RepresentativeDTO | null
+    public function find($id): RepresentativeDTO
     {
-        $representative = Representative::find($id);
-        if (!$representative) {
-            return null;
-        }
+        try {
+            $representativeModel = Representative::find($id);
+            if (!$representativeModel) {
+                throw new RepresentativeNotFindException();
+            }
 
-        return $this->transformToDTO($representative);
+            return $this->transformToDTO($representativeModel);
+        } catch (\Throwable $th) {
+            throw new RepresentativeNotFindException();
+        }
     }
 
 
 
     public function findAll(): array
     {
-        $representatives = Representative::all();
-        return $this->transformListDTO($representatives->toArray());
+        try {
+            $representativeModels = Representative::all();
+            if (!$representativeModels) {
+                throw new RepresentativeNotFindException();
+            }
+            return $this->transformListDTO($representativeModels->toArray());
+        } catch (\Throwable $th) {
+            throw new RepresentativeNotFindException();
+        }
     }
 
 
 
     public function findByStudent(int $student_id): array
     {
-        $representative = Representative::whereHas('students', function ($query) use ($student_id) {
-            $query->where('id', $student_id);
-        })->get();
+        try {
+            $representative = Representative::whereHas('students', function ($query) use ($student_id) {
+                $query->where('id', $student_id);
+            })->get();
 
-        if ($representative->isEmpty()) {
-            return [];
+            if ($representative->isEmpty()) {
+                throw new RepresentativeNotFindException();
+            }
+
+            return $this->transformListDTO($representative->toArray());
+        } catch (\Throwable $th) {
+            throw new RepresentativeNotFindException();
         }
-
-        return $this->transformListDTO($representative->toArray());
     }
+
+
 
     public function findByName($name): array
     {
-        $representativeModel = Representative::where('name', 'like', '%' . $name . '%')->get();
-        if ($representativeModel->isEmpty()) {
-            return [];
+        try {
+            $representativeModel = Representative::where('name', 'like', '%' . $name . '%')->get();
+            if ($representativeModel->isEmpty()) {
+                throw new RepresentativeNotFindException();
+            }
+            return $this->transformListDTO($representativeModel->toArray());
+        } catch (\Throwable $th) {
+            throw new RepresentativeNotFindException();
         }
-        return $this->transformListDTO($representativeModel->toArray());
     }
 
-    public function update(RepresentativeDTO $representative): bool
+
+
+    public function update(RepresentativeDTO $representative): RepresentativeDTO
     {
-        $representativeModel = Representative::find($representative->id);
-        if (!$representativeModel) {
-            return false;
+        try {
+            $representativeModel = Representative::find($representative->id);
+            if (!$representativeModel) {
+                throw new RepresentativeNotFindException();
+            }
+
+            $representativeModel->idcard = $representative->idcard;
+            $representativeModel->phone = $representative->phone;
+            $representativeModel->name = $representative->name;
+            $representativeModel->surname = $representative->surname;
+            $representativeModel->direction = $representative->direction;
+
+            return $representativeModel->save();
+        } catch (\Throwable $th) {
+            throw new RepresentativeNotUpdateException();
         }
-
-        $representativeModel->idcard = $representative->idcard;
-        $representativeModel->phone = $representative->phone;
-        $representativeModel->name = $representative->name;
-        $representativeModel->surname = $representative->surname;
-        $representativeModel->direction = $representative->direction;
-
-        return $representativeModel->save();
     }
 
-    public function delete($id): bool
-    {
-        $representativeModel = Representative::find($id);
 
-        if (!$representativeModel) {
-            return false;
+
+    public function delete($id): void
+    {
+        try {
+            $representativeModel = Representative::find($id);
+
+            if (!$representativeModel) {
+                throw new RepresentativeNotExistException();
+            }
+            $representativeModel->delete();
+        } catch (\Throwable $th) {
+            throw new RepresentativeNotExistException();
         }
-        return $representativeModel->delete();
     }
 }

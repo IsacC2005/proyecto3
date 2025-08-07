@@ -3,6 +3,14 @@
 namespace App\Repositories;
 
 use App\DTOs\EnrollmentDTO;
+use App\Exceptions\Enrollment\EnrollmentNotCreatedException;
+use App\Exceptions\Enrollment\EnrollmentNotDeleteException;
+use App\Exceptions\Enrollment\EnrollmentNotExistException;
+use App\Exceptions\Enrollment\EnrollmentNotFindException;
+use App\Exceptions\Enrollment\EnrollmentNotUpdateException;
+use App\Exceptions\LearningProject\LearningProjectNotExistException;
+use App\Exceptions\LearningProject\LearningProjectNotFindException;
+use App\Exceptions\Student\StudentNotExistException;
 use App\Models\Enrollment;
 use App\Models\LearningProject;
 use App\Models\Student;
@@ -17,119 +25,167 @@ class EnrollmentRepository implements EnrollmentInterface
     use EnrollmentTrait;
 
 
-    public function create(EnrollmentDTO $enrollment): bool{
-        $enrollmentModel = Enrollment::create([
-            'school_year' => $enrollment->school_year,
-            'school_moment' => $enrollment->school_moment,
-            'section' => $enrollment->section,
-            'classroom' => $enrollment->classroom,
-            'teacher_id' => $enrollment->teacher_id,
-        ]);
+    public function create(EnrollmentDTO $enrollment): EnrollmentDTO{
 
-        if(!$enrollmentModel) {
-            return false;
+        try {
+            $enrollmentModel = Enrollment::create([
+                'school_year' => $enrollment->school_year,
+                'school_moment' => $enrollment->school_moment,
+                'section' => $enrollment->section,
+                'classroom' => $enrollment->classroom,
+                'teacher_id' => $enrollment->teacher_id,
+            ]);
+
+            if (!$enrollmentModel) {
+                throw new EnrollmentNotCreatedException();
+            }
+
+            return $this->transformToDTO($enrollmentModel);
+        } catch (\Throwable $th) {
+            throw new EnrollmentNotCreatedException();
         }
-
-        return true;
     }
 
 
 
-    public function find($id): EnrollmentDTO | null{
-        $enrollmentModel = Enrollment::find($id);
-        if (!$enrollmentModel) {
-            return null;
-        }
+    public function find($id): EnrollmentDTO{
+        try {
+            $enrollmentModel = Enrollment::find($id);
+            if (!$enrollmentModel) {
+                throw new EnrollmentNotFindException();
+            }
 
-        return $this->transformToDTO($enrollmentModel);
+            return $this->transformToDTO($enrollmentModel);
+        } catch (\Throwable $th) {
+            throw new EnrollmentNotFindException();
+        }
     }
 
 
 
     public function findAll(): array
     {
-        $enrollmentModel = Enrollment::all();
+        try {
+            $enrollmentModel = Enrollment::all();
 
-        return $this->transformListDTO($enrollmentModel->toArray());
+            if(!$enrollmentModel){
+                throw new EnrollmentNotFindException();
+            }
+
+            return $this->transformListDTO($enrollmentModel->toArray());
+        } catch (\Throwable $th) {
+            throw new EnrollmentNotFindException();
+        }
     }
 
 
 
     public function findByTeacher(int $teacher_id): array
     {
-        $enrollments = Enrollment::where('teacher_id', $teacher_id)->get();
-        return $this->transformListDTO($enrollments->toArray());
+        try {
+            $enrollments = Enrollment::where('teacher_id', $teacher_id)->get();
+            if(!$enrollments){
+                throw new EnrollmentNotFindException();
+            }
+            return $this->transformListDTO($enrollments->toArray());
+        } catch (\Throwable $th) {
+            throw new EnrollmentNotFindException();
+        }
     }
 
-    public function findByStudent(int $student): array{
-        $studentModel = Student::find($student);
-        if (!$studentModel) {
-            return [];
-        }
+    public function findByStudent(int $student_id): array{
+        try {
+            $studentModel = Student::find($student_id);
+            if (!$studentModel) {
+                throw new StudentNotExistException();
+            }
 
-        $EnrollmentStudentModle = $studentModel->Enrollments()->get();
-        if ($EnrollmentStudentModle->isEmpty()) {
-            return [];
+            $EnrollmentStudentModle = $studentModel->Enrollments()->get();
+            if ($EnrollmentStudentModle->isEmpty()) {
+                throw new EnrollmentNotFindException();
+            }
+            return $this->transformListDTO($EnrollmentStudentModle->toArray());
+        } catch (\Throwable $th) {
+            throw new EnrollmentNotFindException();
         }
-        return $this->transformListDTO($EnrollmentStudentModle->toArray());
     }
 
-    public function findByLearningProject(int $learning_project_id): EnrollmentDTO | null
+
+
+    public function findByLearningProject(int $learning_project_id): EnrollmentDTO
     {
-        $project = LearningProject::find($learning_project_id);
-        if(!$project){
-            return null;
+        try {
+            $project = LearningProject::find($learning_project_id);
+            if (!$project) {
+                throw new LearningProjectNotExistException();
+            }
+
+            $enrollment = Enrollment::find($project->id);
+
+            if(!$enrollment){
+                throw new LearningProjectNotFindException();
+            }
+
+            return $this->transformToDTO($enrollment);
+        } catch (\Throwable $th) {
+            throw new LearningProjectNotFindException();
         }
-
-        $enrollment = Enrollment::find($project->id);
-
-        return $this->transformToDTO($enrollment);
     }
+
+
 
     public function search(EnrollmentDTO $enrollment): array
     {
         return [];
     }
 
-    public function update(EnrollmentDTO $enrollment): bool
+    public function update(EnrollmentDTO $enrollment): EnrollmentDTO
     {
-        $enrollmentModel = Enrollment::find($enrollment->id);
+try {
+            $enrollmentModel = Enrollment::find($enrollment->id);
 
-        if(!$enrollmentModel){
-            return false;
-        }
-
-        $enrollmentModel->school_year = $enrollment->school_year;
-        $enrollmentModel->school_moment = $enrollment->school_moment;
-        $enrollmentModel->section = $enrollment->section;
-        $enrollmentModel->clasroom = $enrollment->classroom;
-
-        if($enrollment->teacher_id){
-            $teacher = Teacher::find($enrollment->teacher_id);
-            if($teacher){
-                $enrollmentModel->teacher()->associate($teacher);
+            if (!$enrollmentModel) {
+                throw new EnrollmentNotFindException();
             }
-        }
 
-        if($enrollment->learning_project){
-            $project = LearningProject::find($enrollment->learning_project);
-            if($project){
-                $enrollmentModel->learning_project()->associate($project);
+            $enrollmentModel->school_year = $enrollment->school_year;
+            $enrollmentModel->school_moment = $enrollment->school_moment;
+            $enrollmentModel->section = $enrollment->section;
+            $enrollmentModel->clasroom = $enrollment->classroom;
+
+            if ($enrollment->teacher_id) {
+                $teacher = Teacher::find($enrollment->teacher_id);
+                if ($teacher) {
+                    $enrollmentModel->teacher()->associate($teacher);
+                }
             }
-        }
 
-        return $enrollmentModel->save();
+            if ($enrollment->learning_project) {
+                $project = LearningProject::find($enrollment->learning_project);
+                if ($project) {
+                    $enrollmentModel->learning_project()->associate($project);
+                }
+            }
+
+            return $enrollmentModel->save();
+} catch (\Throwable $th) {
+    throw new EnrollmentNotUpdateException();
+}
 
     }
 
-    public function delete($id): bool
+    public function delete($id): void
     {
-        $enrollmentModel = Enrollment::find($id);
-        if($enrollmentModel){
-            return false;
-        }
+        try {
+            $enrollmentModel = Enrollment::find($id);
+            if ($enrollmentModel) {
+                throw new EnrollmentNotExistException();
+            }
 
-        return $enrollmentModel->delete();
+            $enrollmentModel->delete();
+        } catch (\Throwable $th) {
+            throw new EnrollmentNotDeleteException();
+        }
     }
 }
 ?>

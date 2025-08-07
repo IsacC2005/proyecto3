@@ -20,13 +20,13 @@ class TeacherDTO extends Userable
         string $name,
         string $surname,
         int $phone,
-        ?int $user = null
+        int $user_id
     ) {
         $this->id = $id;
         $this->name = $name;
         $this->surname = $surname;
         $this->phone = $phone;
-        $this->user_id = $user;
+        $this->user_id = $user_id;
     }
 
     public function addLearningProject(LearningProjectDTO $learningProject): void

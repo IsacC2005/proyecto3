@@ -11,13 +11,13 @@ use App\Models\Student;
 
 interface StudentInterface
 {
-    public function create(StudentDTO $student): bool;
+    public function create(StudentDTO $student): StudentDTO;
 
-    public function find($id): StudentDTO | null;
+    public function find($id): StudentDTO;
 
     public function findAll(): array;
 
-    public function findByName($name): StudentDTO | null;
+    public function findByName($name): StudentDTO;
 
     public function findByEnrollment(int $enrollment_id): array;
 
@@ -27,8 +27,8 @@ interface StudentInterface
 
     public function findByRepresentative(int $representative_id): array;
 
-    public function update(StudentDTO $student): bool;
+    public function update(StudentDTO $student): StudentDTO;
 
-    public function delete($id): bool;
+    public function delete($id): void;
 }
 ?>

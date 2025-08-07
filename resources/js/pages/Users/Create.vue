@@ -28,18 +28,22 @@ const submit = () => {
             <label for="">
                 Nombre:
                 <input v-model="form.name" name="name" type="text">
+                <div v-if="form.errors.name">{{ form.errors.name }}</div>
             </label>
 
             <label for="">
                 Email:
                 <input v-model="form.email" name="email" type="email">
+                <div v-if="form.errors.email">{{ form.errors.name }}</div>
             </label>
 
             <label for="">
                 Password:
                 <input v-model="form.password" name="password" type="password">
+                <div v-if="form.errors.password">{{ form.errors.name }}</div>
             </label>
             <select v-model="form.rol_id" name="select" id="">
+                <div v-if="form.errors.rol_id">{{ form.errors.name }}</div>
                 <option :value="null">Selecciona un rol</option>
                 <option v-for="rol in props.roles" :key="rol.id" :value="rol.id">{{ rol.name }}</option>
             </select>

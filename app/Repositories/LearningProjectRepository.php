@@ -6,6 +6,12 @@ use App\DTOs\EnrollmentDTO;
 use App\Models\LearningProject;
 use App\DTOs\LearningProjectDTO;
 use App\DTOs\TeacherDTO;
+use App\Exceptions\LearningProject\LearningProjectNotCreatedException;
+use App\Exceptions\LearningProject\LearningProjectNotDeleteException;
+use App\Exceptions\LearningProject\LearningProjectNotExistException;
+use App\Exceptions\LearningProject\LearningProjectNotFindException;
+use App\Exceptions\LearningProject\LearningProjectNotUpdateException;
+use App\Exceptions\Teacher\TeacherNotExistException;
 use App\Models\Enrollment;
 use App\Models\Teacher;
 use App\Repositories\Interfaces\LearningProjectInterface;
@@ -16,115 +22,134 @@ class LearningProjectRepository implements LearningProjectInterface
 
     use LearningProjectTrait;
 
-    public function create(LearningProjectDTO $learningProject): bool
+    public function create(LearningProjectDTO $learningProject): LearningProjectDTO
     {
+        try {
+            $teacher = Teacher::find($learningProject->teacher_id);
+            $enrollment = Enrollment::find($learningProject->enrollment_id);
 
-        if (
-            empty($learningProject->title) ||
-            empty($learningProject->content) ||
-            $learningProject->teacher_id < 1 ||
-            $learningProject->enrollment_id < 1
-        ) {
-            return false;
+            if (!$enrollment || !$teacher) {
+                throw new LearningProjectNotCreatedException();
+            }
+
+            $projectModel = LearningProject::create([
+                'title' => $learningProject->title,
+                'content' => $learningProject->content,
+            ])->teacher()->associate($teacher)
+                ->enrollment()->associate($enrollment);
+
+            if (!$projectModel) {
+                throw new LearningProjectNotCreatedException();
+            }
+
+            return $this->transformToDTO($projectModel);
+        } catch (\Throwable $th) {
+            throw new LearningProjectNotCreatedException();
         }
-
-        $teacher = Teacher::find($learningProject->teacher_id);
-        $enrollment = Enrollment::find($learningProject->enrollment_id);
-
-        if (!$enrollment || !$teacher) {
-            return false;
-        }
-
-        $projectModel = LearningProject::create([
-            'title' => $learningProject->title,
-            'content' => $learningProject->content,
-        ])->teacher()->associate($teacher)
-            ->enrollment()->associate($enrollment);
-
-        if (!$projectModel) {
-            return false;
-        }
-
-        return true;
     }
 
 
 
-    public function find($id): LearningProjectDTO | null
+    public function find($id): LearningProjectDTO
     {
-        $project = LearningProject::find($id);
-        if (!$project) {
-            return null;
-        }
+        try {
+            $project = LearningProject::find($id);
+            if (!$project) {
+                throw new LearningProjectNotFindException();
+            }
 
-        return $this->transformToDTO($project);
+            return $this->transformToDTO($project);
+        } catch (\Throwable $th) {
+            throw new LearningProjectNotFindException();
+        }
     }
 
 
 
     public function findAll(): array
     {
-        $projects = LearningProject::all();
-        return $this->transformListDTO($projects->toArray());
+        try {
+            $projects = LearningProject::all();
+            if(!$projects){
+                throw new LearningProjectNotFindException();
+            }
+            return $this->transformListDTO($projects->toArray());
+        } catch (\Throwable $th) {
+            throw new LearningProjectNotFindException();
+        }
     }
 
 
 
-    public function findByTeacher(int $teacher_id): array {
+    public function findByTeacher(int $teacher_id): array
+    {
+        try {
+            
         $teacherModel = Teacher::find($teacher_id);
         if (!$teacherModel) {
-            return [];
+            throw new TeacherNotExistException();
         }
 
         $projects = LearningProject::where('teacher_id', $teacherModel->id)->get();
         return $this->transformListDTO($projects->toArray());
+        } catch (\Throwable $th) {
+            throw new LearningProjectNotFindException();
+        }
     }
 
 
 
     public function search(LearningProjectDTO $learningProject): array
     {
-        return [];
+        return ['agrega','algo'];
     }
 
 
 
-    public function update(LearningProjectDTO $learningProject): bool
+    public function update(LearningProjectDTO $learningProject): LearningProjectDTO
     {
-        $projectModel = LearningProject::find($learningProject->id);
-        if (!$projectModel) {
-            return false;
-        }
-
-        $projectModel->title = $learningProject->title;
-        $projectModel->content = $learningProject->content;
-
-        if ($learningProject->teacher_id) {
-            $teacher = Teacher::find($learningProject->teacher_id);
-            if ($teacher) {
-                $projectModel->teacher()->associate($teacher);
+        try {
+            $projectModel = LearningProject::find($learningProject->id);
+            if (!$projectModel) {
+                throw new LearningProjectNotFindException();
             }
-        }
 
-        if ($learningProject->enrollment_id) {
-            $enrollment = Enrollment::find($learningProject->enrollment_id);
-            if ($enrollment) {
-                $projectModel->enrollment()->associate($enrollment);
+            $projectModel->title = $learningProject->title;
+            $projectModel->content = $learningProject->content;
+
+            if ($learningProject->teacher_id) {
+                $teacher = Teacher::find($learningProject->teacher_id);
+                if ($teacher) {
+                    $projectModel->teacher()->associate($teacher);
+                }
             }
-        }
 
-        return $projectModel->save();
+            if ($learningProject->enrollment_id) {
+                $enrollment = Enrollment::find($learningProject->enrollment_id);
+                if ($enrollment) {
+                    $projectModel->enrollment()->associate($enrollment);
+                }
+            }
+
+            return $projectModel->save();
+        } catch (\Throwable $th) {
+            throw new LearningProjectNotUpdateException();
+        }
     }
 
 
 
 
-    public function delete($id): bool
+    public function delete($id): void
     {
-        $project = LearningProject::find($id);
-        if (!$project) {
-            return false;
+        try {
+            $project = LearningProject::find($id);
+            if (!$project) {
+                throw new LearningProjectNotExistException();
+            }
+            $project->delete();
+        } catch (\Throwable $th) {
+            throw new LearningProjectNotDeleteException();
         }
-        return $project->delete();
     }
 }

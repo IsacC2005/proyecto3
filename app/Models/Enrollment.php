@@ -20,6 +20,7 @@ class Enrollment extends Model
     protected $fillable = [
         'school_year',
         'school_moment',
+        'degree',
         'section',
         'classroom'
     ];

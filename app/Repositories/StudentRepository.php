@@ -3,11 +3,18 @@
 
 namespace App\Repositories;
 
-use App\DTOs\EnrollmentDTO;
 use App\DTOs\StudentDTO;
+use App\Exceptions\DailyClass\DailyClassNotExistException;
+use App\Exceptions\Representative\RepresentativeNotExistException;
+use App\Exceptions\Student\StudentNotDeleteException;
+use App\Exceptions\Student\StudentNotExistException;
+use App\Exceptions\Student\StudentNotFindException;
+use App\Exceptions\Student\StudentNotFindInTheEnrollmentException;
+use App\Exceptions\Student\StudentNotUpdateException;
+use App\Exceptions\StudentNotCreatedException;
 use App\Models\DailyClass;
 use App\Models\Enrollment;
-use App\Models\LearningProject;
+use App\Models\Representative;
 use App\Models\Student;
 use App\Repositories\interfaces\StudentInterface;
 use App\Repositories\Traits\StudentTrait;
@@ -17,49 +24,69 @@ class StudentRepository implements StudentInterface
 
     use StudentTrait;
 
-	public function create(StudentDTO $student): bool 
+	public function create(StudentDTO $student): StudentDTO 
     {
-        $studentModel = Student::create([
-            'name' => $student->name,
-            'surname' => $student->surname,
-        ]);
+        try {
+            $studentModel = Student::create([
+                'name' => $student->name,
+                'surname' => $student->surname,
+            ]);
 
-        if(!$studentModel) {
-            return false;
+            if (!$studentModel) {
+                throw new StudentNotCreatedException();
+            }
+            return $this->transformToDTO($studentModel);
+        } catch (\Throwable $th) {
+            throw new StudentNotCreatedException();
         }
-        return true;
     }
 
 
 
-    public function find($id): StudentDTO | null 
+    public function find($id): StudentDTO 
     {
-        $student = Student::find($id);
-        if (!$student) {
-            return null;
-        }
+        try {
+            $studentModel = Student::find($id);
+            if (!$studentModel) {
+                throw new StudentNotFindException();
+            }
+            return $this->transformToDTO($studentModel);
 
-        return $this->transformToDTO($student);
+        } catch (\Throwable $th) {
+            throw new StudentNotFindException();
+        }
     }
 
 
 
     public function findAll(): array 
     {
-        $students = Student::all();
-        return $this->transformListDTO($students->toArray());
+        try {
+            $studentModels = Student::all();
+
+            if(!$studentModels){
+                throw new StudentNotFindException();
+            }
+            return $this->transformListDTO($studentModels->toArray());
+        } catch (\Throwable $th) {
+            throw new StudentNotFindException();
+        }
     }
 
 
 
-    public function findByName($name): StudentDTO | null
+    public function findByName($name): StudentDTO
     {
-        $student = Student::where('name', $name)->first();
-        if (!$student) {
-            return null;
-        }
+        try {
+            $student = Student::where('name', $name)->first();
+            if (!$student) {
+                throw new StudentNotFindException();
+            }
 
-        return $this->transformToDTO($student);
+            return $this->transformToDTO($student);
+        } catch (\Throwable $th) {
+            throw new StudentNotFindException();
+        }
     }
 
 
@@ -67,75 +94,122 @@ class StudentRepository implements StudentInterface
     public function findByEnrollment(int $enrollment_id): array 
     {
 
-        $enrollment = Enrollment::find($enrollment_id);
-        if (!$enrollment) {
-            return [];
-        }
+        try {
+            $enrollment = Enrollment::find($enrollment_id);
+            if (!$enrollment) {
+                throw new StudentNotFindInTheEnrollmentException();
+            }
 
-        $students = Student::whereHas('enrollments', function ($query) use ($enrollment_id) {
-            $query->where('id', $enrollment_id);
-        })->get();
-        
-        return $this->transformListDTO($students->toArray());
+            $students = Student::whereHas('enrollments', function ($query) use ($enrollment_id) {
+                $query->where('id', $enrollment_id);
+            })->get();
+
+            return $this->transformListDTO($students->toArray());
+        } catch (\Throwable $th) {
+            throw new StudentNotFindInTheEnrollmentException();
+        }
     }
 
 
 
     public function findByLearningProject(int $learning_project_id): array
     {
-        $students = Student::whereHas('enrollments', function ($query) use ($learning_project_id) {
-            $query->whereHas('learning_project', function($subQuery) use ($learning_project_id) {
-                $subQuery->where('id', $learning_project_id);
-            });
-        })->get();
+        try {
+            $studentModels = Student::whereHas('enrollments', function ($query) use ($learning_project_id) {
+                $query->whereHas('learning_project', function ($subQuery) use ($learning_project_id) {
+                    $subQuery->where('id', $learning_project_id);
+                });
+            })->get();
 
-        return $this->transformListDTO($students->toArray());
-    }
+            if(!$studentModels){
+                throw new StudentNotFindException();
+            }
 
-	public function findByDailyClass(int $daily_class_id): array 
-    {
-        $dailyClassModel = DailyClass::find($daily_class_id);
-        if (!$dailyClassModel) {
-            return [];
+            return $this->transformListDTO($studentModels->toArray());
+        } catch (\Throwable $th) {
+            throw new StudentNotFindException();
         }
-        $id = $dailyClassModel->learning_project_id;
-        $students = Student::whereHas('enrollments', function ($query) use ($id) {
-            $query->whereHas('learning_project', function ($subQuery) use ($id) {
-                $subQuery->where('id', $id);
-            });
-        })->get();
-
-        return $this->transformListDTO($students->toArray());
     }
 
-	public function findByRepresentative(int $representative_id): array 
-    {
-        $students = Student::where('representative_id', $representative_id)->get();
-        return $this->transformListDTO($students->toArray());
-    }
 
-	public function update(StudentDTO $student): bool 
+
+    public function findByDailyClass(int $daily_class_id): array 
     {
-        $studentModel = Student::find($student->id);
-        if (!$studentModel) {
-            return false;
+        try {
+            $dailyClassModel = DailyClass::find($daily_class_id);
+            if (!$dailyClassModel) {
+                throw new DailyClassNotExistException();
+            }
+            $id = $dailyClassModel->learning_project_id;
+            $studentModels = Student::whereHas('enrollments', function ($query) use ($id) {
+                $query->whereHas('learning_project', function ($subQuery) use ($id) {
+                    $subQuery->where('id', $id);
+                });
+            })->get();
+
+            if(!$studentModels){
+                throw new StudentNotFindException();
+            }
+
+            return $this->transformListDTO($studentModels->toArray());
+        } catch (\Throwable $th) {
+            throw new StudentNotFindException();
         }
-
-        $studentModel->name = $student->name;
-        $studentModel->surname = $student->surname;
-
-        return $studentModel->save();
     }
 
 
 
-    public function delete($id): bool 
+    public function findByRepresentative(int $representative_id): array 
     {
-        $studentModel = Student::find($id);
-        if (!$studentModel) {
-            return false;
+        try {
+            $representativeModel = Representative::find($representative_id)->firs();
+            if(!$representativeModel){
+                throw new RepresentativeNotExistException();
+            }
+            $studentModels = Student::where('representative_id', $representative_id)->get();
+            if($studentModels){
+                throw new StudentNotFindException();
+            }
+
+            return $this->transformListDTO($studentModels->toArray());
+        } catch (\Throwable $th) {
+            throw new StudentNotFindException();
         }
-        return $studentModel->delete();
+    }
+
+
+
+    public function update(StudentDTO $student): StudentDTO 
+    {
+        try {
+            $studentModel = Student::find($student->id);
+            if (!$studentModel) {
+                throw new StudentNotFindException();
+            }
+
+            $studentModel->name = $student->name;
+            $studentModel->surname = $student->surname;
+
+            return $studentModel->save();
+        } catch (\Throwable $th) {
+            throw new StudentNotUpdateException();
+        }
+        
+    }
+
+
+
+    public function delete($id): void
+    {
+        try {
+            $studentModel = Student::find($id);
+            if (!$studentModel) {
+                throw new StudentNotExistException();
+            }
+            $studentModel->delete();
+        } catch (\Throwable $th) {
+            throw new StudentNotDeleteException();
+        }
     }
 }
 ?>

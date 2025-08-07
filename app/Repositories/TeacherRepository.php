@@ -3,6 +3,12 @@
 namespace App\Repositories;
 
 use App\DTOs\TeacherDTO;
+use App\Exceptions\Teacher\TeacherNotDeleteException;
+use App\Exceptions\Teacher\TeacherNotExistException;
+use App\Exceptions\Teacher\TeacherNotFindException;
+use App\Exceptions\Teacher\TeacherNotUpdateException;
+use App\Exceptions\TeacherNotCreateException;
+use App\Exceptions\User\UserNotExistException;
 use App\Models\Teacher;
 use App\Models\User;
 use App\Repositories\Interfaces\TeacherInterface;
@@ -14,95 +20,118 @@ class TeacherRepository implements TeacherInterface
     use TeacherTrait;
 
 
-	public function create(TeacherDTO $teacher): bool 
+	public function create(TeacherDTO $teacher): TeacherDTO 
     {
-        $teacherModel = Teacher::create([
-            'name' => $teacher->name,
-            'surname' => $teacher->surname,
-            'phone' => $teacher->phone,
-        ]);
+        try {
+            $teacherModel = Teacher::create([
+                'name' => $teacher->name,
+                'surname' => $teacher->surname,
+                'phone' => $teacher->phone,
+            ]);
 
-        $user = User::find($teacher->user_id);
-        if (!$user) {
-            return false;
+            $user = User::find($teacher->user_id);
+            if (!$user) {
+                throw new UserNotExistException();
+            }
+
+            $teacherModel->user()->save($user);
+            return $this->transformToDTO($teacherModel);
+        } catch (\Throwable $th) {
+            throw new TeacherNotCreateException();
         }
-
-        $teacherModel->user()->save($user);
-        return true;
+        
     }
 
 
 
-    public function find($id): TeacherDTO | null 
+    public function find($id): TeacherDTO
     {
-        $teacher = Teacher::find($id);
-        if (!$teacher) {
-            return null;
-        }
+        try {
+            $teacherModel = Teacher::find($id);
+            if (!$teacherModel) {
+                throw new TeacherNotFindException();
+            }
 
-        return $this->transformToDTO($teacher);
+            return $this->transformToDTO($teacherModel);
+        } catch (\Throwable $th) {
+            throw new TeacherNotFindException();
+        }
     }
 
 
 
     public function findAll(): array
     {
-        $teachers = Teacher::all();
-        return $this->transformListDTO($teachers->toArray());
+        $teacherModels = Teacher::all();
+        return $this->transformListDTO($teacherModels->toArray());
     }
 
 
 
-    public function findByEmail($email): TeacherDTO | null
+    public function findByEmail($email): TeacherDTO
     {
-        $teacher = Teacher::where('email', $email)->first();
-        if (!$teacher) {
-            return null;
+        try {
+            $teacherModel = Teacher::whereHas('users', function($query) use ($email) {
+                $query->where('email', $email);
+            })->first();
+            if (!$teacherModel) {
+                throw new TeacherNotFindException();
+            }
+            return $this->transformToDTO($teacherModel);
+        } catch (\Throwable $th) {
+            throw new TeacherNotFindException();
         }
-
-        return $this->transformToDTO($teacher);
     }
 
 
 
 	public function findByName($name): array 
     {
-        $teachers = Teacher::where('name', 'like', "%$name%")->get();
-        return $this->transformListDTO($teachers->toArray());
+        $teacherModels = Teacher::where('name', 'like', "%$name%")->get();
+        return $this->transformListDTO($teacherModels->toArray());
     }
 
 
 
-    public function update(TeacherDTO $teacher): bool 
+    public function update(TeacherDTO $teacher): TeacherDTO
     {
-        $teacherModel = Teacher::find($teacher->id);
-        if (!$teacherModel) {
-            return false;
-        }
-
-        $teacherModel->name = $teacher->name;
-        $teacherModel->surname = $teacher->surname;
-        $teacherModel->phone = $teacher->phone;
-
-        if ($teacher->user_id) {
-            $user = User::find($teacher->user_id);
-            if ($user) {
-                $teacherModel->user()->associate($user);
+        try {
+            $teacherModel = Teacher::find($teacher->id);
+            if (!$teacherModel) {
+                throw new TeacherNotExistException();
             }
-        }
 
-        return $teacherModel->save();
+            $teacherModel->name = $teacher->name;
+            $teacherModel->surname = $teacher->surname;
+            $teacherModel->phone = $teacher->phone;
+
+            if ($teacher->user_id) {
+                $user = User::find($teacher->user_id);
+                if ($user) {
+                    $teacherModel->user()->associate($user);
+                }
+            }
+
+            $teacherModel->save();
+            return $this->transformToDTO($teacherModel);
+        } catch (\Throwable $th) {
+            throw new TeacherNotUpdateException();
+        }
     }
 
 
 
-    public function delete($id): bool 
+    public function delete($id): void 
     {
-        $teacher = Teacher::find($id);
-        if (!$teacher) {
-            return false;
+        try {
+            $teacher = Teacher::find($id);
+            if (!$teacher) {
+                throw new TeacherNotExistException();
+            }
+            $teacher->delete();
+        } catch (\Throwable $th) {
+            throw new TeacherNotDeleteException();
         }
-        return $teacher->delete();
     }
 }
 ?>

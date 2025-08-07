@@ -9,9 +9,9 @@ use App\DTOs\TeacherDTO;
 
 interface DailyClassInterface
 {
-    public function create(DailyClassDTO $dailyClass): bool;
+    public function create(DailyClassDTO $dailyClass): DailyClassDTO;
 
-    public function find($id): DailyClassDTO | null;
+    public function find($id): DailyClassDTO;
 
     public function findAll(): array;
 
@@ -19,8 +19,8 @@ interface DailyClassInterface
 
     public function search(DailyClassDTO $dailyClass): array;
 
-    public function update(DailyClassDTO $dailyClass): bool;
+    public function update(DailyClassDTO $dailyClass): DailyClassDTO;
 
-    public function delete($id): bool;
+    public function delete($id): void;
 }
 ?>

@@ -10,9 +10,9 @@ use SebastianBergmann\Type\NullType;
 
 interface EnrollmentInterface
 {
-    public function create(EnrollmentDTO $enrollment): bool;
+    public function create(EnrollmentDTO $enrollment): EnrollmentDTO;
 
-    public function find($id): EnrollmentDTO | null;
+    public function find($id): EnrollmentDTO;
 
     public function findAll(): array;
 
@@ -20,12 +20,12 @@ interface EnrollmentInterface
 
     public function findByStudent(int $student_id): array;
 
-    public function findByLearningProject(int $learningProject): EnrollmentDTO | Null;
+    public function findByLearningProject(int $learningProject): EnrollmentDTO;
 
     public function search(EnrollmentDTO $enrollment): array;
 
-    public function update(EnrollmentDTO $enrollment): bool;
+    public function update(EnrollmentDTO $enrollment): EnrollmentDTO;
 
-    public function delete($id): bool;
+    public function delete($id): void;
 }
 ?>

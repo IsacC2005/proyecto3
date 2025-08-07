@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('teacher_id')->constrained()->onDelete('restrict');
             $table->string('school_year')->length(9); // Format: YYYY-YYYY
             $table->integer('school_moment')->length(1); // 1: First moment, 2: Second moment, etc.
+            $table->integer('degree')->lengeth(1);
             $table->string('section')->length(2);
             $table->string('classroom')->length(3);
             $table->timestamps();

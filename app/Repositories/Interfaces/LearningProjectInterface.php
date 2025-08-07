@@ -8,9 +8,9 @@ use App\Models\LearningProject;
 
 interface LearningProjectInterface
 {
-    public function create(LearningProjectDTO $learningProject): bool;
+    public function create(LearningProjectDTO $learningProject): LearningProjectDTO;
 
-    public function find($id): LearningProjectDTO | null;
+    public function find($id): LearningProjectDTO;
 
     public function findAll(): array;
 
@@ -18,8 +18,8 @@ interface LearningProjectInterface
 
     public function search(LearningProjectDTO $learningProject): array;
 
-    public function update(LearningProjectDTO $learningProject): bool;
+    public function update(LearningProjectDTO $learningProject): LearningProjectDTO;
 
-    public function delete($id): bool;
+    public function delete($id): void;
 }
 ?>

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Student extends Model
 {
     protected $fillable =[
+        'degree',
         'name',
         'surname'
     ];
