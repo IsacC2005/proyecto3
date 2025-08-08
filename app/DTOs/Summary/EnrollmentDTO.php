@@ -1,19 +1,19 @@
 <?php
-namespace App\DTOs\Searches;
+namespace App\DTOs\Summary;
 
-class EnrollmentSearchDTO
+class EnrollmentDTO
 {
 
     private $student_ids = [];
 
     public function __construct(
-        public ?int $id = null,
-        public ?string $school_year= null,
-        public ?string $school_moment = null,
-        public ?int $degree = null,
-        public ?string $section = null,
-        public ?int $classroom = null,
-        public ?int $teacher_id = null,
+        public int $id,
+        public string $school_year,
+        public string $school_moment,
+        public int $degree,
+        public string $section,
+        public int $classroom,
+        public ?int $teacher_id = 0,
         public ?int $learning_project = null,
     ) {}
 

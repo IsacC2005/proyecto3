@@ -3,7 +3,7 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\DTOs\ItemEvaluationDTO;
+use App\DTOs\Summary\ItemEvaluationDTO;
 
 interface ItemEvaluationInterface
 {

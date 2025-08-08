@@ -1,9 +1,8 @@
 <?php 
 
-
 namespace App\DTOs\Searches;
 
-use App\DTOs\ItemEvaluationDTO;
+use App\DTOs\Searches\ItemEvaluationSearchDTO;
 use DateTime;
 
 class DailyClassSearchDTO
@@ -19,7 +18,7 @@ class DailyClassSearchDTO
         public ?int $learning_project_id = null
     ) {}
 
-    public function addItemEvaluation(ItemEvaluationDTO $itemEvaluation): void
+    public function addItemEvaluation(ItemEvaluationSearchDTO $itemEvaluation): void
     {
         $this->item_evaluation_ids[] = $itemEvaluation;
     }

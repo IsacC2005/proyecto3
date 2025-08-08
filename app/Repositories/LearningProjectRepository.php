@@ -2,10 +2,9 @@
 
 namespace App\Repositories;
 
-use App\DTOs\EnrollmentDTO;
+
+use App\DTOs\Summary\LearningProjectDTO;
 use App\Models\LearningProject;
-use App\DTOs\LearningProjectDTO;
-use App\DTOs\TeacherDTO;
 use App\Exceptions\LearningProject\LearningProjectNotCreatedException;
 use App\Exceptions\LearningProject\LearningProjectNotDeleteException;
 use App\Exceptions\LearningProject\LearningProjectNotExistException;

@@ -2,9 +2,7 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\DTOs\LearningProjectDTO;
-use App\DTOs\TeacherDTO;
-use App\Models\LearningProject;
+use App\DTOs\Summary\LearningProjectDTO;
 
 interface LearningProjectInterface
 {

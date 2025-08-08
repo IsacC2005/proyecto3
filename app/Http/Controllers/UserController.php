@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\DTOs\UserDTO;
-use App\Exceptions\EmailDuplicateException;
-use App\Exceptions\User\EmailDuplicateException as UserEmailDuplicateException;
-use App\Exceptions\User\UserNotFind;
-use App\Exceptions\User\UserNotFindException;
+use App\DTOs\Summary\UserDTO;
 use App\services\UserServices;
 use Illuminate\Http\Request;
 use Inertia\Inertia;

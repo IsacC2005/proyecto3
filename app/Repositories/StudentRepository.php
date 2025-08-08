@@ -3,7 +3,7 @@
 
 namespace App\Repositories;
 
-use App\DTOs\StudentDTO;
+use App\DTOs\Summary\StudentDTO;
 use App\Exceptions\DailyClass\DailyClassNotExistException;
 use App\Exceptions\Representative\RepresentativeNotExistException;
 use App\Exceptions\Student\StudentNotDeleteException;

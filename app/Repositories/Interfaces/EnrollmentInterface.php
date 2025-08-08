@@ -2,17 +2,14 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\DTOs\EnrollmentDTO;
-use App\DTOs\LearningProjectDTO;
-use App\DTOs\StudentDTO;
-use App\DTOs\TeacherDTO;
-use SebastianBergmann\Type\NullType;
+use App\DTOs\Summary\EnrollmentDTO;
+use App\DTOs\Details\EnrollmentDetailDTO;
 
 interface EnrollmentInterface
 {
     public function create(EnrollmentDTO $enrollment): EnrollmentDTO;
 
-    public function find($id): EnrollmentDTO;
+    public function find(int $id): EnrollmentDTO;
 
     public function findAll(): array;
 

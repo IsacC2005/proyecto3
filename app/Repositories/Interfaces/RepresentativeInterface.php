@@ -3,9 +3,7 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\DTOs\RepresentativeDTO;
-use App\DTOs\StudentDTO;
-use App\Models\Representative;
+use App\DTOs\Summary\RepresentativeDTO;
 
 interface RepresentativeInterface {
 

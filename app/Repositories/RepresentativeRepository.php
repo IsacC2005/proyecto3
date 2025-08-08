@@ -3,8 +3,7 @@
 
 namespace App\Repositories;
 
-use App\DTOs\RepresentativeDTO;
-use App\DTOs\StudentDTO;
+use App\DTOs\Summary\RepresentativeDTO;
 use App\Exceptions\Representative\RepresentativeNotExistException;
 use App\Exceptions\Representative\RepresentativeNotFindException;
 use App\Exceptions\Representative\RepresentativeNotUpdateException;

@@ -1,10 +1,11 @@
 <?php
+
 namespace App\DTOs;
 
-class EnrollmentDTO
+abstract class  EnrollmentShema
 {
 
-    private $student_ids = [];
+    abstract private string $student_ids;
 
     public function __construct(
         public int $id,
@@ -17,14 +18,10 @@ class EnrollmentDTO
         public ?int $learning_project = null,
     ) {}
 
-    public function addStudent(int $student_id): void
-    {
-        $this->student_ids[] = $student_id;
-    }
+    abstract public  function addStudent();
 
     public function getStudents(): array
     {
         return $this->student_ids;
     }
 }
-?>

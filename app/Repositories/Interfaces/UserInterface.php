@@ -2,7 +2,7 @@
 
 namespace App\Repositories\interfaces;
 
-use App\DTOs\UserDTO;
+use App\DTOs\Summary\UserDTO;
 
 interface UserInterface
 {

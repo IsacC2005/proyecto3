@@ -1,6 +1,5 @@
 <?php 
 
-
 namespace App\DTOs\Searches;
 
 class TicketSearchDTO

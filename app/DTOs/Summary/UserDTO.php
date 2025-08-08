@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DTOs;
+namespace App\DTOs\Summary;
 
-use App\DTOs\Userable\UserableInterface;
+use App\DTOs\Summary\Userable\UserableInterface;
 
 class UserDTO
 {

@@ -1,9 +1,6 @@
 <?php
 
-
 namespace App\DTOs\Searches;
-
-use App\Models\Enrollment;
 
 class LearningProjectSearchDTO
 {

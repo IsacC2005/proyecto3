@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\DTOs\TeacherDTO;
+use App\DTOs\Summary\TeacherDTO;
 use App\Exceptions\Teacher\TeacherNotDeleteException;
 use App\Exceptions\Teacher\TeacherNotExistException;
 use App\Exceptions\Teacher\TeacherNotFindException;

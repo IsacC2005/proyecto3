@@ -3,9 +3,8 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\DTOs\DailyClassDTO;
-use App\DTOs\LearningProjectDTO;
-use App\DTOs\TeacherDTO;
+use App\DTOs\Summary\DailyClassDTO;
+use App\DTOs\Summary\LearningProjectDTO;
 
 interface DailyClassInterface
 {

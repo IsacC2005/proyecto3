@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-
+use App\Constants\RoleConstants;
 use App\Exceptions\Role\RoleNotExistException;
 use App\Exceptions\User\EmailDuplicateException;
 use App\Exceptions\User\UserNotCreatedException;
@@ -12,11 +12,10 @@ use App\Exceptions\User\UserNotFindException;
 use App\Exceptions\User\UserNotFindForEmailException;
 use App\Exceptions\User\UserNotFindForRoleException;
 use App\Exceptions\User\UserNotUpdateException;
-use App\DTOs\UserDTO;
+use App\DTOs\Summary\UserDTO;
 use App\Models\User;
 use App\Repositories\interfaces\UserInterface;
 use App\Repositories\traits\UserTrait;
-use Doctrine\Inflector\Rules\Transformation;
 use Spatie\Permission\Models\Role;
 
 class UserRepository implements UserInterface
@@ -30,6 +29,8 @@ class UserRepository implements UserInterface
         return $roleModel->toArray();
     }
 
+
+
     public function create(UserDTO $user): UserDTO
     {
         try {
@@ -42,14 +43,16 @@ class UserRepository implements UserInterface
                 'email' => $user->email,
                 'password' => bcrypt($user->password),
             ]);
+
             $role = Role::find($user->rol_id);
+
             if(!$role){
                 throw new RoleNotExistException();
             }
-            $userModel->assingRole($role);
+            $userModel->assignRole($role);
             return $this->transformToDTO($userModel);
         } catch (\Exception $e) {
-            throw new UserNotCreatedException();
+            throw new UserNotCreatedException($e->getMessage());
         }
     }
 
@@ -79,7 +82,6 @@ class UserRepository implements UserInterface
     {
         try {
             $users = User::all();
-
             if ($users->isEmpty()) {
                 throw new UserNotFindException();
             }
@@ -144,6 +146,7 @@ class UserRepository implements UserInterface
             throw new UserNotUpdateException();
         }
     }
+
 
 
     public function delete($id): void

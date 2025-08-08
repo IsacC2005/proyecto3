@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Traits;
 
-use App\DTOs\StudentDTO;
+use App\DTOs\Summary\StudentDTO;
 use App\Models\Student;
 
 trait StudentTrait
@@ -17,6 +17,7 @@ trait StudentTrait
         $representative = $student->representative;
         return new StudentDTO(
             id: $student->id,
+            degree: $student->degree,
             name: $student->name,
             surname: $student->surname,
             representative_id: $representative->id

@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Traits;
 
-use App\DTOs\UserDTO;
+use App\DTOs\Summary\UserDTO;
 use App\Models\User;
 
 trait UserTrait

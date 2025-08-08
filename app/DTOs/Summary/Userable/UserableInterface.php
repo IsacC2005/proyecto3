@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DTOs\Userable;
+namespace App\DTOs\Summary\Userable;
 
 interface UserableInterface{}
 ?>

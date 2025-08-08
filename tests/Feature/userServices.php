@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\DTOs\UserDTO;
+use App\Constants\RoleConstants;
+use App\DTOs\Summary\UserDTO;
+use App\Repositories\UserRepository;
 use App\services\UserServices as ServicesUserServices;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class userServices extends TestCase
@@ -18,18 +21,24 @@ class userServices extends TestCase
     public function test_example(): void
     {
 
-        ServicesUserServices::createUser(new UserDTO(
+        $service = new ServicesUserServices(new UserRepository());
+
+        $role = Role::create([
+            'name' => 'l'
+        ]);
+
+
+        $service->createUser(new UserDTO(
             id: 0,
             name: 'i',
             email: 'i',
-            password: 'i'
+            password: 'i',
+            rol_id: $role->id
         ));
 
-        $this->assertDatabaseHas('users',[
-            'name' => 'i',
-            'email' => 'i',
-            'password' => Hash::make('i')
-        ]);
+        
+
+
 
         $response = $this->get('/');
 

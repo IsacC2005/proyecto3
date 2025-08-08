@@ -2,8 +2,7 @@
 
 namespace App\Repositories\interfaces;
 
-use App\DTOs\TeacherDTO;
-use App\Models\Teacher;
+use App\DTOs\Summary\TeacherDTO;
 
 interface TeacherInterface
 {

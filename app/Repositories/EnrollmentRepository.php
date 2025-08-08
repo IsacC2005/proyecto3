@@ -2,7 +2,8 @@
 
 namespace App\Repositories;
 
-use App\DTOs\EnrollmentDTO;
+use App\DTOs\Details\EnrollmentDetailDTO;
+use App\DTOs\Summary\EnrollmentDTO;
 use App\Exceptions\Enrollment\EnrollmentNotCreatedException;
 use App\Exceptions\Enrollment\EnrollmentNotDeleteException;
 use App\Exceptions\Enrollment\EnrollmentNotExistException;
@@ -25,7 +26,8 @@ class EnrollmentRepository implements EnrollmentInterface
     use EnrollmentTrait;
 
 
-    public function create(EnrollmentDTO $enrollment): EnrollmentDTO{
+    public function create(EnrollmentDTO $enrollment): EnrollmentDTO
+    {
 
         try {
             $enrollmentModel = Enrollment::create([
@@ -48,7 +50,8 @@ class EnrollmentRepository implements EnrollmentInterface
 
 
 
-    public function find($id): EnrollmentDTO{
+    public function find(int $id): EnrollmentDTO
+    {
         try {
             $enrollmentModel = Enrollment::find($id);
             if (!$enrollmentModel) {
@@ -68,13 +71,13 @@ class EnrollmentRepository implements EnrollmentInterface
         try {
             $enrollmentModel = Enrollment::all();
 
-            if(!$enrollmentModel){
+            if (!$enrollmentModel) {
                 throw new EnrollmentNotFindException();
             }
 
-            return $this->transformListDTO($enrollmentModel->toArray());
+            return $this->transformListDTO($enrollmentModel);
         } catch (\Throwable $th) {
-            throw new EnrollmentNotFindException();
+            throw new EnrollmentNotFindException($th->getMessage());
         }
     }
 
@@ -84,7 +87,7 @@ class EnrollmentRepository implements EnrollmentInterface
     {
         try {
             $enrollments = Enrollment::where('teacher_id', $teacher_id)->get();
-            if(!$enrollments){
+            if (!$enrollments) {
                 throw new EnrollmentNotFindException();
             }
             return $this->transformListDTO($enrollments->toArray());
@@ -93,7 +96,8 @@ class EnrollmentRepository implements EnrollmentInterface
         }
     }
 
-    public function findByStudent(int $student_id): array{
+    public function findByStudent(int $student_id): array
+    {
         try {
             $studentModel = Student::find($student_id);
             if (!$studentModel) {
@@ -122,7 +126,7 @@ class EnrollmentRepository implements EnrollmentInterface
 
             $enrollment = Enrollment::find($project->id);
 
-            if(!$enrollment){
+            if (!$enrollment) {
                 throw new LearningProjectNotFindException();
             }
 
@@ -141,7 +145,7 @@ class EnrollmentRepository implements EnrollmentInterface
 
     public function update(EnrollmentDTO $enrollment): EnrollmentDTO
     {
-try {
+        try {
             $enrollmentModel = Enrollment::find($enrollment->id);
 
             if (!$enrollmentModel) {
@@ -168,10 +172,9 @@ try {
             }
 
             return $enrollmentModel->save();
-} catch (\Throwable $th) {
-    throw new EnrollmentNotUpdateException();
-}
-
+        } catch (\Throwable $th) {
+            throw new EnrollmentNotUpdateException();
+        }
     }
 
     public function delete($id): void
@@ -188,4 +191,3 @@ try {
         }
     }
 }
-?>

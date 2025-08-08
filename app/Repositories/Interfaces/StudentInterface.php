@@ -2,12 +2,7 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\DTOs\DailyClassDTO;
-use App\DTOs\EnrollmentDTO;
-use App\DTOs\LearningProjectDTO;
-use App\DTOs\RepresentativeDTO;
-use App\DTOs\StudentDTO;
-use App\Models\Student;
+use App\DTOs\Summary\StudentDTO;
 
 interface StudentInterface
 {

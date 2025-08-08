@@ -2,9 +2,8 @@
 
 namespace App\Repositories\Traits;
 
-use App\DTOs\LearningProjectDTO;
+use App\DTOs\Summary\LearningProjectDTO;
 use App\Models\LearningProject;
-use App\Models\Teacher;
 
 trait LearningProjectTrait
 {

@@ -2,7 +2,6 @@
 
 namespace App\DTOs\Searches;
 
-
 class ItemEvaluationSearchDTO
 {
     public function __construct(

@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Traits;
 
-use App\DTOs\RepresentativeDTO;
+use App\DTOs\Summary\RepresentativeDTO;
 use App\Models\Representative;
 
 trait RepresentativeTrait

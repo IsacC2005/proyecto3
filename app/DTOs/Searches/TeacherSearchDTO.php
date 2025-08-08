@@ -1,16 +1,15 @@
 <?php
 
-
 namespace App\DTOs\Searches;
 
-use App\DTOs\Userable\UserableInterface;
-use App\DTOs\Userable\UserableTrait;
+use App\DTOs\Searches\Userable\UserableSearchInterface;
+use App\DTOs\Searches\Userable\UserableSearchTrait;
 
 
-class TeacherSearchDTO implements UserableInterface
+class TeacherSearchDTO implements UserableSearchInterface
 {
 
-    use UserableTrait;
+    use UserableSearchTrait;
 
     private $learning_project_ids = [];
     private $enrollment_ids = [];

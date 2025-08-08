@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-use App\DTOs\LearningProjectDTO;
-use App\DTOs\StudentDTO;
-use App\DTOs\TicketDTO;
+use App\DTOs\Summary\LearningProjectDTO;
+use App\DTOs\Summary\StudentDTO;
+use App\DTOs\Summary\TicketDTO;
 
 interface TicketInterface
 {

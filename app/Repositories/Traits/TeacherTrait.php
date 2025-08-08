@@ -3,7 +3,7 @@
 
 namespace App\Repositories\Traits;
 
-use App\DTOs\TeacherDTO;
+use App\DTOs\Summary\TeacherDTO;
 use App\Models\Teacher;
 
 trait TeacherTrait
@@ -20,7 +20,7 @@ trait TeacherTrait
             name: $teacher->name,
             surname: $teacher->surname,
             phone: $teacher->phone,
-            user: $teacher->user?->id ?? null
+            user_id: $teacher->user?->id ?? null
         );
     }
 }

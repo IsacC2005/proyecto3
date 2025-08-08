@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\DTOs;
+namespace App\DTOs\Summary;
 
 class StudentDTO
 {
@@ -17,7 +17,7 @@ class StudentDTO
         public ?int $representative_id = 0,
     ) {}
 
-
+ 
     public function addEnrollment(int  $enrollment_id): void
     {
         $this->enrollment_ids[] = $enrollment_id;

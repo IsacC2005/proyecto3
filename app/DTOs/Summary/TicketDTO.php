@@ -1,7 +1,7 @@
 <?php 
 
 
-namespace App\DTOs;
+namespace App\DTOs\Summary;
 
 class TicketDTO
 {

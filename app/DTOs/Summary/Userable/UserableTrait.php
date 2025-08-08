@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DTOs\Userable;
+namespace App\DTOs\Summary\Userable;
 
-use App\DTOs\UserDTO;
+use App\DTOs\Summary\UserDTO;
 
 trait UserableTrait
 {

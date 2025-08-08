@@ -2,7 +2,7 @@
 
 namespace App\DTOs\Searches;
 
-use App\DTOs\Userable\UserableInterface;
+use App\DTOs\Searches\Userable\UserableSearchInterface;
 
 class UserSearchDTO
 {
@@ -12,7 +12,7 @@ class UserSearchDTO
         public ?string $email = null,
         public ?string $password = null,
         public ?int $rol_id = null,
-        public ?UserableInterface $userable = null
+        public ?UserableSearchInterface $userable = null
     ) {}
 }
 ?>
