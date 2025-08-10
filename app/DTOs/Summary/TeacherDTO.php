@@ -7,7 +7,7 @@ use App\DTOs\Summary\Userable\UserableInterface;
 use App\DTOs\Summary\Userable\UserableTrait;
 
 
-class TeacherDTO implements UserableInterface
+class TeacherDTO implements UserableInterface, DTOSummary
 {
 
     use UserableTrait;

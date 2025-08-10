@@ -9,14 +9,12 @@ use App\Exceptions\Representative\RepresentativeNotFindException;
 use App\Exceptions\Representative\RepresentativeNotUpdateException;
 use App\Models\Representative;
 use App\Repositories\Interfaces\RepresentativeInterface;
-use App\Repositories\Traits\RepresentativeTrait;
+use App\Repositories\TransformDTOs\TransformDTOs;
+use App\DTOs\Summary\DTOSummary;
+use Illuminate\Database\Eloquent\Model;
 
-class RepresentativeRepository implements RepresentativeInterface
+class RepresentativeRepository extends TransformDTOs implements RepresentativeInterface
 {
-
-
-    use RepresentativeTrait;
-
 
     public function create(RepresentativeDTO $representative): RepresentativeDTO
     {
@@ -64,7 +62,7 @@ class RepresentativeRepository implements RepresentativeInterface
             if (!$representativeModels) {
                 throw new RepresentativeNotFindException();
             }
-            return $this->transformListDTO($representativeModels->toArray());
+            return $this->transformListDTO($representativeModels);
         } catch (\Throwable $th) {
             throw new RepresentativeNotFindException();
         }
@@ -140,5 +138,17 @@ class RepresentativeRepository implements RepresentativeInterface
         } catch (\Throwable $th) {
             throw new RepresentativeNotExistException();
         }
+    }
+
+	protected function transformToDTO(Model $model): DTOSummary 
+    {
+        return new RepresentativeDTO(
+            id: $model->id,
+            idcard: $model->idcard,
+            phone: $model->phone,
+            name: $model->name,
+            surname: $model->surname,
+            direction: $model->direction
+        );
     }
 }

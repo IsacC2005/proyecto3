@@ -14,12 +14,12 @@ use App\Exceptions\Teacher\TeacherNotExistException;
 use App\Models\Enrollment;
 use App\Models\Teacher;
 use App\Repositories\Interfaces\LearningProjectInterface;
-use App\Repositories\Traits\LearningProjectTrait;
+use App\Repositories\TransformDTOs\TransformDTOs;
+use App\DTOs\Summary\DTOSummary;
+use Illuminate\Database\Eloquent\Model;
 
-class LearningProjectRepository implements LearningProjectInterface
+class LearningProjectRepository extends TransformDTOs implements LearningProjectInterface
 {
-
-    use LearningProjectTrait;
 
     public function create(LearningProjectDTO $learningProject): LearningProjectDTO
     {
@@ -72,7 +72,7 @@ class LearningProjectRepository implements LearningProjectInterface
             if(!$projects){
                 throw new LearningProjectNotFindException();
             }
-            return $this->transformListDTO($projects->toArray());
+            return $this->transformListDTO($projects);
         } catch (\Throwable $th) {
             throw new LearningProjectNotFindException();
         }
@@ -90,7 +90,7 @@ class LearningProjectRepository implements LearningProjectInterface
         }
 
         $projects = LearningProject::where('teacher_id', $teacherModel->id)->get();
-        return $this->transformListDTO($projects->toArray());
+        return $this->transformListDTO($projects);
         } catch (\Throwable $th) {
             throw new LearningProjectNotFindException();
         }
@@ -150,5 +150,20 @@ class LearningProjectRepository implements LearningProjectInterface
         } catch (\Throwable $th) {
             throw new LearningProjectNotDeleteException();
         }
+    }
+
+	protected function transformToDTO(Model $model): DTOSummary 
+    {
+        $teacher = $model->teacher;
+        $enrollment = $model->enrollment;
+        //       $teacherDTO = TeacherTrait::transformToDTO($teacher) ?? null;
+
+        return new LearningProjectDTO(
+            id: $model->id,
+            title: $model->title,
+            content: $model->content,
+            teacher_id: $teacher->id,
+            enrollment_id: $enrollment->id
+        );
     }
 }

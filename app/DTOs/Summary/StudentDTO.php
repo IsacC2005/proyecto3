@@ -2,7 +2,7 @@
 
 namespace App\DTOs\Summary;
 
-class StudentDTO
+class StudentDTO implements DTOSummary
 {
     private $enrollment_ids = [];
     private $ticket_ids = [];

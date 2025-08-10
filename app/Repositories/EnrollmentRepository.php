@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\DTOs\Details\EnrollmentDetailDTO;
 use App\DTOs\Summary\EnrollmentDTO;
 use App\Exceptions\Enrollment\EnrollmentNotCreatedException;
 use App\Exceptions\Enrollment\EnrollmentNotDeleteException;
@@ -17,14 +16,12 @@ use App\Models\LearningProject;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Repositories\interfaces\EnrollmentInterface;
-use App\Repositories\Traits\EnrollmentTrait;
+use App\Repositories\TransformDTOs\TransformDTOs;
+use App\DTOs\Summary\DTOSummary;
+use Illuminate\Database\Eloquent\Model;
 
-class EnrollmentRepository implements EnrollmentInterface
+class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 {
-
-
-    use EnrollmentTrait;
-
 
     public function create(EnrollmentDTO $enrollment): EnrollmentDTO
     {
@@ -189,5 +186,18 @@ class EnrollmentRepository implements EnrollmentInterface
         } catch (\Throwable $th) {
             throw new EnrollmentNotDeleteException();
         }
+    }
+
+	protected function transformToDTO(Model $model): DTOSummary 
+    {
+        return new EnrollmentDTO(
+            id: $model->id,
+            school_year: $model->school_year,
+            school_moment: $model->school_moment,
+            degree: $model->degree,
+            section: $model->section,
+            classroom: $model->classroom,
+            teacher_id: $model->teacher_id,
+        );
     }
 }

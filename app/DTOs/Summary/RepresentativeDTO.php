@@ -3,7 +3,7 @@
 
 namespace App\DTOs\Summary;
 
-class RepresentativeDTO
+class RepresentativeDTO implements DTOSummary
 {
 
     private $student_ids = [];

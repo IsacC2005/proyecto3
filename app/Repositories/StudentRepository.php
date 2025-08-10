@@ -17,12 +17,12 @@ use App\Models\Enrollment;
 use App\Models\Representative;
 use App\Models\Student;
 use App\Repositories\interfaces\StudentInterface;
-use App\Repositories\Traits\StudentTrait;
+use App\Repositories\TransformDTOs\TransformDTOs;
+use App\DTOs\Summary\DTOSummary;
+use Illuminate\Database\Eloquent\Model;
 
-class StudentRepository implements StudentInterface
+class StudentRepository extends TransformDTOs implements StudentInterface
 {
-
-    use StudentTrait;
 
 	public function create(StudentDTO $student): StudentDTO 
     {
@@ -67,7 +67,7 @@ class StudentRepository implements StudentInterface
             if(!$studentModels){
                 throw new StudentNotFindException();
             }
-            return $this->transformListDTO($studentModels->toArray());
+            return $this->transformListDTO($studentModels);
         } catch (\Throwable $th) {
             throw new StudentNotFindException();
         }
@@ -210,6 +210,18 @@ class StudentRepository implements StudentInterface
         } catch (\Throwable $th) {
             throw new StudentNotDeleteException();
         }
+    }
+
+	protected function transformToDTO(Model $model): DTOSummary 
+    {
+        $representative = $model->representative;
+        return new StudentDTO(
+            id: $model->id,
+            degree: $model->degree,
+            name: $model->name,
+            surname: $model->surname,
+            representative_id: $representative->id
+        );
     }
 }
 ?>

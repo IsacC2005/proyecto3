@@ -4,7 +4,7 @@ namespace App\DTOs\Summary;
 
 use App\DTOs\Summary\Userable\UserableInterface;
 
-class UserDTO
+class UserDTO implements DTOSummary
 {
     public function __construct(
         public int $id,

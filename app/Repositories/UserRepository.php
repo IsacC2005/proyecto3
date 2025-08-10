@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Constants\RoleConstants;
 use App\Exceptions\Role\RoleNotExistException;
 use App\Exceptions\User\EmailDuplicateException;
 use App\Exceptions\User\UserNotCreatedException;
@@ -15,13 +14,13 @@ use App\Exceptions\User\UserNotUpdateException;
 use App\DTOs\Summary\UserDTO;
 use App\Models\User;
 use App\Repositories\interfaces\UserInterface;
-use App\Repositories\traits\UserTrait;
+use App\Repositories\TransformDTOs\TransformDTOs;
 use Spatie\Permission\Models\Role;
+use App\DTOs\Summary\DTOSummary;
+use Illuminate\Database\Eloquent\Model;
 
-class UserRepository implements UserInterface
+class UserRepository extends TransformDTOs implements UserInterface
 {
-
-    use UserTrait;
 
     public function allRole(): array
     {
@@ -46,7 +45,7 @@ class UserRepository implements UserInterface
 
             $role = Role::find($user->rol_id);
 
-            if(!$role){
+            if (!$role) {
                 throw new RoleNotExistException();
             }
             $userModel->assignRole($role);
@@ -65,12 +64,7 @@ class UserRepository implements UserInterface
             if (!$user) {
                 throw new UserNotFindException();
             }
-            return new UserDTO(
-                id: $user->id,
-                name: $user->name,
-                email: $user->email,
-                password: $user->password
-            );
+            return $this->transformToDTO($user);
         } catch (\Exception $e) {
             throw new UserNotCreatedException();
         }
@@ -85,7 +79,7 @@ class UserRepository implements UserInterface
             if ($users->isEmpty()) {
                 throw new UserNotFindException();
             }
-            return $this->transformListDTO($users->toArray());
+            return $this->transformListDTO($users);
         } catch (\Throwable $th) {
             throw new UserNotFindException();
         }
@@ -115,7 +109,7 @@ class UserRepository implements UserInterface
             if ($users->isEmpty()) {
                 throw new UserNotFindForRoleException();
             }
-            return $this->transformListDTO($users->toArray());
+            return $this->transformListDTO($users);
         } catch (\Throwable $th) {
             throw new UserNotFindException();
         }
@@ -126,22 +120,17 @@ class UserRepository implements UserInterface
     public function update(UserDTO $user): UserDTO
     {
         try {
-            $existingUser = User::find($user->id);
-            if (!$existingUser) {
+            $userModel = User::find($user->id);
+            if (!$userModel) {
                 throw new UserNotUpdateException();
             }
 
-            $existingUser->name = $user->name;
-            $existingUser->email = $user->email;
-            $existingUser->password = bcrypt($user->password);
-            $existingUser->save();
+            $userModel->name = $user->name;
+            $userModel->email = $user->email;
+            $userModel->password = bcrypt($user->password);
+            $userModel->save();
 
-            return new UserDTO(
-                id: $existingUser->id,
-                name: $existingUser->name,
-                email: $existingUser->email,
-                password: $existingUser->password,
-            );
+            return $this->transformToDTO($userModel);
         } catch (\Throwable $th) {
             throw new UserNotUpdateException();
         }
@@ -160,5 +149,21 @@ class UserRepository implements UserInterface
         } catch (\Throwable $th) {
             throw new UserNotDeletedException();
         }
+    }
+
+    /**
+     * 
+     * TODO Este método se está redefiniendo polimórficamente.
+     * 
+     */
+    protected function transformToDTO(Model $model): DTOSummary
+    {
+        return new UserDTO(
+            id: $model->id,
+            name: $model->name,
+            email: $model->email,
+            password: $model->password,
+            //userable: $user->userable // Assuming userable is a Userable type
+        );
     }
 }

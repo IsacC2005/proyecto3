@@ -3,7 +3,7 @@
 namespace App\DTOs\Summary;
 
 
-class ItemEvaluationDTO
+class ItemEvaluationDTO implements DTOSummary
 {
     public function __construct(
         public int $id,

@@ -4,7 +4,7 @@
 namespace App\DTOs\Summary;
 
 
-class LearningProjectDTO
+class LearningProjectDTO implements DTOSummary
 {
     private $ticket_ids = [];
 

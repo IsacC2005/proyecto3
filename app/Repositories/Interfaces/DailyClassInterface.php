@@ -4,7 +4,6 @@
 namespace App\Repositories\Interfaces;
 
 use App\DTOs\Summary\DailyClassDTO;
-use App\DTOs\Summary\LearningProjectDTO;
 
 interface DailyClassInterface
 {
@@ -14,7 +13,7 @@ interface DailyClassInterface
 
     public function findAll(): array;
 
-    public function findByLearningProject(LearningProjectDTO $learningProject): array;
+    public function findByLearningProject(int $project_id): array;
 
     public function search(DailyClassDTO $dailyClass): array;
 

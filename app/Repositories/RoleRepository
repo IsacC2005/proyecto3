@@ -1,0 +1,69 @@
+<?php 
+
+namespace App\Repositories;
+
+use App\Repositories\Interfaces\RoleInterface;
+use App\DTOs\Summary\RoleDTO;
+use App\Exceptions\Role\RoleNotCreateException;
+use App\Repositories\TransformDTOs\TransformDTOs;
+use Spatie\Permission\Models\Role;
+use App\DTOs\Summary\DTOSummary;
+use Illuminate\Database\Eloquent\Model;
+
+class RoleRepository extends TransformDTOs implements RoleInterface{
+
+	public function createRole(RoleDTO $role): RoleDTO 
+    {
+        try {
+            $roleModel = Role::create([
+                'name' => $role->name
+            ]);
+
+            if(!$roleModel){
+                throw new RoleNotCreateException();
+            }
+            return $this->transformToDTO($roleModel);
+
+        } catch (\Throwable $th) {
+            throw new RoleNotCreateException();
+        }
+    }
+
+	public function findRole(int $id): RoleDTO 
+    {
+        // TODO
+    }
+
+	public function allRole(): array 
+    {
+        // TODO
+    }
+
+	public function findRoleByPermission(string $permission): array 
+    {
+        // TODO
+    }
+
+	public function updateRole(RoleDTO $role): RoleDTO 
+    {
+        // TODO
+    }
+
+	public function deleteRole(int $id): void 
+    {
+        // TODO
+    }
+
+	protected function transformToDTO(Model $model): DTOSummary 
+    {
+        $permissions = $model->permissions()->pluck('permission_id')->toArray();
+        $roleDTO = new RoleDTO(
+            id: $model->id,
+            name: $model->name,
+        );
+
+        $roleDTO->addPermision($permissions);
+
+        return $roleDTO;
+    }
+}

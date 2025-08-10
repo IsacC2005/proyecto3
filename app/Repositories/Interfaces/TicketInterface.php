@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Interfaces;
 
 use App\DTOs\Summary\LearningProjectDTO;
 use App\DTOs\Summary\StudentDTO;
@@ -14,9 +14,9 @@ interface TicketInterface
 
     public function findAll(): array;
 
-    public function findByStudent(StudentDTO $student): array;
+    public function findByStudent(int $student_id): array;
 
-    public function findByLearningProject(LearningProjectDTO $learningProject): array;
+    public function findByLearningProject(int $project_id): array;
 
     public function update(TicketDTO $ticket): TicketDTO;
 

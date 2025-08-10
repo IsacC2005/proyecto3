@@ -19,10 +19,4 @@ class UserServices
     {
         $this->userRepository->create($user);
     }
-
-    public function allRoles(): array
-    {
-
-        return $this->userRepository->allRole();
-    }
 }

@@ -5,7 +5,7 @@ namespace App\DTOs\Summary;
 
 use DateTime;
 
-class DailyClassDTO
+class DailyClassDTO implements DTOSummary
 {
 
     private $item_evaluation_ids = [];

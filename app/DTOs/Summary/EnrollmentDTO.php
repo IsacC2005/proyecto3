@@ -1,7 +1,7 @@
 <?php
 namespace App\DTOs\Summary;
 
-class EnrollmentDTO
+class EnrollmentDTO implements DTOSummary
 {
 
     private $student_ids = [];

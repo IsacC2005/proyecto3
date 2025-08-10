@@ -12,13 +12,12 @@ use App\Exceptions\User\UserNotExistException;
 use App\Models\Teacher;
 use App\Models\User;
 use App\Repositories\Interfaces\TeacherInterface;
-use App\Repositories\Traits\TeacherTrait;
+use App\Repositories\TransformDTOs\TransformDTOs;
+use App\DTOs\Summary\DTOSummary;
+use Illuminate\Database\Eloquent\Model;
 
-class TeacherRepository implements TeacherInterface
+class TeacherRepository extends TransformDTOs implements TeacherInterface
 {
-
-    use TeacherTrait;
-
 
 	public function create(TeacherDTO $teacher): TeacherDTO 
     {
@@ -63,7 +62,7 @@ class TeacherRepository implements TeacherInterface
     public function findAll(): array
     {
         $teacherModels = Teacher::all();
-        return $this->transformListDTO($teacherModels->toArray());
+        return $this->transformListDTO($teacherModels);
     }
 
 
@@ -132,6 +131,19 @@ class TeacherRepository implements TeacherInterface
         } catch (\Throwable $th) {
             throw new TeacherNotDeleteException();
         }
+    }
+
+
+
+	protected function transformToDTO(Model $model): DTOSummary 
+    {
+        return new TeacherDTO(
+            id: $model->id,
+            name: $model->name,
+            surname: $model->surname,
+            phone: $model->phone,
+            user_id: $model->user?->id ?? null
+        );
     }
 }
 ?>
