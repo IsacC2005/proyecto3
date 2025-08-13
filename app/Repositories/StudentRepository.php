@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 class StudentRepository extends TransformDTOs implements StudentInterface
 {
 
-	public function create(StudentDTO $student): StudentDTO 
+	public function createStudent(StudentDTO $student): StudentDTO 
     {
         try {
             $studentModel = Student::create([
@@ -43,7 +43,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function find($id): StudentDTO 
+    public function findStudentById($id): StudentDTO 
     {
         try {
             $studentModel = Student::find($id);
@@ -59,7 +59,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function findAll(): array 
+    public function findAllStudent(): array 
     {
         try {
             $studentModels = Student::all();
@@ -75,7 +75,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function findByName($name): StudentDTO
+    public function findStudentByName($name): StudentDTO
     {
         try {
             $student = Student::where('name', $name)->first();
@@ -91,7 +91,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function findByEnrollment(int $enrollment_id): array 
+    public function findStudentByEnrollment(int $enrollment_id): array 
     {
 
         try {
@@ -112,7 +112,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function findByLearningProject(int $learning_project_id): array
+    public function findStudentByLearningProject(int $learning_project_id): array
     {
         try {
             $studentModels = Student::whereHas('enrollments', function ($query) use ($learning_project_id) {
@@ -133,7 +133,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function findByDailyClass(int $daily_class_id): array 
+    public function findStudentByDailyClass(int $daily_class_id): array 
     {
         try {
             $dailyClassModel = DailyClass::find($daily_class_id);
@@ -159,7 +159,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function findByRepresentative(int $representative_id): array 
+    public function findStudentByRepresentative(int $representative_id): array 
     {
         try {
             $representativeModel = Representative::find($representative_id)->firs();
@@ -179,7 +179,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function update(StudentDTO $student): StudentDTO 
+    public function updateStudent(StudentDTO $student): StudentDTO 
     {
         try {
             $studentModel = Student::find($student->id);
@@ -199,7 +199,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function delete($id): void
+    public function deleteStudent($id): void
     {
         try {
             $studentModel = Student::find($id);

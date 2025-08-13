@@ -11,12 +11,14 @@ use App\Models\Representative;
 use App\Repositories\Interfaces\RepresentativeInterface;
 use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
+use App\Exceptions\Student\StudentNotExistException;
+use App\Models\Student;
 use Illuminate\Database\Eloquent\Model;
 
 class RepresentativeRepository extends TransformDTOs implements RepresentativeInterface
 {
 
-    public function create(RepresentativeDTO $representative): RepresentativeDTO
+    public function createRepresentative(RepresentativeDTO $representative): RepresentativeDTO
     {
         try {
             $representativeModel = Representative::create([
@@ -39,7 +41,7 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
 
 
 
-    public function find($id): RepresentativeDTO
+    public function findRepresentativeById(int $id): RepresentativeDTO
     {
         try {
             $representativeModel = Representative::find($id);
@@ -55,7 +57,7 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
 
 
 
-    public function findAll(): array
+    public function findAllRepresentative(): array
     {
         try {
             $representativeModels = Representative::all();
@@ -70,26 +72,26 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
 
 
 
-    public function findByStudent(int $student_id): array
+    public function findRepresentativeByStudent(int $student_id): RepresentativeDTO
     {
-        try {
-            $representative = Representative::whereHas('students', function ($query) use ($student_id) {
-                $query->where('id', $student_id);
-            })->get();
+        $student = Student::find($student_id);
 
-            if ($representative->isEmpty()) {
-                throw new RepresentativeNotFindException();
-            }
-
-            return $this->transformListDTO($representative->toArray());
-        } catch (\Throwable $th) {
-            throw new RepresentativeNotFindException();
+        if (!$student) {
+            throw new StudentNotExistException();
         }
+
+        $representative = $student->representative;
+
+        if(!$representative){
+            throw new RepresentativeNotFindException("No se encontro el representante", 404);
+        }
+
+        return $this->transformToDTO($representative);
     }
 
 
 
-    public function findByName($name): array
+    public function findRepresentativeByName(string $name): array
     {
         try {
             $representativeModel = Representative::where('name', 'like', '%' . $name . '%')->get();
@@ -104,7 +106,21 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
 
 
 
-    public function update(RepresentativeDTO $representative): RepresentativeDTO
+    public function findRepresentativeByEnrollment(int $enrollment_id): array
+    {
+        $representativeModel = Representative::whereHas('students', 
+        function ($student) use ($enrollment_id){
+            $student->whereHas('enrollments', function ($query) use ($enrollment_id){
+                $query->where('id', $enrollment_id);
+            });
+        })->get();
+
+        return $this->transformListDTO($representativeModel);
+    }
+
+
+
+    public function updateRepresentative(RepresentativeDTO $representative): RepresentativeDTO
     {
         try {
             $representativeModel = Representative::find($representative->id);
@@ -126,7 +142,7 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
 
 
 
-    public function delete($id): void
+    public function deleteRepresentative(int $id): void
     {
         try {
             $representativeModel = Representative::find($id);
@@ -140,7 +156,9 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
         }
     }
 
-	protected function transformToDTO(Model $model): DTOSummary 
+
+
+    protected function transformToDTO(Model $model): DTOSummary
     {
         return new RepresentativeDTO(
             id: $model->id,

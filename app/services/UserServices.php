@@ -1,12 +1,10 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
-use App\Constants\RoleConstants;
-use App\DTOs\TeacherDTO;
+
 use App\DTOs\Summary\UserDTO;
 use App\Repositories\interfaces\UserInterface;
-use Spatie\Permission\Models\Role;
 
 class UserServices
 {
@@ -15,8 +13,52 @@ class UserServices
         private UserInterface $userRepository,
     ) {}
 
-    public function createUser(UserDTO $user)
+
+
+    public function createUser(UserDTO $user):UserDTO
     {
-        $this->userRepository->create($user);
+        return $this->userRepository->createUser($user);
+    }
+
+
+
+    public function findByUserById(int $id): UserDTO
+    {
+        return $this->userRepository->findUserById($id);
+    }
+
+
+
+    public function findAllUser(): array
+    {
+        return $this->userRepository->findAllUser();
+    }
+
+
+
+    public function findUserByEmail(string $email): UserDTO
+    {
+        return $this->userRepository->findUserByEmail($email);
+    }
+
+
+
+    public function findUserByRole(string $role): array
+    {
+        return $this->userRepository->findUserByRole($role);
+    }
+
+
+
+    public function updateUser(UserDTO $user): UserDTO
+    {
+        return $this->userRepository->updateUser($user);
+    }
+
+
+
+    public function deleteUser(int $id): void
+    {
+        $this->userRepository->deleteUser($id);
     }
 }

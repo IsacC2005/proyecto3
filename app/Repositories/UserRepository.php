@@ -22,42 +22,30 @@ use Illuminate\Database\Eloquent\Model;
 class UserRepository extends TransformDTOs implements UserInterface
 {
 
-    public function allRole(): array
+    public function createUser(UserDTO $user): UserDTO
     {
-        $roleModel = Role::all(['id', 'name']);
-        return $roleModel->toArray();
-    }
-
-
-
-    public function create(UserDTO $user): UserDTO
-    {
-        try {
-            $existingUser = User::where('email', $user->email)->first();
-            if ($existingUser) {
-                throw new EmailDuplicateException();
-            }
-            $userModel = User::create([
-                'name' => $user->name,
-                'email' => $user->email,
-                'password' => bcrypt($user->password),
-            ]);
-
-            $role = Role::find($user->rol_id);
-
-            if (!$role) {
-                throw new RoleNotExistException();
-            }
-            $userModel->assignRole($role);
-            return $this->transformToDTO($userModel);
-        } catch (\Exception $e) {
-            throw new UserNotCreatedException($e->getMessage());
+        $existingUser = User::where('email', $user->email)->first();
+        if ($existingUser) {
+            throw new EmailDuplicateException();
         }
+        $userModel = User::create([
+            'name' => $user->name,
+            'email' => $user->email,
+            'password' => bcrypt($user->password),
+        ]);
+
+        $role = Role::find($user->rol_id);
+
+        if (!$role) {
+            throw new RoleNotExistException();
+        }
+        $userModel->assignRole($role);
+        return $this->transformToDTO($userModel);
     }
 
 
 
-    public function find($id): UserDTO
+    public function findUserById($id): UserDTO
     {
         try {
             $user = User::find($id);
@@ -72,7 +60,7 @@ class UserRepository extends TransformDTOs implements UserInterface
 
 
 
-    public function findAll(): array
+    public function findAllUser(): array
     {
         try {
             $users = User::all();
@@ -87,7 +75,7 @@ class UserRepository extends TransformDTOs implements UserInterface
 
 
 
-    public function findByEmail($email): UserDTO
+    public function findUserByEmail($email): UserDTO
     {
         try {
             $user = User::where('email', $email)->first();
@@ -102,7 +90,7 @@ class UserRepository extends TransformDTOs implements UserInterface
 
 
 
-    public function findByRole($role): array
+    public function findUserByRole($role): array
     {
         try {
             $users = User::role($role)->get();
@@ -117,7 +105,7 @@ class UserRepository extends TransformDTOs implements UserInterface
 
 
 
-    public function update(UserDTO $user): UserDTO
+    public function updateUser(UserDTO $user): UserDTO
     {
         try {
             $userModel = User::find($user->id);
@@ -138,7 +126,7 @@ class UserRepository extends TransformDTOs implements UserInterface
 
 
 
-    public function delete($id): void
+    public function deleteUser($id): void
     {
         try {
             $user = User::find($id);

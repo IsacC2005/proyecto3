@@ -1,7 +1,7 @@
 <?php 
 
 
-namespace App\services;
+namespace App\Services;
 
 use App\Repositories\Interfaces\EnrollmentInterface;
 use App\Repositories\Interfaces\StudentInterface;

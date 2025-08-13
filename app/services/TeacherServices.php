@@ -1,11 +1,9 @@
 <?php 
 
-namespace App\services;
+namespace App\Services;
 
-use App\Constants\RoleConstants;
-use App\DTOs\TeacherDTO;
+use App\DTOs\Summary\TeacherDTO;
 use App\Repositories\Interfaces\TeacherInterface;
-use Spatie\Permission\Models\Role;
 
 class TeacherServices {
 

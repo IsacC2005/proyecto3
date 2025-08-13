@@ -7,18 +7,20 @@ use App\DTOs\Summary\RepresentativeDTO;
 
 interface RepresentativeInterface {
 
-    public function create(RepresentativeDTO $representative): RepresentativeDTO;
+    public function createRepresentative(RepresentativeDTO $representative): RepresentativeDTO;
 
-    public function find($id): RepresentativeDTO;
+    public function findRepresentativeById(int $id): RepresentativeDTO;
 
-    public function findAll(): array;
+    public function findAllRepresentative(): array;
 
-    public function findByStudent(int $student_id): array;
+    public function findRepresentativeByStudent(int $student_id): RepresentativeDTO;
 
-    public function findByName($name): array;
+    public function findRepresentativeByName(String $name): array;
 
-    public function update(RepresentativeDTO $representative): RepresentativeDTO;
+    public function findRepresentativeByEnrollment(int $enrollment_id): array;
 
-    public function delete($id): void;
+    public function updateRepresentative(RepresentativeDTO $representative): RepresentativeDTO;
+
+    public function deleteRepresentative(int $id): void;
 }
 ?>

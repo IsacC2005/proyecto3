@@ -2,17 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\DTOs\Summary\DTOSummary;
-use App\DTOs\Summary\StudentDTO;
-use App\Factories\StudentFactory;
-use App\Repositories\Interfaces\StudentInterface;
 use Illuminate\Http\Request;
 
-class StudentController extends Controller
+class hi extends Controller
 {
-    public function __construct(
-        private StudentInterface $studentRepository
-    ) {}
     /**
      * Display a listing of the resource.
      * 
