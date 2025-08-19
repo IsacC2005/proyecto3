@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Repositories\interfaces;
+namespace App\Repositories\Interfaces;
 
 use App\DTOs\Summary\TeacherDTO;
+use App\DTOs\PaginationDTO;
 
 interface TeacherInterface
 {
-    public function create(TeacherDTO $teacher): TeacherDTO;
+    public function createTeacher(TeacherDTO $teacher): TeacherDTO;
 
     public function find($id): TeacherDTO;
 
     public function findByEmail($email): TeacherDTO;
 
-    public function findAll(): array;
+    public function findAll(): PaginationDTO;
 
     public function findByName($name): array;
 

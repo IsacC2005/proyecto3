@@ -5,39 +5,44 @@ namespace App\Http\Controllers;
 use App\DTOs\Summary\DTOSummary;
 use App\DTOs\Summary\StudentDTO;
 use App\Factories\StudentFactory;
-use App\Repositories\Interfaces\StudentInterface;
+use App\Services\StudentServices;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class StudentController extends Controller
 {
     public function __construct(
-        private StudentInterface $studentRepository
+        private StudentServices $studentServices
     ) {}
     /**
      * Display a listing of the resource.
-     * 
+     *
      * This method should retrieve all resources from the database
      * and return a view displaying the list of resources.
      */
     public function index()
     {
-        // Debería devolver una vista con todos los elementos.
+        $students = $this->studentServices->findAllStudent();
+        return Inertia::render('Student/ListStudent', [
+            'students' => $students
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
-     * 
+     *
      * This method should return a view containing a form
      * to create a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        // Debería mostrar el formulario para crear un nuevo elemento.
+
+        return Inertia::render('Student/CreateStudent');
     }
 
     /**
      * Store a newly created resource in storage.
-     * 
+     *
      * This method should validate the request data and store
      * a new resource in the database.
      */
@@ -48,7 +53,7 @@ class StudentController extends Controller
 
     /**
      * Display the specified resource.
-     * 
+     *
      * This method should retrieve and display a single resource
      * identified by its ID.
      */
@@ -59,7 +64,7 @@ class StudentController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     * 
+     *
      * This method should return a view with a form to edit
      * the specified resource.
      */
@@ -70,7 +75,7 @@ class StudentController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * 
+     *
      * This method should validate the request data and update
      * the specified resource in the database.
      */
@@ -81,7 +86,7 @@ class StudentController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * 
+     *
      * This method should delete the specified resource from the database.
      */
     public function destroy(string $id)

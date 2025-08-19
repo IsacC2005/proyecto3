@@ -1,6 +1,6 @@
 import { onMounted, ref } from 'vue';
 
-type Appearance = 'light' | 'dark' | 'system';
+type Appearance = 'light' | 'light2' | 'dark' | 'dark2' | 'pastel-light' | 'pastel-dark' |'system';
 
 export function updateTheme(value: Appearance) {
     if (typeof window === 'undefined') {
@@ -11,9 +11,9 @@ export function updateTheme(value: Appearance) {
         const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
         const systemTheme = mediaQueryList.matches ? 'dark' : 'light';
 
-        document.documentElement.classList.toggle('dark', systemTheme === 'dark');
+        document.documentElement.className = systemTheme;
     } else {
-        document.documentElement.classList.toggle('dark', value === 'dark');
+        document.documentElement.className = value;
     }
 }
 

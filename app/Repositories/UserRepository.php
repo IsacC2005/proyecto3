@@ -60,6 +60,22 @@ class UserRepository extends TransformDTOs implements UserInterface
 
 
 
+    public function findUserByUserable($id): UserDTO
+    {
+        try {
+            $user = User::where('userable_id',$id)->first();
+            if (!$user) {
+                throw new UserNotFindException();
+            }
+            return $this->transformToDTO($user);
+        } catch (\Exception $e) {
+            //throw $e;
+            throw new UserNotFindException();
+        }
+    }
+
+
+
     public function findAllUser(): array
     {
         try {

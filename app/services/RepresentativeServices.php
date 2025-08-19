@@ -25,6 +25,13 @@ class RepresentativeServices
 
 
 
+    public function findRepresentativeByIdcard(int $idcard): RepresentativeDTO
+    {
+        return $this->representativeRepository->findRepresentativeByIdcard($idcard );
+    }
+
+
+
     public function findRepresentativeByStudent(int $student_id): RepresentativeDTO
     {
         return $this->representativeRepository->findRepresentativeByStudent($student_id);

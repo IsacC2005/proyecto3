@@ -6,8 +6,8 @@ use App\DTOs\Summary\UserDTO;
 
 trait UserableTrait
 {
-    public ?int $user_id = null;
-    private ?UserDTO $user = null;
+    //public ?int $user_id = null;
+    public ?UserDTO $user = null;
 }
 
 ?>

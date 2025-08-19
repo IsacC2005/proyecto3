@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\RepresentativeServices;
 use Illuminate\Http\Request;
 
 class RepresentativeController extends Controller
 {
+
+    public function __construct(
+        private RepresentativeServices $representativeServices
+    ){}
+
     /**
      * Display a listing of the resource.
-     * 
+     *
      * This method should retrieve all resources from the database
      * and return a view displaying the list of resources.
      */
@@ -19,7 +25,7 @@ class RepresentativeController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     * 
+     *
      * This method should return a view containing a form
      * to create a new resource.
      */
@@ -30,7 +36,7 @@ class RepresentativeController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * 
+     *
      * This method should validate the request data and store
      * a new resource in the database.
      */
@@ -41,18 +47,23 @@ class RepresentativeController extends Controller
 
     /**
      * Display the specified resource.
-     * 
+     *
      * This method should retrieve and display a single resource
      * identified by its ID.
      */
     public function show(string $id)
     {
-        // Debería mostrar un elemento específico según su ID.
+        //$data = $this->representativeServices->findRepresentativeByIdcard($idcard);
     }
 
+
+    public function findByIdcard(string $idcard)
+    {
+        $data = $this->representativeServices->findRepresentativeByIdcard($idcard);
+    }
     /**
      * Show the form for editing the specified resource.
-     * 
+     *
      * This method should return a view with a form to edit
      * the specified resource.
      */
@@ -63,7 +74,7 @@ class RepresentativeController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * 
+     *
      * This method should validate the request data and update
      * the specified resource in the database.
      */
@@ -74,7 +85,7 @@ class RepresentativeController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * 
+     *
      * This method should delete the specified resource from the database.
      */
     public function destroy(string $id)

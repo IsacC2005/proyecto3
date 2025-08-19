@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\DTOs\PaginationDTO;
 use App\DTOs\Summary\TeacherDTO;
 use App\Exceptions\Teacher\TeacherNotDeleteException;
 use App\Exceptions\Teacher\TeacherNotExistException;
@@ -19,26 +20,25 @@ use Illuminate\Database\Eloquent\Model;
 class TeacherRepository extends TransformDTOs implements TeacherInterface
 {
 
-	public function create(TeacherDTO $teacher): TeacherDTO 
+    public function createTeacher(TeacherDTO $teacher): TeacherDTO
     {
-        try {
-            $teacherModel = Teacher::create([
-                'name' => $teacher->name,
-                'surname' => $teacher->surname,
-                'phone' => $teacher->phone,
-            ]);
+        $teacherModel = Teacher::create([
+            'name' => $teacher->name,
+            'surname' => $teacher->surname,
+            'phone' => $teacher->phone,
+        ]);
 
-            $user = User::find($teacher->user_id);
-            if (!$user) {
-                throw new UserNotExistException();
-            }
+        $userModel = User::find($teacher->user_id);
 
-            $teacherModel->user()->save($user);
-            return $this->transformToDTO($teacherModel);
-        } catch (\Throwable $th) {
-            throw new TeacherNotCreateException();
+        if (!$userModel) {
+            throw new UserNotExistException();
         }
-        
+
+        $userModel->save();
+
+        $teacherModel->user()->save($userModel);
+
+        return $this->transformToDTO($teacherModel);
     }
 
 
@@ -47,9 +47,12 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
     {
         try {
             $teacherModel = Teacher::find($id);
+
             if (!$teacherModel) {
                 throw new TeacherNotFindException();
             }
+
+            $userModel = $teacherModel->user;
 
             return $this->transformToDTO($teacherModel);
         } catch (\Throwable $th) {
@@ -59,10 +62,17 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
 
 
 
-    public function findAll(): array
+    public function findAll(): PaginationDTO
     {
-        $teacherModels = Teacher::all();
-        return $this->transformListDTO($teacherModels);
+        $teacherModels = Teacher::paginate(10);
+
+        $paginationDTO = new PaginationDTO($teacherModels);
+
+        $data = $this->transformListDTO($teacherModels->getCollection());
+
+        $paginationDTO->data = $data;
+
+        return $paginationDTO;
     }
 
 
@@ -70,7 +80,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
     public function findByEmail($email): TeacherDTO
     {
         try {
-            $teacherModel = Teacher::whereHas('users', function($query) use ($email) {
+            $teacherModel = Teacher::whereHas('users', function ($query) use ($email) {
                 $query->where('email', $email);
             })->first();
             if (!$teacherModel) {
@@ -84,7 +94,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
 
 
 
-	public function findByName($name): array 
+    public function findByName($name): array
     {
         $teacherModels = Teacher::where('name', 'like', "%$name%")->get();
         return $this->transformListDTO($teacherModels->toArray());
@@ -110,7 +120,6 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
                     $teacherModel->user()->associate($user);
                 }
             }
-
             $teacherModel->save();
             return $this->transformToDTO($teacherModel);
         } catch (\Throwable $th) {
@@ -120,7 +129,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
 
 
 
-    public function delete($id): void 
+    public function delete($id): void
     {
         try {
             $teacher = Teacher::find($id);
@@ -135,15 +144,14 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
 
 
 
-	protected function transformToDTO(Model $model): DTOSummary 
+    protected function transformToDTO(Model $model): DTOSummary
     {
         return new TeacherDTO(
             id: $model->id,
             name: $model->name,
             surname: $model->surname,
             phone: $model->phone,
-            user_id: $model->user?->id ?? null
+            //user_id: $model->user?->id ?? null
         );
     }
 }
-?>

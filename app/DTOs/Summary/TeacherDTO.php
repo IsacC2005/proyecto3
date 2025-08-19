@@ -9,7 +9,7 @@ use App\DTOs\Summary\Userable\UserableTrait;
 
 class TeacherDTO implements UserableInterface, DTOSummary
 {
-
+ 
     use UserableTrait;
 
     private $learning_project_ids = [];

@@ -4,7 +4,7 @@ namespace App\Services;
 
 
 use App\DTOs\Summary\UserDTO;
-use App\Repositories\interfaces\UserInterface;
+use App\Repositories\Interfaces\UserInterface;
 
 class UserServices
 {
@@ -25,6 +25,13 @@ class UserServices
     public function findByUserById(int $id): UserDTO
     {
         return $this->userRepository->findUserById($id);
+    }
+
+
+
+    public function findByUserByUserable(int $id): UserDTO
+    {
+        return $this->userRepository->findUserByUserable($id);
     }
 
 

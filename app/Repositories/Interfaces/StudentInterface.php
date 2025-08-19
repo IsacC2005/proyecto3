@@ -1,7 +1,8 @@
-<?php 
+<?php
 
 namespace App\Repositories\Interfaces;
 
+use App\DTOs\PaginationDTO;
 use App\DTOs\Summary\StudentDTO;
 
 interface StudentInterface
@@ -10,7 +11,7 @@ interface StudentInterface
 
     public function findStudentById($id): StudentDTO;
 
-    public function findAllStudent(): array;
+    public function findAllStudent(): PaginationDTO;
 
     public function findStudentByName($name): StudentDTO;
 

@@ -2,12 +2,18 @@
 
 @import 'tw-animate-css';
 
+@plugin "flowbite/plugin";
+
+@source "../node_modules/flowbite";
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+
+
     --font-sans: Instrument Sans, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
     --radius-lg: var(--radius);
@@ -67,6 +73,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
     *,
     ::after,
     ::before,
@@ -77,6 +84,7 @@
 }
 
 @layer utilities {
+
     body,
     html {
         --font-sans:
@@ -121,6 +129,51 @@
     --sidebar: hsl(0 0% 98%);
 }
 
+.light2 {
+    /*
+    Tema 1: Modo Claro (Estético y Profesional)
+    Paleta de colores:
+    - Fondo: Gris claro, casi blanco
+    - Primer plano: Gris oscuro
+    - Acento: Azul suave
+  */
+
+    --background: hsl(210 20% 98%);
+    --foreground: hsl(220 13% 13%);
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(220 13% 13%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(220 13% 13%);
+    --primary: hsl(220 13% 13%);
+    --primary-foreground: hsl(0 0% 98%);
+    --secondary: hsl(210 20% 94%);
+    --secondary-foreground: hsl(220 13% 13%);
+    --muted: hsl(210 20% 96.1%);
+    --muted-foreground: hsl(220 13% 45%);
+    --accent: hsl(210 20% 92%);
+    --accent-foreground: hsl(220 13% 13%);
+    --destructive: hsl(0 84.2% 60.2%);
+    --destructive-foreground: hsl(0 0% 98%);
+    --border: hsl(210 20% 89%);
+    --input: hsl(210 20% 85%);
+    --ring: hsl(220 13% 13%);
+    --chart-1: hsl(210 50% 50%);
+    --chart-2: hsl(175 45% 45%);
+    --chart-3: hsl(200 60% 30%);
+    --chart-4: hsl(25 80% 55%);
+    --chart-5: hsl(300 50% 50%);
+    --radius: 0.5rem;
+    --sidebar-background: hsl(210 20% 98%);
+    --sidebar-foreground: hsl(220 13% 20%);
+    --sidebar-primary: hsl(220 13% 10%);
+    --sidebar-primary-foreground: hsl(0 0% 98%);
+    --sidebar-accent: hsl(210 20% 94%);
+    --sidebar-accent-foreground: hsl(220 13% 30%);
+    --sidebar-border: hsl(210 20% 90%);
+    --sidebar-ring: hsl(210 50% 50%);
+    --sidebar: hsl(210 20% 98%);
+}
+
 .dark {
     --background: hsl(0 0% 3.9%);
     --foreground: hsl(0 0% 98%);
@@ -157,10 +210,122 @@
     --sidebar: hsl(240 5.9% 10%);
 }
 
+.dark2 {
+    --background: hsl(220 13% 13%);
+    --foreground: hsl(210 20% 98%);
+    --card: hsl(220 13% 15%);
+    --card-foreground: hsl(210 20% 98%);
+    --popover: hsl(220 13% 15%);
+    --popover-foreground: hsl(210 20% 98%);
+    --primary: hsl(210 20% 98%);
+    --primary-foreground: hsl(220 13% 13%);
+    --secondary: hsl(220 13% 20%);
+    --secondary-foreground: hsl(210 20% 98%);
+    --muted: hsl(220 13% 25%);
+    --muted-foreground: hsl(210 20% 70%);
+    --accent: hsl(220 13% 20%);
+    --accent-foreground: hsl(210 20% 98%);
+    --destructive: hsl(0 60% 50%);
+    --destructive-foreground: hsl(0 0% 98%);
+    --border: hsl(220 13% 25%);
+    --input: hsl(220 13% 20%);
+    --ring: hsl(210 20% 98%);
+    --chart-1: hsl(180 50% 50%);
+    --chart-2: hsl(120 45% 45%);
+    --chart-3: hsl(60 60% 30%);
+    --chart-4: hsl(270 80% 55%);
+    --chart-5: hsl(330 50% 50%);
+    --radius: 0.5rem;
+    --sidebar-background: hsl(220 13% 10%);
+    --sidebar-foreground: hsl(210 20% 98%);
+    --sidebar-primary: hsl(210 20% 98%);
+    --sidebar-primary-foreground: hsl(220 13% 10%);
+    --sidebar-accent: hsl(220 13% 20%);
+    --sidebar-accent-foreground: hsl(210 20% 80%);
+    --sidebar-border: hsl(220 13% 25%);
+    --sidebar-ring: hsl(180 50% 50%);
+    --sidebar: hsl(220 13% 10%);
+}
+
+.pastel-light {
+    --background: hsl(30 40% 95%);
+    --foreground: hsl(260 20% 30%);
+    --card: hsl(30 40% 98%);
+    --card-foreground: hsl(260 20% 30%);
+    --popover: hsl(30 40% 98%);
+    --popover-foreground: hsl(260 20% 30%);
+    --primary: hsl(260 20% 30%);
+    --primary-foreground: hsl(30 40% 98%);
+    --secondary: hsl(150 40% 85%);
+    --secondary-foreground: hsl(260 20% 30%);
+    --muted: hsl(150 40% 90%);
+    --muted-foreground: hsl(260 20% 55%);
+    --accent: hsl(150 40% 85%);
+    --accent-foreground: hsl(260 20% 30%);
+    --destructive: hsl(0 70% 60%);
+    --destructive-foreground: hsl(30 40% 98%);
+    --border: hsl(30 40% 90%);
+    --input: hsl(30 40% 88%);
+    --ring: hsl(260 20% 30%);
+    --chart-1: hsl(150 40% 60%);
+    --chart-2: hsl(260 20% 60%);
+    --chart-3: hsl(40 60% 60%);
+    --chart-4: hsl(330 50% 70%);
+    --chart-5: hsl(200 40% 60%);
+    --radius: 0.5rem;
+    --sidebar-background: hsl(30 40% 95%);
+    --sidebar-foreground: hsl(260 20% 30%);
+    --sidebar-primary: hsl(260 20% 20%);
+    --sidebar-primary-foreground: hsl(30 40% 98%);
+    --sidebar-accent: hsl(150 40% 85%);
+    --sidebar-accent-foreground: hsl(260 20% 40%);
+    --sidebar-border: hsl(30 40% 90%);
+    --sidebar-ring: hsl(150 40% 60%);
+    --sidebar: hsl(30 40% 95%);
+}
+
+.pastel-dark {
+    --background: hsl(240 20% 15%);
+    --foreground: hsl(260 50% 85%);
+    --card: hsl(240 20% 18%);
+    --card-foreground: hsl(260 50% 85%);
+    --popover: hsl(240 20% 18%);
+    --popover-foreground: hsl(260 50% 85%);
+    --primary: hsl(260 50% 85%);
+    --primary-foreground: hsl(240 20% 15%);
+    --secondary: hsl(330 50% 60%);
+    --secondary-foreground: hsl(240 20% 15%);
+    --muted: hsl(240 20% 25%);
+    --muted-foreground: hsl(260 50% 65%);
+    --accent: hsl(330 50% 60%);
+    --accent-foreground: hsl(240 20% 15%);
+    --destructive: hsl(0 70% 60%);
+    --destructive-foreground: hsl(240 20% 15%);
+    --border: hsl(240 20% 25%);
+    --input: hsl(240 20% 20%);
+    --ring: hsl(260 50% 85%);
+    --chart-1: hsl(330 50% 70%);
+    --chart-2: hsl(200 40% 60%);
+    --chart-3: hsl(100 30% 70%);
+    --chart-4: hsl(40 60% 60%);
+    --chart-5: hsl(260 20% 70%);
+    --radius: 0.5rem;
+    --sidebar-background: hsl(240 20% 10%);
+    --sidebar-foreground: hsl(260 50% 85%);
+    --sidebar-primary: hsl(260 50% 85%);
+    --sidebar-primary-foreground: hsl(240 20% 10%);
+    --sidebar-accent: hsl(330 50% 60%);
+    --sidebar-accent-foreground: hsl(260 50% 75%);
+    --sidebar-border: hsl(240 20% 20%);
+    --sidebar-ring: hsl(330 50% 70%);
+    --sidebar: hsl(240 20% 10%);
+}
+
 @layer base {
     * {
         @apply border-border outline-ring/50;
     }
+
     body {
         @apply bg-background text-foreground;
     }

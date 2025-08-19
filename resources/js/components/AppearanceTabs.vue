@@ -5,8 +5,12 @@ import { Monitor, Moon, Sun } from 'lucide-vue-next';
 const { appearance, updateAppearance } = useAppearance();
 
 const tabs = [
-    { value: 'light', Icon: Sun, label: 'Light' },
-    { value: 'dark', Icon: Moon, label: 'Dark' },
+    { value: 'light', Icon: Sun, label: 'Claro' },
+    { value: 'light2', Icon: Sun, label: 'Claro II' },
+    { value: 'dark', Icon: Moon, label: 'Oscuro' },
+    { value: 'dark2', Icon: Sun, label: 'Oscuro II'},
+    { value: 'pastel-light', Icon: Sun, label: 'Pastel Claro' },
+    { value: 'pastel-dark', Icon: Sun, label: 'Pastel Oscuro' },
     { value: 'system', Icon: Monitor, label: 'System' },
 ] as const;
 </script>

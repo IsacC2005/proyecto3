@@ -1,7 +1,8 @@
-<?php 
+<?php
 
 namespace App\Services;
 
+use App\DTOs\PaginationDTO;
 use App\DTOs\Summary\StudentDTO;
 use App\Repositories\Interfaces\StudentInterface;
 
@@ -25,7 +26,7 @@ class StudentServices {
 
 
 
-    public function findAllStudent(): array
+    public function findAllStudent(): PaginationDTO
     {
         return $this->studentRepository->findAllStudent();
     }
@@ -38,7 +39,7 @@ class StudentServices {
 
 
 
-    public function updateStudent(StudentDTO $student):StudentDTO 
+    public function updateStudent(StudentDTO $student):StudentDTO
     {
         return $this->studentRepository->updateStudent($student);
     }

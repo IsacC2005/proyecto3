@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\Repositories\interfaces;
+namespace App\Repositories\Interfaces;
 
 use App\DTOs\Summary\UserDTO;
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 namespace App\Repositories\Interfaces;
@@ -10,6 +10,8 @@ interface RepresentativeInterface {
     public function createRepresentative(RepresentativeDTO $representative): RepresentativeDTO;
 
     public function findRepresentativeById(int $id): RepresentativeDTO;
+
+    public function findRepresentativeByIdcard(int $idcard): RepresentativeDTO;
 
     public function findAllRepresentative(): array;
 

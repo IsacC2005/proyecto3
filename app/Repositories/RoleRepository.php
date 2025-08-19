@@ -52,6 +52,23 @@ class RoleRepository extends TransformDTOs implements RoleInterface
 
 
 
+
+    public function findRoleByName(String $name): RoleDTO
+    {
+        try {
+            $roleModel = Role::where('name', $name)->first();
+
+            if (!$roleModel) {
+                throw new RoleNotFindException();
+            }
+            return $this->transformToDTO($roleModel);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+
+
     public function allRole(): array
     {
         try {
@@ -140,7 +157,7 @@ class RoleRepository extends TransformDTOs implements RoleInterface
             name: $model->name,
         );
 
-        $roleDTO->addPermision($permissions);
+        $roleDTO->addPermision(...$permissions);
 
         return $roleDTO;
     }

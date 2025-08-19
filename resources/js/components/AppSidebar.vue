@@ -7,7 +7,6 @@ import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
-
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
@@ -16,21 +15,28 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Crear Usuario',
-        href: '/create-user'
+        href: '#'
+    },
+    {
+        title: 'Teacher',
+        href: '#',
+        children: [
+            {title: 'Lista de profesores', href: '/teacher/index'},
+            {title: 'Crear profesor', href: '/teacher/create'}
+        ]
+    },
+    {
+        title: 'Studiante',
+        href: '#',
+        children:[
+            {title: 'Lista de Estudiantes', href: '/student/index'},
+            {title: 'Crear Estudiantes', href: '/student/create'}
+        ]
+
     }
 ];
 
 const footerNavItems: NavItem[] = [
-    {
-        title: 'Github Repo',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
-        icon: BookOpen,
-    },
 ];
 </script>
 
@@ -41,17 +47,17 @@ const footerNavItems: NavItem[] = [
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
                         <Link :href="route('dashboard')">
-                            <AppLogo />
+                        <AppLogo />
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
+
             </SidebarMenu>
         </SidebarHeader>
 
         <SidebarContent>
             <NavMain :items="mainNavItems" />
         </SidebarContent>
-
         <SidebarFooter>
             <NavFooter :items="footerNavItems" />
             <NavUser />

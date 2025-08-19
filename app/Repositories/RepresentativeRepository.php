@@ -57,6 +57,19 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
 
 
 
+    public function findRepresentativeByIdcard(int $idcard): RepresentativeDTO
+    {
+        $representativeModel = Representative::where('idcard', $idcard)->first();
+
+        if(!$representativeModel){
+            throw new RepresentativeNotFindException('No se encontro ningun representante con esa cedula', 404);
+        }
+
+        return $this->transformToDTO($representativeModel);
+    }
+
+
+
     public function findAllRepresentative(): array
     {
         try {
@@ -108,7 +121,7 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
 
     public function findRepresentativeByEnrollment(int $enrollment_id): array
     {
-        $representativeModel = Representative::whereHas('students', 
+        $representativeModel = Representative::whereHas('students',
         function ($student) use ($enrollment_id){
             $student->whereHas('enrollments', function ($query) use ($enrollment_id){
                 $query->where('id', $enrollment_id);

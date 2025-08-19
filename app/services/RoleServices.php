@@ -6,7 +6,7 @@ use App\DTOs\Summary\RoleDTO;
 use App\Exceptions\Role\RoleNotCreateException;
 use App\Repositories\Interfaces\RoleInterface;
 
-class RoleService
+class RoleServices
 {
 
     public function __construct(
@@ -32,6 +32,11 @@ class RoleService
         return $this->roleRepository->findRoleById($id);
     }
 
+
+    public function findRoleByName(string $name): RoleDTO 
+    {
+        return $this->roleRepository->findRoleByName($name);
+    }
 
 
     public function allRoles(): array

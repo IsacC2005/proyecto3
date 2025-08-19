@@ -2,12 +2,20 @@
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import SubNavMain from './SubNavMain.vue';
 
 defineProps<{
     items: NavItem[];
 }>();
 
 const page = usePage();
+
+const openMenus = ref({});
+
+const toggleSubmenu = (label) => {
+    openMenus.value[label] = !openMenus.value[label];
+};
 </script>
 
 <template>
@@ -15,10 +23,20 @@ const page = usePage();
         <SidebarGroupLabel>Platform</SidebarGroupLabel>
         <SidebarMenu>
             <SidebarMenuItem v-for="item in items" :key="item.title">
-                <SidebarMenuButton as-child :is-active="item.href === page.url" :tooltip="item.title">
-                    <Link :href="item.href">
+
+                <SidebarMenuButton v-if="item.children" as-child :is-active="item.href === page.url"
+                    :tooltip="item.title">
+                    <div @click.prevent="toggleSubmenu(item.title)" class="cursor-pointer" :class="{ 'border border-accent': openMenus[item.title] }">
                         <component :is="item.icon" />
-                        <span>{{ item.title }}</span>
+                        <span class="select-none">{{ item.title }}</span>
+                    </div>
+                    <SubNavMain v-show="openMenus[item.title]" :items="item.children" />
+                </SidebarMenuButton>
+
+                <SidebarMenuButton v-else as-child :is-active="item.href === page.url" :tooltip="item.title">
+                    <Link :href="item.href">
+                    <component :is="item.icon" />
+                    <span>{{ item.title }}</span>
                     </Link>
                 </SidebarMenuButton>
             </SidebarMenuItem>
