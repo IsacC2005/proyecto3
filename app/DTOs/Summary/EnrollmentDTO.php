@@ -9,7 +9,7 @@ class EnrollmentDTO implements DTOSummary
     public function __construct(
         public int $id,
         public string $school_year,
-        public string $school_moment,
+        public int $school_moment,
         public int $degree,
         public string $section,
         public int $classroom,

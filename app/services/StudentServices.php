@@ -5,12 +5,29 @@ namespace App\Services;
 use App\DTOs\PaginationDTO;
 use App\DTOs\Summary\StudentDTO;
 use App\Repositories\Interfaces\StudentInterface;
+use Inertia\Inertia;
+
+use function PHPUnit\Framework\isNumeric;
 
 class StudentServices {
     public function __construct(
-        private StudentInterface $studentRepository
+        private StudentInterface $studentRepository,
+        private RepresentativeServices $representativeServices
     ){}
 
+
+    public function pageCreateShow(?int $idcard = null)
+    {
+        if(!$idcard){
+           //return 'hola';
+            return Inertia::render('Student/CreateStudent');
+        }
+
+        $data = $this->representativeServices->findRepresentativeByIdcard($idcard);
+        return Inertia::render('Student/CreateStudent', [
+            'representative' => $data
+        ]);
+}
 
 
     public function createStudent(StudentDTO $student): StudentDTO

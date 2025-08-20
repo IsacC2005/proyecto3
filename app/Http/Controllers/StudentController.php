@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DTOs\Summary\DTOSummary;
 use App\DTOs\Summary\StudentDTO;
 use App\Factories\StudentFactory;
+use App\Services\RepresentativeServices;
 use App\Services\StudentServices;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -12,7 +13,8 @@ use Inertia\Inertia;
 class StudentController extends Controller
 {
     public function __construct(
-        private StudentServices $studentServices
+        private StudentServices $studentServices,
+        private RepresentativeServices $representativeServices
     ) {}
     /**
      * Display a listing of the resource.
@@ -36,8 +38,8 @@ class StudentController extends Controller
      */
     public function create(Request $request)
     {
-
-        return Inertia::render('Student/CreateStudent');
+        $idcard = $request->input('idcard');
+        return $this->studentServices->pageCreateShow($idcard);
     }
 
     /**
@@ -48,7 +50,9 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        // Debería guardar un nuevo elemento en la base de datos.
+        $data = StudentFactory::fromRequest($request);
+        $this->studentServices->createStudent($data);
+        return 'Estudiante creado crack';
     }
 
     /**

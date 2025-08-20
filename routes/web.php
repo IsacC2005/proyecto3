@@ -2,6 +2,7 @@
 
 use App\DTOs\UserDTO;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\RepresentativeController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
@@ -38,13 +39,25 @@ Route::get('/teacher/update/{id}', [TeacherController::class, 'update'])->name('
  */
 
 Route::get('/student/index', [StudentController::class, 'index']);
+
 Route::get('/student/create', [StudentController::class, 'create']);
+Route::post('/student/create', [StudentController::class, 'store'])->name('student.create');
 
 /**
  * TODO: Rutas para Representative ;)
  */
 
 Route::get('/representative/show/idcard/{id}', [RepresentativeController::class, 'findByIdcard'])->name('representative.show');
+
+
+/**
+ * TODO: Rutas para Enrollment
+ */
+
+Route::get('/enrollment/index', [EnrollmentController::class, 'index']);
+
+Route::get('/enrollment/create', [EnrollmentController::class, 'create']);
+Route::post('/enrollment/create', [EnrollmentController::class, 'store'])->name('enrollment.create');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

@@ -64,7 +64,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
 
     public function findAll(): PaginationDTO
     {
-        $teacherModels = Teacher::paginate(10);
+        $teacherModels = Teacher::orderBy('created_at', 'desc')->paginate(10);
 
         $paginationDTO = new PaginationDTO($teacherModels);
 

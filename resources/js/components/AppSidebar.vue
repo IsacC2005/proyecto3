@@ -18,19 +18,28 @@ const mainNavItems: NavItem[] = [
         href: '#'
     },
     {
-        title: 'Teacher',
+        title: 'Matricula',
         href: '#',
         children: [
-            {title: 'Lista de profesores', href: '/teacher/index'},
-            {title: 'Crear profesor', href: '/teacher/create'}
+            { title: 'Lista de matriculas', href: '/enrollment/index' },
+            { title: 'Crear matricula', href: '/enrollment/create' }
+        ]
+    }
+    ,
+    {
+        title: 'Profesor',
+        href: '#',
+        children: [
+            { title: 'Lista de profesores', href: '/teacher/index' },
+            { title: 'Crear profesor', href: '/teacher/create' }
         ]
     },
     {
-        title: 'Studiante',
+        title: 'Estudiante',
         href: '#',
-        children:[
-            {title: 'Lista de Estudiantes', href: '/student/index'},
-            {title: 'Crear Estudiantes', href: '/student/create'}
+        children: [
+            { title: 'Lista de Estudiantes', href: '/student/index' },
+            { title: 'Crear Estudiantes', href: '/student/create' }
         ]
 
     }

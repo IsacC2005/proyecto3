@@ -30,6 +30,7 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
             $enrollmentModel = Enrollment::create([
                 'school_year' => $enrollment->school_year,
                 'school_moment' => $enrollment->school_moment,
+                'degree' => $enrollment->degree,
                 'section' => $enrollment->section,
                 'classroom' => $enrollment->classroom,
                 'teacher_id' => $enrollment->teacher_id,
@@ -41,7 +42,7 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 
             return $this->transformToDTO($enrollmentModel);
         } catch (\Throwable $th) {
-            throw new EnrollmentNotCreatedException();
+            throw $th;
         }
     }
 
@@ -188,7 +189,7 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
         }
     }
 
-	protected function transformToDTO(Model $model): DTOSummary 
+	protected function transformToDTO(Model $model): DTOSummary
     {
         return new EnrollmentDTO(
             id: $model->id,

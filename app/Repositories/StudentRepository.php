@@ -28,10 +28,13 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 	public function createStudent(StudentDTO $student): StudentDTO
     {
-        try {
+        try{
+
             $studentModel = Student::create([
+                'representative_id' => $student->representative_id,
+                'degree' => $student->degree,
                 'name' => $student->name,
-                'surname' => $student->surname,
+                'surname' => $student->surname
             ]);
 
             if (!$studentModel) {
@@ -39,7 +42,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
             }
             return $this->transformToDTO($studentModel);
         } catch (\Throwable $th) {
-            throw new StudentNotCreatedException();
+            throw $th;
         }
     }
 
@@ -64,7 +67,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
     public function findAllStudent(): PaginationDTO
     {
         try {
-            $studentModels = Student::paginate(10);
+            $studentModels = Student::orderBy('created_at', 'desc')->paginate(10);
 
             if(!$studentModels){
                 throw new StudentNotFindException();

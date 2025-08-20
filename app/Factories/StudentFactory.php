@@ -4,25 +4,27 @@ namespace App\Factories;
 
 use App\DTOs\Summary\StudentDTO;
 use Dotenv\Exception\ValidationException;
+use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class StudentFactory implements Factory{
+
     public static function fromRequest(Request $request): StudentDTO{
         $validator = Validator::make($request->all(),[
-            'degree' => 'required|integer|length:1',
+            'degree' => 'required|integer|min:0 |max:6',
             'name' => 'required|string|max:100',
             'surname' => 'required|string|max:100',
             'representative_id' => 'integer',
         ]);
 
         if ($validator->fails()) {
-            throw new ValidationException();
+            throw new ValidationException($validator->messages());
         }
 
         // Si la validación pasa, crea y retorna el DTO.
         return new StudentDTO(
-            id: $request->input('id'),
+            id: 0,
             degree: $request->input('degree'),
             name: $request->input('name'),
             surname: $request->input('surname'),
