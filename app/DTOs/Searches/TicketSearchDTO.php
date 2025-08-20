@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 namespace App\DTOs\Searches;
 
-class TicketSearchDTO
+class TicketSearchDTO implements DTOSearch
 {
     public function __construct(
         public ?int $id = null,

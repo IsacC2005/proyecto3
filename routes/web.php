@@ -32,7 +32,9 @@ Route::get('/teacher/create', [TeacherController::class, 'create']);
 Route::post('/teacher/create', [TeacherController::class, 'store'])->name('teacher.create');
 
 Route::get('/teacher/edit/{id}', [TeacherController::class, 'edit']);
-Route::get('/teacher/update/{id}', [TeacherController::class, 'update'])->name('teaceher.update');
+Route::get('/teacher/update/{id}', [TeacherController::class, 'update'])->name('teacher.update');
+
+Route::get('teacher/enrollments-assigns', [TeacherController::class, 'enrollmentsAssigns']);
 
 /**
  * TODO: Rutas para Students
@@ -58,6 +60,9 @@ Route::get('/enrollment/index', [EnrollmentController::class, 'index']);
 
 Route::get('/enrollment/create', [EnrollmentController::class, 'create']);
 Route::post('/enrollment/create', [EnrollmentController::class, 'store'])->name('enrollment.create');
+
+Route::get('/enrollment/assign-teacher/{id}', [EnrollmentController::class, 'assignTeacher']);
+Route::post('/enrollment/assign-teacher', [EnrollmentController::class, 'assignTeacherSave'])->name('enrollment.assign-teacher');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

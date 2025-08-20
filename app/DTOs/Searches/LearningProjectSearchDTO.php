@@ -2,7 +2,7 @@
 
 namespace App\DTOs\Searches;
 
-class LearningProjectSearchDTO
+class LearningProjectSearchDTO implements DTOSearch
 {
     private $ticket_ids = [];
 

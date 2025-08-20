@@ -19,7 +19,6 @@ class StudentServices {
     public function pageCreateShow(?int $idcard = null)
     {
         if(!$idcard){
-           //return 'hola';
             return Inertia::render('Student/CreateStudent');
         }
 

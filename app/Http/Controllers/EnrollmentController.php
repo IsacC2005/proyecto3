@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Factories\EnrollmentFactory;
 use App\Services\EnrollmentServices;
+use App\Services\TeacherServices;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -11,7 +12,8 @@ class EnrollmentController extends Controller
 {
 
     public function __construct(
-        private EnrollmentServices $enrollmentServices
+        private EnrollmentServices $enrollmentServices,
+        private TeacherServices $teacherServices
     ){}
     /**
      * Display a listing of the resource.
@@ -21,7 +23,10 @@ class EnrollmentController extends Controller
      */
     public function index()
     {
-    return Inertia::render('Enrollment/ListEnrollment');
+        $data = $this->enrollmentServices->findAllEnrollment('transformToDetailDTO');
+        return Inertia::render('Enrollment/ListEnrollment', [
+            'sections' => $data
+        ]);
     }
 
     /**
@@ -45,6 +50,25 @@ class EnrollmentController extends Controller
     {
         $data = EnrollmentFactory::fromRequest($request);
         return $this->enrollmentServices->createEnrollment($data);
+    }
+
+    public function assignTeacher(int $id){
+        $data = $this->teacherServices->findAll();
+        return Inertia::render('Enrollment/AsignateTeacher', [
+            'id_enrollment' => $id,
+            'teachers' => $data
+        ]);
+    }
+
+    public function assignTeacherSave(Request $request){
+        $id_enrollment = $request->input('id_enrollment');
+        $id_teacher = $request->input('id_teacher');
+
+        if (!is_numeric($id_enrollment) || !is_numeric($id_teacher)) {
+            throw new \InvalidArgumentException('El id_enrollment y id_teacher deben ser numéricos.');
+        }
+
+        return $this->enrollmentServices->assignTeacherToEnrollment($id_enrollment, $id_teacher);
     }
 
     /**

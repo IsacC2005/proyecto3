@@ -31,7 +31,8 @@ const mainNavItems: NavItem[] = [
         href: '#',
         children: [
             { title: 'Lista de profesores', href: '/teacher/index' },
-            { title: 'Crear profesor', href: '/teacher/create' }
+            { title: 'Crear profesor', href: '/teacher/create' },
+            { title: 'Matriculas Asignadas', href: '/teacher/enrollments-assigns' }
         ]
     },
     {

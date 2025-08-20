@@ -1,11 +1,11 @@
-<?php 
+<?php
 
 namespace App\DTOs\Searches;
 
 use App\DTOs\Searches\ItemEvaluationSearchDTO;
 use DateTime;
 
-class DailyClassSearchDTO
+class DailyClassSearchDTO implements DTOSearch
 {
 
     private $item_evaluation_ids = [];

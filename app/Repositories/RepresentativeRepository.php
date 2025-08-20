@@ -14,6 +14,9 @@ use App\DTOs\Summary\DTOSummary;
 use App\Exceptions\Student\StudentNotExistException;
 use App\Models\Student;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use App\DTOs\Details\DTODetail;
+use App\DTOs\Searches\DTOSearch;
 
 class RepresentativeRepository extends TransformDTOs implements RepresentativeInterface
 {
@@ -181,5 +184,15 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
             surname: $model->surname,
             direction: $model->direction
         );
+    }
+
+	protected function transformToDetailDTO(Model $model): DTODetail
+    {
+        // TODO
+    }
+
+	protected function transformToSearchDTO(Model $model): DTOSearch
+    {
+        // TODO
     }
 }

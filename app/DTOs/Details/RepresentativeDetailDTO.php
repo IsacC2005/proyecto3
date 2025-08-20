@@ -3,7 +3,7 @@
 
 namespace App\DTOs\Details;
 
-class RepresentativeDetailDTO
+class RepresentativeDetailDTO implements DTODetail
 {
 
     private $students = [];

@@ -5,7 +5,7 @@
                 Secciones de Matrícula</h1>
             <div
                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 justify-items-center">
-                <EnrollementBlock :sections="sections">
+                <EnrollementBlock :sections="enrollments">
 
                 </EnrollementBlock>
             </div>
@@ -15,34 +15,14 @@
 
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { ref } from 'vue';
 import { defineProps } from 'vue';
-import EnrollementBlock from './components/EnrollementBlock.vue';
+import EnrollementBlock from '../Enrollment/components/EnrollementBlock.vue';
 
 
 const props = defineProps({
-    sections: {
+    enrollments: {
         type: Array,
         required: true
     }
 });
 </script>
-
-<style>
-/* Aquí puedes agregar estilos personalizados si es necesario,
-   pero Tailwind maneja la mayoría de los casos */
-.group:hover .text-primary-400 {
-    color: #a7f3d0;
-    /* Color personalizado para el hover de la letra grande */
-}
-
-.group:hover .text-primary-600 {
-    color: #059669;
-    /* Color personalizado para el hover del grado */
-}
-
-.group:hover .text-secondary-500 {
-    color: #3b82f6;
-    /* Color personalizado para el hover del profesor */
-}
-</style>

@@ -2,7 +2,7 @@
 
 namespace App\DTOs\Details;
 
-class ItemEvaluationDetailDTO
+class ItemEvaluationDetailDTO implements DTODetail
 {
     public function __construct(
         public int $id,

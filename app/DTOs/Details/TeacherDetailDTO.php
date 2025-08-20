@@ -7,7 +7,7 @@ use App\DTOs\Details\Userable\UserableDetailInterface;
 use App\DTOs\Details\Userable\UserableDetailTrait;
 
 
-class TeacherDetailDTO implements UserableDetailInterface
+class TeacherDetailDTO implements UserableDetailInterface, DTODetail
 {
 
     use UserableDetailTrait;

@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 namespace App\DTOs\Searches;
 
-class EvaluationItemsStudentSearchDTO
+class EvaluationItemsStudentSearchDTO implements DTOSearch
 {
     public function __construct(
         public ?int $item_evaluation_id = null,

@@ -13,6 +13,9 @@ use App\Models\DailyClass;
 use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use App\DTOs\Details\DTODetail;
+use App\DTOs\Searches\DTOSearch;
 
 class DailyClassRepository extends TransformDTOs implements DailyClassInterface
 {
@@ -130,7 +133,7 @@ class DailyClassRepository extends TransformDTOs implements DailyClassInterface
         }
     }
 
-	protected function transformToDTO(Model $model): DTOSummary 
+	protected function transformToDTO(Model $model): DTOSummary
     {
         return new DailyClassDTO(
             id: $model->id,
@@ -139,5 +142,15 @@ class DailyClassRepository extends TransformDTOs implements DailyClassInterface
             content: $model->content,
             learning_project_id: $model->learning_project->id
         );
+    }
+
+	protected function transformToDetailDTO(Model $model): DTODetail
+    {
+        // TODO
+    }
+
+	protected function transformToSearchDTO(Model $model): DTOSearch
+    {
+        // TODO
     }
 }

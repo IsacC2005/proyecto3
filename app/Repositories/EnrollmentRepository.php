@@ -19,9 +19,22 @@ use App\Repositories\interfaces\EnrollmentInterface;
 use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use App\DTOs\Details\DTODetail;
+use App\DTOs\Details\EnrollmentDetailDTO;
+use App\DTOs\Details\TeacherDetailDTO;
+use App\DTOs\Searches\DTOSearch;
+use App\Exceptions\Teacher\TeacherNotExistException;
+use PhpParser\Node\Expr\Cast\String_;
 
 class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 {
+
+    public function __construct(
+        private TeacherRepository $teacherRepository,
+        private LearningProjectRepository $learningProjectRepository
+    ){}
+
 
     public function create(EnrollmentDTO $enrollment): EnrollmentDTO
     {
@@ -48,6 +61,29 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 
 
 
+    public function assignTeacher(int $id_teacher, int $id_enrollment): bool{
+        try {
+            $enrollment = Enrollment::find($id_enrollment);
+            if (!$enrollment) {
+                throw new EnrollmentNotExistException();
+            }
+
+            $teacher = Teacher::find($id_teacher);
+            if (!$teacher) {
+                throw new TeacherNotExistException();
+            }
+
+            $enrollment->teacher_id = $id_teacher;
+
+            return $enrollment->save();
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+
+
     public function find(int $id): EnrollmentDTO
     {
         try {
@@ -64,7 +100,7 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 
 
 
-    public function findAll(): array
+    public function findAll(?String $f = null): array
     {
         try {
             $enrollmentModel = Enrollment::all();
@@ -73,9 +109,9 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
                 throw new EnrollmentNotFindException();
             }
 
-            return $this->transformListDTO($enrollmentModel);
+            return $this->transformListDTO($enrollmentModel, $f);
         } catch (\Throwable $th) {
-            throw new EnrollmentNotFindException($th->getMessage());
+            throw  $th;
         }
     }
 
@@ -88,9 +124,9 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
             if (!$enrollments) {
                 throw new EnrollmentNotFindException();
             }
-            return $this->transformListDTO($enrollments->toArray());
+            return $this->transformListDTO($enrollments);
         } catch (\Throwable $th) {
-            throw new EnrollmentNotFindException();
+            throw new EnrollmentNotFindException($th->getMessage(), $th->getCode(), $th);
         }
     }
 
@@ -200,5 +236,25 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
             classroom: $model->classroom,
             teacher_id: $model->teacher_id,
         );
+    }
+
+	protected function transformToDetailDTO(Model $model): DTODetail
+    {
+        return new EnrollmentDetailDTO(
+            id: $model->id,
+            school_year: $model->school_year,
+            school_moment: $model->school_moment,
+            degree: $model->degree,
+            section: $model->section,
+            classroom: $model->classroom,
+            teacher: $model->teacher ? $this->teacherRepository->transformModel($model->teacher, 'transformToDetailDTO') : null,
+            learning_project: $model->learning_project ? $this->learningProjectRepository->transformModel($model->learning_project, 'transformToDetailDTO') : null
+        );
+
+    }
+
+	protected function transformToSearchDTO(Model $model): DTOSearch
+    {
+        // TODO
     }
 }

@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 namespace App\DTOs\Details;
 
-class StudentDetailDTO
+class StudentDetailDTO implements DTODetail
 {
     private $enrollments = [];
     private $ticket = [];

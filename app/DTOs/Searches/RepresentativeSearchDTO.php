@@ -2,7 +2,7 @@
 
 namespace App\DTOs\Searches;
 
-class RepresentativeSearchDTO
+class RepresentativeSearchDTO implements DTOSearch
 {
     private $student_ids = [];
 

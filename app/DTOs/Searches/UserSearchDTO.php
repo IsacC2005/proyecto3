@@ -4,7 +4,7 @@ namespace App\DTOs\Searches;
 
 use App\DTOs\Searches\Userable\UserableSearchInterface;
 
-class UserSearchDTO
+class UserSearchDTO implements DTOSearch
 {
     public function __construct(
         public ?int $id = null,

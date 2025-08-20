@@ -13,10 +13,13 @@ use App\Models\Ticket;
 use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use App\DTOs\Details\DTODetail;
+use App\DTOs\Searches\DTOSearch;
 
 class TicketRepository extends TransformDTOs implements TicketInterface{
 
-	public function create(TicketDTO $ticket): TicketDTO 
+	public function create(TicketDTO $ticket): TicketDTO
     {
         try {
             $ticketModel = Ticket::create([
@@ -37,7 +40,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
 
 
 
-    public function find($id): TicketDTO 
+    public function find($id): TicketDTO
     {
         try {
             $ticketModel = Ticket::find($id);
@@ -54,7 +57,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
 
 
 
-    public function findAll(): array 
+    public function findAll(): array
     {
         try {
             $ticketModel = Ticket::all();
@@ -71,7 +74,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
 
 
 
-    public function findByStudent(int $student_id): array 
+    public function findByStudent(int $student_id): array
     {
         try {
             $ticketModel = Ticket::where('student_id', $student_id)->get();
@@ -88,7 +91,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
 
 
 
-    public function findByLearningProject(int $project_id): array 
+    public function findByLearningProject(int $project_id): array
     {
         try {
             $ticketModel = Ticket::where('learning_project_id', $project_id);
@@ -105,7 +108,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
 
 
 
-    public function update(TicketDTO $ticket): TicketDTO 
+    public function update(TicketDTO $ticket): TicketDTO
     {
         try {
             $ticketModel = Ticket::find($ticket->id);
@@ -117,7 +120,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
             $ticketModel->average = $ticket->average;
             $ticketModel->content = $ticket->content;
             $ticketModel->suggestions = $ticket->suggestions;
-            
+
             $ticketModel->save();
 
             return $this->transformToDTO($ticketModel);
@@ -128,7 +131,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
 
 
 
-    public function delete($id): void 
+    public function delete($id): void
     {
         try {
             $ticketModel = Ticket::find($id);
@@ -143,7 +146,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
         }
     }
 
-	protected function transformToDTO(Model $model): DTOSummary 
+	protected function transformToDTO(Model $model): DTOSummary
     {
         return new TicketDTO(
             id: $model->id,
@@ -153,5 +156,15 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
             learning_project_id: $model->learning_project->id,
             student_id: $model->student->id
         );
+    }
+
+	protected function transformToDetailDTO(Model $model): DTODetail
+    {
+        // TODO
+    }
+
+	protected function transformToSearchDTO(Model $model): DTOSearch
+    {
+        // TODO
     }
 }

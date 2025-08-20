@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 namespace App\DTOs\Details;
 
-class EvaluationItemsStudentDetailDTO
+class EvaluationItemsStudentDetailDTO implements DTODetail
 {
     public function __construct(
         public ItemEvaluationDetailDTO $item_evaluation,

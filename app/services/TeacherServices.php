@@ -6,13 +6,17 @@ use App\DTOs\Summary\TeacherDTO;
 use App\DTOs\Summary\UserDTO;
 use App\Constants\RoleConstants;
 use App\DTOs\PaginationDTO;
+use App\Exceptions\Teacher\TeacherNotFindException;
 use App\Repositories\Interfaces\TeacherInterface;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Support\Facades\Auth;
 
 class TeacherServices
 {
 
     public function __construct(
         private TeacherInterface $teacherRepository,
+        private EnrollmentServices $enrollmentRepository,
         private UserServices $userServices,
         private RoleServices $roleServices
     ) {}
@@ -38,6 +42,17 @@ class TeacherServices
     public function findAll(): PaginationDTO
     {
         return $this->teacherRepository->findAll();
+    }
+
+
+    public function enrollmentsAssigns()
+    {
+        $id = Auth::user()->userable_id;
+
+        if(!$id){
+            throw new TeacherNotFindException('No se encontro a el profesor asociado a este usuario', 404);
+        }
+        return $this->enrollmentRepository->findEnrollmentByTeacher(Auth::user()->userable_id);
     }
 
 

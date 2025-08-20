@@ -16,9 +16,20 @@ use App\Repositories\Interfaces\TeacherInterface;
 use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use App\DTOs\Details\DTODetail;
+use App\DTOs\Details\TeacherDetailDTO;
+use App\DTOs\Details\UserDetailDTO;
+use App\DTOs\Searches\DTOSearch;
+use App\Models\Enrollment;
+use Illuminate\Support\Facades\Auth;
 
 class TeacherRepository extends TransformDTOs implements TeacherInterface
 {
+
+    public function __construct(
+        public UserRepository $userRepository
+    ) {}
 
     public function createTeacher(TeacherDTO $teacher): TeacherDTO
     {
@@ -153,5 +164,21 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
             phone: $model->phone,
             //user_id: $model->user?->id ?? null
         );
+    }
+
+	protected function transformToDetailDTO(Model $model): DTODetail
+    {
+        return new TeacherDetailDTO(
+            id: $model->id,
+            name: $model->name,
+            surname: $model->surname,
+            phone: $model->phone,
+            user: $this->userRepository->transformModel($model->user, 'transformToDetailDTO')
+        );
+    }
+
+	protected function transformToSearchDTO(Model $model): DTOSearch
+    {
+        // TODO
     }
 }

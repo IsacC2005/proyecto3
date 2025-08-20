@@ -2,18 +2,28 @@
 
 namespace App\Repositories\TransformDTOs;
 
+use App\DTOs\Details\DTODetail;
+use App\DTOs\Searches\DTOSearch;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 abstract Class TransformDTOs{
-    protected function transformListDTO(Collection $users): array
+
+    public function transformModel(Model $model, ?String $function = "transformToDTO"){
+        return $this->{$function}($model);
+    }
+
+    protected function transformListDTO(Collection $models, ?String $function = "transformToDTO"): array
     {
-        $function = "transformToDTO";
-        return $users->map(function ($user) use ($function) {
-            return $this->{$function}($user);
+        return $models->map(function ($model) use ($function) {
+            return $this->{$function}($model);
         })->toArray();
     }
 
-    abstract protected function transformToDTO(Model $model): DTOSummary; 
+    abstract protected function transformToDTO(Model $model): DTOSummary;
+
+    abstract protected function transformToDetailDTO(Model $model): DTODetail;
+
+    abstract protected function transformToSearchDTO(Model $model): DTOSearch;
 }

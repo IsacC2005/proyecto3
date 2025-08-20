@@ -9,9 +9,11 @@ interface EnrollmentInterface
 {
     public function create(EnrollmentDTO $enrollment): EnrollmentDTO;
 
+    public function assignTeacher(int $id_teacher, int $id_enrollment): bool;
+
     public function find(int $id): EnrollmentDTO;
 
-    public function findAll(): array;
+    public function findAll(?String $f = null): array;
 
     public function findByTeacher(int $teacher_id): array;
 

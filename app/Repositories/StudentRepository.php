@@ -22,6 +22,9 @@ use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use App\DTOs\Details\DTODetail;
+use App\DTOs\Searches\DTOSearch;
 
 class StudentRepository extends TransformDTOs implements StudentInterface
 {
@@ -232,6 +235,16 @@ class StudentRepository extends TransformDTOs implements StudentInterface
             surname: $model->surname,
             representative_id: $representative->id
         );
+    }
+
+	protected function transformToDetailDTO(Model $model): DTODetail
+    {
+        // TODO
+    }
+
+	protected function transformToSearchDTO(Model $model): DTOSearch
+    {
+        // TODO
     }
 }
 ?>

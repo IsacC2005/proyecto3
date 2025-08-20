@@ -1,11 +1,11 @@
-<?php 
+<?php
 
 
 namespace App\DTOs\Details;
 
 use App\DTOs\Details\LearningProjectDetailDTO;
 
-class TicketDetailDTO
+class TicketDetailDTO implements DTODetail
 {
     public function __construct(
         public int $id,

@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 namespace App\DTOs\Searches;
 
-class StudentSearchDTO
+class StudentSearchDTO implements DTOSearch
 {
     private $enrollment_ids = [];
     private $ticket_ids = [];

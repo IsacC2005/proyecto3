@@ -1,6 +1,5 @@
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
-        {{ representative }}
 
         <!--Mostrar los datos del representante-->
 
@@ -37,10 +36,7 @@
 
         <!-- Formulario de busqueda del representante -->
         <div v-else>
-            <form @submit.prevent="submitFindRepresentative" class="m-1 sm:m-8">
-                <div v-if="representative">
-                    <h1>hola yo soy el representante</h1>
-                </div>
+            <form @submit.prevent="submitFindRepresentative(formRepresentative.idCard)" class="m-1 sm:m-8">
                 <div>
                     <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                         Buscar Representante</label>
@@ -107,7 +103,7 @@ const formStudent = useForm({
     name: '',
     surname: '',
     degree: '',
-    representative_id: props.representative.id
+    representative_id: props.representative && props.representative.id ? props.representative.id : 0
 });
 
 const formRepresentative = useForm({
@@ -119,9 +115,9 @@ const submitCreateStudent = () => {
     formStudent.post(route('student.create'));
 }
 
-const submitFindRepresentative = () => {
+const submitFindRepresentative = (num) => {
     router.get('/student/create/', {
-        idcard: formRepresentative.idCard
+        idcard: num
     }, {
         preserveState: true,
         only: ['representative']

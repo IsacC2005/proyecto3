@@ -6,7 +6,7 @@ use App\DTOs\Searches\Userable\UserableSearchInterface;
 use App\DTOs\Searches\Userable\UserableSearchTrait;
 
 
-class TeacherSearchDTO implements UserableSearchInterface
+class TeacherSearchDTO implements UserableSearchInterface, DTOSearch
 {
 
     use UserableSearchTrait;

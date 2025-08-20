@@ -7,6 +7,7 @@ use App\DTOs\Summary\EnrollmentDTO;
 use App\Repositories\Interfaces\EnrollmentInterface;
 use App\Repositories\Interfaces\StudentInterface;
 use App\Repositories\interfaces\TeacherInterface;
+use Inertia\Inertia;
 
 class EnrollmentServices{
 
@@ -60,17 +61,32 @@ class EnrollmentServices{
         }
     }
 
+    public function findAllEnrollment(?String $f = null){
+        return $this->enrollmentRepository->findAll($f);
+    }
+
     public function updateEnrollment(){}
 
     public function searchEnrollment(){}
 
     public function findEnrollment(){}
 
+    public function findEnrollmentByTeacher(int $id_teacher): array
+    {
+        return $this->enrollmentRepository->findByTeacher($id_teacher);
+    }
+
     public function deleteEnrollment(){}
 
     public function addStudentEnrollent(){}
 
-    public function assingTeacherToEnrollment(){}
+    public function assignTeacherToEnrollment(int $id_enrollment, int $id_teacher){
+        $rs = $this->enrollmentRepository->assignTeacher($id_enrollment, $id_teacher);
+
+        if($rs){
+            return 'Se asignó el profesor correctamente.';
+        }
+    }
 
 }
 

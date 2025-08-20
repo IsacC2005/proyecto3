@@ -17,6 +17,9 @@ use App\Repositories\Interfaces\LearningProjectInterface;
 use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use App\DTOs\Details\DTODetail;
+use App\DTOs\Searches\DTOSearch;
 
 class LearningProjectRepository extends TransformDTOs implements LearningProjectInterface
 {
@@ -83,7 +86,7 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
     public function findByTeacher(int $teacher_id): array
     {
         try {
-            
+
         $teacherModel = Teacher::find($teacher_id);
         if (!$teacherModel) {
             throw new TeacherNotExistException();
@@ -152,7 +155,7 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
         }
     }
 
-	protected function transformToDTO(Model $model): DTOSummary 
+	protected function transformToDTO(Model $model): DTOSummary
     {
         $teacher = $model->teacher;
         $enrollment = $model->enrollment;
@@ -165,5 +168,15 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
             teacher_id: $teacher->id,
             enrollment_id: $enrollment->id
         );
+    }
+
+	protected function transformToDetailDTO(Model $model): DTODetail
+    {
+        // TODO
+    }
+
+	protected function transformToSearchDTO(Model $model): DTOSearch
+    {
+        // TODO
     }
 }

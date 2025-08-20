@@ -64,6 +64,7 @@ class TeacherController extends Controller
      * This method should retrieve and display a single resource
      * identified by its ID.
      */
+
     public function show(string $id)
     {
         // Debería mostrar un elemento específico según su ID.
@@ -95,6 +96,15 @@ class TeacherController extends Controller
         $data->id = $id;
         return $this->teacherServices->updateTeacher($data);
     }
+
+
+    public function enrollmentsAssigns(){
+        $data = $this->teacherServices->enrollmentsAssigns();
+        return Inertia::render('Teacher/ListEnrollmentAssigns', [
+            'enrollments' => $data
+        ]);
+    }
+
 
     /**
      * Remove the specified resource from storage.

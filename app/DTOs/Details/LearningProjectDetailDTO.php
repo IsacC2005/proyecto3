@@ -4,7 +4,7 @@
 namespace App\DTOs\Details;
 
 
-class LearningProjectDetailDTO
+class LearningProjectDetailDTO implements DTODetail
 {
     private $tickets = [];
 

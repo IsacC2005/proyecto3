@@ -14,6 +14,8 @@ use App\Exceptions\Role\RoleNotExistException;
 use App\Exceptions\Role\RoleNotFindException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use App\DTOs\Details\DTODetail;
+use App\DTOs\Searches\DTOSearch;
 
 class RoleRepository extends TransformDTOs implements RoleInterface
 {
@@ -160,5 +162,15 @@ class RoleRepository extends TransformDTOs implements RoleInterface
         $roleDTO->addPermision(...$permissions);
 
         return $roleDTO;
+    }
+
+	protected function transformToDetailDTO(Model $model): DTODetail
+    {
+        // TODO
+    }
+
+	protected function transformToSearchDTO(Model $model): DTOSearch
+    {
+        // TODO
     }
 }

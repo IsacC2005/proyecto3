@@ -2,7 +2,7 @@
 
 namespace App\DTOs\Searches;
 
-class EnrollmentSearchDTO
+class EnrollmentSearchDTO implements DTOSearch
 {
 
     private $student_ids = [];

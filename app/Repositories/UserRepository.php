@@ -18,6 +18,10 @@ use App\Repositories\TransformDTOs\TransformDTOs;
 use Spatie\Permission\Models\Role;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use App\DTOs\Details\DTODetail;
+use App\DTOs\Details\UserDetailDTO;
+use App\DTOs\Searches\DTOSearch;
 
 class UserRepository extends TransformDTOs implements UserInterface
 {
@@ -156,9 +160,9 @@ class UserRepository extends TransformDTOs implements UserInterface
     }
 
     /**
-     * 
+     *
      * TODO Este método se está redefiniendo polimórficamente.
-     * 
+     *
      */
     protected function transformToDTO(Model $model): DTOSummary
     {
@@ -169,5 +173,21 @@ class UserRepository extends TransformDTOs implements UserInterface
             password: $model->password,
             //userable: $user->userable // Assuming userable is a Userable type
         );
+    }
+
+	protected function transformToDetailDTO(Model $model): DTODetail
+    {
+        return new UserDetailDTO(
+            id: $model->id,
+            name: $model->name,
+            email: $model->email,
+            password: $model->password,
+            //userable: $user->userable // Assuming userable is a Userable type
+        );
+    }
+
+	protected function transformToSearchDTO(Model $model): DTOSearch
+    {
+        // TODO
     }
 }

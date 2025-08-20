@@ -6,7 +6,7 @@ use App\DTOs\Details\UserDetailDTO;
 
 trait UserableDetailTrait
 {
-    private ?UserDetailDTO $user = null;
+   // private ?UserDetailDTO $user = null;
 }
 
 ?>

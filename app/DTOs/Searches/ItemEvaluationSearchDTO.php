@@ -2,7 +2,7 @@
 
 namespace App\DTOs\Searches;
 
-class ItemEvaluationSearchDTO
+class ItemEvaluationSearchDTO implements DTOSearch
 {
     public function __construct(
         public ?int $id = null,
