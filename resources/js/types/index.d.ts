@@ -36,4 +36,25 @@ export interface User {
     updated_at: string;
 }
 
+export interface Enrollment {
+    id: number;
+    schoole_year: string;
+    schoole_moment: number;
+    degree: number;
+    section: string;
+    classroom: number,
+    teacher: Teacher,
+    learning_project?: {
+        id: number;
+        title: string;
+    };
+}
+
+export interface Teacher {
+    id: number;
+    name: string;
+    surname: string;
+    email: string;
+}
+
 export type BreadcrumbItemType = BreadcrumbItem;

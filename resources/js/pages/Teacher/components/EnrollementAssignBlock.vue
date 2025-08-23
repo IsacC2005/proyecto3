@@ -1,42 +1,33 @@
 <template>
-    <div v-for="section in sections" :key="section.id" class="relative w-full aspect-square bg-sidebar rounded-2xl shadow-xl overflow-hidden transform hover:scale-105
-        transition-transform duration-300 ease-in-out cursor-pointer group">
 
+    <div v-for="enrollment in enrollments" :key="enrollment.id" class="relative w-full aspect-square bg-sidebar rounded-2xl shadow-xl overflow-hidden transform hover:scale-105
+        transition-transform duration-300 ease-in-out cursor-pointer group">
         <div class="group absolute inset-0 flex items-center justify-start p-6 md:p-8">
             <p
                 class="text-9xl md:text-8xl lg:text-9xl font-black text-chart-2 group-hover:rotate-4 transition-all duration-300 ease-in-out">
-                {{ section.section.toString().toUpperCase() }}
+                {{ enrollment.section.toString().toUpperCase() }}
             </p>
         </div>
 
         <div class="absolute inset-0 flex flex-col items-end justify-between p-4 md:p-6 text-right z-10">
             <h2 class="text-lg md:text-2xl font-bold text-foreground duration-300 ease-in-out">
-                {{ grade[0][section.degree] }}
+                {{ grade[0][enrollment.degree] }}
             </h2>
             <div
                 class="px-1 rounded-lg bg-transparent border border-chart-1 text-foreground font-semibold shadow shadow-chart-1 hover:scale-105 hover:bg-primary-100 transition-all duration-200 cursor-pointer">
-                <Link href="/enrollment/add-student/" :data="{ enrollment_id: section.id }">
-                Estudiantes
-                </Link>
-            </div>
-            <div
-                class="px-1 rounded-lg bg-transparent border border-chart-1 text-foreground font-semibold shadow shadow-chart-1 hover:scale-105 hover:bg-primary-100 transition-all duration-200 cursor-pointer">
 
-                <p v-if="section.teacher"
-                    class="text-xs md:text-sm text-gray-500 group-hover:text-secondary-500 transition-colors duration-300 ease-in-out">
-                    {{ section.teacher.name + " " + section.teacher.surname }}
-                </p>
+
+                <div v-if="enrollment.learning_project">
+                    <a href="#">
+                        {{ enrollment.learning_project.title }}
+                    </a>
+                </div>
                 <div v-else>
-                    <Link :href="`/enrollment/assign-teacher/${section.id}`">
-                    Asignar profesor
+                    <Link method="get" href="/learning-project/create/"
+                        :data="{ enrollment_id: enrollment.id, teacher_id: enrollment.teacher.id }">
+                    Crear Proyecto de Aprendizaje
                     </Link>
                 </div>
-            </div>
-            <div v-if="section.learning_project"
-                class="px-1 rounded-lg bg-transparent border border-chart-1 text-foreground font-semibold shadow shadow-chart-1 hover:scale-105 hover:bg-primary-100 transition-all duration-200 cursor-pointer">
-                <a href="#">
-                    {{ section.learning_project.title }}
-                </a>
             </div>
         </div>
     </div>
@@ -45,13 +36,36 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import { Enrollment } from '@/types';
+
+type Enrollment = {
+    id: number;
+    schoole_year: string;
+    schoole_moment: number;
+    degree: number;
+    section: string;
+    classroom: number,
+    teacher: Teacher,
+    learning_project?: {
+        id: number;
+        title: string;
+    };
+}
+
+type Teacher = {
+    id: number;
+    name: string;
+    surname: string;
+    email: string;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const props = defineProps({
-    sections: Array as () => Enrollment[]
-});
 
+const props = defineProps({
+    enrollments: {
+        type: Array as () => Enrollment[],
+        required: true
+    }
+});
 
 const grade = [
     {

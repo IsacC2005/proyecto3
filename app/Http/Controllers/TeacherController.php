@@ -98,8 +98,10 @@ class TeacherController extends Controller
     }
 
 
-    public function enrollmentsAssigns(){
+    public function enrollmentsAssigns()
+    {
         $data = $this->teacherServices->enrollmentsAssigns();
+
         return Inertia::render('Teacher/ListEnrollmentAssigns', [
             'enrollments' => $data
         ]);

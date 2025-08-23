@@ -173,7 +173,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
             name: $model->name,
             surname: $model->surname,
             phone: $model->phone,
-            user: $this->userRepository->transformModel($model->user, 'transformToDetailDTO')
+            user: null
         );
     }
 

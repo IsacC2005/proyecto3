@@ -11,11 +11,13 @@ interface EnrollmentInterface
 
     public function assignTeacher(int $id_teacher, int $id_enrollment): bool;
 
+    public function addStudent(int $enrollment_id, int $student_id): bool;
+
     public function find(int $id): EnrollmentDTO;
 
     public function findAll(?String $f = null): array;
 
-    public function findByTeacher(int $teacher_id): array;
+    public function findByTeacher(int $teacher_id, ?String $f = null): array;
 
     public function findByStudent(int $student_id): array;
 
@@ -27,4 +29,3 @@ interface EnrollmentInterface
 
     public function delete($id): void;
 }
-?>

@@ -19,26 +19,30 @@ use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use App\DTOs\Details\DTODetail;
+use App\DTOs\Details\LearningProjectDetailDTO;
 use App\DTOs\Searches\DTOSearch;
 
 class LearningProjectRepository extends TransformDTOs implements LearningProjectInterface
 {
 
-    public function create(LearningProjectDTO $learningProject): LearningProjectDTO
+    public function create(LearningProjectDetailDTO $learningProject): LearningProjectDTO
     {
         try {
-            $teacher = Teacher::find($learningProject->teacher_id);
-            $enrollment = Enrollment::find($learningProject->enrollment_id);
+            $teacher = Teacher::find($learningProject->teacher->id);
+            $enrollment = Enrollment::find($learningProject->enrollment->id);
 
             if (!$enrollment || !$teacher) {
-                throw new LearningProjectNotCreatedException();
+                throw new LearningProjectNotCreatedException('Teacher or Enrollment not found');
             }
 
             $projectModel = LearningProject::create([
                 'title' => $learningProject->title,
                 'content' => $learningProject->content,
-            ])->teacher()->associate($teacher)
-                ->enrollment()->associate($enrollment);
+                'teacher_id' => $teacher->id,
+                'enrollment_id' => $enrollment->id,
+            ]);
+
+
 
             if (!$projectModel) {
                 throw new LearningProjectNotCreatedException();
@@ -46,7 +50,7 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
             return $this->transformToDTO($projectModel);
         } catch (\Throwable $th) {
-            throw new LearningProjectNotCreatedException();
+            throw new LearningProjectNotCreatedException($th->getMessage());
         }
     }
 
@@ -72,10 +76,28 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
     {
         try {
             $projects = LearningProject::all();
-            if(!$projects){
+            if (!$projects) {
                 throw new LearningProjectNotFindException();
             }
             return $this->transformListDTO($projects);
+        } catch (\Throwable $th) {
+            throw new LearningProjectNotFindException();
+        }
+    }
+
+
+
+
+    public function findByEnrollment(int $enrollment_id): LearningProjectDTO | null
+    {
+        try {
+            $project = LearningProject::where('enrollment_id', $enrollment_id)->first();
+            if (!$project) {
+                return null;
+                throw new LearningProjectNotFindException();
+            }
+
+            return $this->transformToDTO($project);
         } catch (\Throwable $th) {
             throw new LearningProjectNotFindException();
         }
@@ -87,13 +109,13 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
     {
         try {
 
-        $teacherModel = Teacher::find($teacher_id);
-        if (!$teacherModel) {
-            throw new TeacherNotExistException();
-        }
+            $teacherModel = Teacher::find($teacher_id);
+            if (!$teacherModel) {
+                throw new TeacherNotExistException();
+            }
 
-        $projects = LearningProject::where('teacher_id', $teacherModel->id)->get();
-        return $this->transformListDTO($projects);
+            $projects = LearningProject::where('teacher_id', $teacherModel->id)->get();
+            return $this->transformListDTO($projects);
         } catch (\Throwable $th) {
             throw new LearningProjectNotFindException();
         }
@@ -103,7 +125,7 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
     public function search(LearningProjectDTO $learningProject): array
     {
-        return ['agrega','algo'];
+        return ['agrega', 'algo'];
     }
 
 
@@ -151,11 +173,11 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
             }
             $project->delete();
         } catch (\Throwable $th) {
-            throw new LearningProjectNotDeleteException();
+            throw new LearningProjectNotDeleteException($th->getMessage());
         }
     }
 
-	protected function transformToDTO(Model $model): DTOSummary
+    protected function transformToDTO(Model $model): DTOSummary
     {
         $teacher = $model->teacher;
         $enrollment = $model->enrollment;
@@ -170,13 +192,25 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
         );
     }
 
-	protected function transformToDetailDTO(Model $model): DTODetail
+    protected function transformToDetailDTO(Model $model): DTODetail
     {
-        // TODO
+
+        return new LearningProjectDetailDTO(
+            id: $model->id,
+            title: $model->title,
+            content: $model->content,
+            teacher: null,
+            enrollment: null,
+        );
     }
 
-	protected function transformToSearchDTO(Model $model): DTOSearch
+    protected function transformToSearchDTO(Model $model): DTOSearch
     {
-        // TODO
+        return new DTOSearch(
+            id: $model->id,
+            title: $model->title,
+            teacher_id: $model->teacher_id,
+            enrollment_id: $model->enrollment_id
+        );
     }
 }

@@ -6,8 +6,10 @@ use App\DTOs\Summary\TeacherDTO;
 use App\DTOs\Summary\UserDTO;
 use App\Constants\RoleConstants;
 use App\DTOs\PaginationDTO;
+use App\Exceptions\Enrollment\EnrollmentNotFindException;
 use App\Exceptions\Teacher\TeacherNotFindException;
 use App\Repositories\Interfaces\TeacherInterface;
+use Dotenv\Parser\Entry;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 
@@ -49,10 +51,10 @@ class TeacherServices
     {
         $id = Auth::user()->userable_id;
 
-        if(!$id){
+        if (!$id) {
             throw new TeacherNotFindException('No se encontro a el profesor asociado a este usuario', 404);
         }
-        return $this->enrollmentRepository->findEnrollmentByTeacher(Auth::user()->userable_id);
+        return $this->enrollmentRepository->findEnrollmentByTeacher(Auth::user()->userable_id, 'transformToDetailDTO');
     }
 
 

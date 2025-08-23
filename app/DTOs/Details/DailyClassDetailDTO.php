@@ -1,11 +1,11 @@
-<?php 
+<?php
 
 
 namespace App\DTOs\Details;
 
 use DateTime;
 
-class DailyClassDetailDTO
+class DailyClassDetailDTO implements DTODetail
 {
 
     private $item_evaluations = [];
@@ -28,4 +28,3 @@ class DailyClassDetailDTO
         return $this->item_evaluations;
     }
 }
-?>

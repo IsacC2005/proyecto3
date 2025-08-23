@@ -67,7 +67,7 @@ class UserRepository extends TransformDTOs implements UserInterface
     public function findUserByUserable($id): UserDTO
     {
         try {
-            $user = User::where('userable_id',$id)->first();
+            $user = User::where('userable_id', $id)->first();
             if (!$user) {
                 throw new UserNotFindException();
             }
@@ -175,7 +175,7 @@ class UserRepository extends TransformDTOs implements UserInterface
         );
     }
 
-	protected function transformToDetailDTO(Model $model): DTODetail
+    protected function transformToDetailDTO(Model $model): DTODetail
     {
         return new UserDetailDTO(
             id: $model->id,
@@ -186,7 +186,7 @@ class UserRepository extends TransformDTOs implements UserInterface
         );
     }
 
-	protected function transformToSearchDTO(Model $model): DTOSearch
+    protected function transformToSearchDTO(Model $model): DTOSearch
     {
         // TODO
     }

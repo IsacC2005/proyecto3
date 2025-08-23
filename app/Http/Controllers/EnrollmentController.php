@@ -6,6 +6,8 @@ use App\Factories\EnrollmentFactory;
 use App\Services\EnrollmentServices;
 use App\Services\TeacherServices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class EnrollmentController extends Controller
@@ -14,7 +16,7 @@ class EnrollmentController extends Controller
     public function __construct(
         private EnrollmentServices $enrollmentServices,
         private TeacherServices $teacherServices
-    ){}
+    ) {}
     /**
      * Display a listing of the resource.
      *
@@ -52,7 +54,10 @@ class EnrollmentController extends Controller
         return $this->enrollmentServices->createEnrollment($data);
     }
 
-    public function assignTeacher(int $id){
+
+
+    public function assignTeacher(int $id)
+    {
         $data = $this->teacherServices->findAll();
         return Inertia::render('Enrollment/AsignateTeacher', [
             'id_enrollment' => $id,
@@ -60,17 +65,44 @@ class EnrollmentController extends Controller
         ]);
     }
 
-    public function assignTeacherSave(Request $request){
+
+
+    public function assignTeacherSave(Request $request)
+    {
         $id_enrollment = $request->input('id_enrollment');
         $id_teacher = $request->input('id_teacher');
 
         if (!is_numeric($id_enrollment) || !is_numeric($id_teacher)) {
             throw new \InvalidArgumentException('El id_enrollment y id_teacher deben ser numéricos.');
         }
-
         return $this->enrollmentServices->assignTeacherToEnrollment($id_enrollment, $id_teacher);
     }
 
+
+
+    public function addStudent(Request $request)
+    {
+        $validated = $request->validate([
+            'enrollment_id' => 'required|integer',
+        ]);
+
+        return $this->enrollmentServices->addStudentPage($request->input('enrollment_id'));
+    }
+
+
+    public function addStudentSave(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'enrollment_id' => 'required|integer',
+            'student_id' => 'required|integer',
+        ]);
+
+        if ($validate->fails()) {
+            throw new ValidationException($validate->messages());
+        }
+
+        return $this->enrollmentServices->addStudentSave($request->input('enrollment_id'), $request->input('student_id'));
+    }
     /**
      * Display the specified resource.
      *

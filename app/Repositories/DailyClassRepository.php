@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use App\DTOs\Details\DTODetail;
 use App\DTOs\Searches\DTOSearch;
+use DateTime;
 
 class DailyClassRepository extends TransformDTOs implements DailyClassInterface
 {
@@ -23,10 +24,12 @@ class DailyClassRepository extends TransformDTOs implements DailyClassInterface
     public function create(DailyClassDTO $dailyClass): DailyClassDTO
     {
         try {
+
             $dailyClassModel = DailyClass::create([
-                'date' => $dailyClass->date,
+                'date' => $dailyClass->date->format('Y-m-d'),
                 'title' => $dailyClass->title,
-                'content' => $$dailyClass->content
+                'content' => $dailyClass->content,
+                'learning_project_id' => $dailyClass->learning_project_id
             ]);
 
             if (!$dailyClassModel) {
@@ -35,7 +38,7 @@ class DailyClassRepository extends TransformDTOs implements DailyClassInterface
 
             return $this->transformToDTO($dailyClassModel);
         } catch (\Throwable $th) {
-            throw new DailyClassNotCreateException();
+            throw $th;
         }
     }
 
@@ -133,7 +136,7 @@ class DailyClassRepository extends TransformDTOs implements DailyClassInterface
         }
     }
 
-	protected function transformToDTO(Model $model): DTOSummary
+    protected function transformToDTO(Model $model): DTOSummary
     {
         return new DailyClassDTO(
             id: $model->id,
@@ -144,12 +147,12 @@ class DailyClassRepository extends TransformDTOs implements DailyClassInterface
         );
     }
 
-	protected function transformToDetailDTO(Model $model): DTODetail
+    protected function transformToDetailDTO(Model $model): DTODetail
     {
         // TODO
     }
 
-	protected function transformToSearchDTO(Model $model): DTOSearch
+    protected function transformToSearchDTO(Model $model): DTOSearch
     {
         // TODO
     }

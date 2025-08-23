@@ -8,7 +8,8 @@
 
                 <Link v-else
                     class="flex flex-grow-1 items-center justify-center px-1 h-10 bg-background border-1 border-muted-foreground"
-                    :class="{ 'bg-card-foreground text-background': page.active }" :href="page.url" v-html="page.label" />
+                    :class="{ 'bg-card-foreground text-background': page.active }" :href="page.url"
+                    v-html="page.label" />
             </template>
         </ul>
     </nav>

@@ -3,10 +3,14 @@
 
 namespace App\DTOs\Details;
 
+use App\DTOs\Summary\DailyClassDTO;
+use App\DTOs\Summary\EnrollmentDTO;
+use App\Models\DailyClass;
 
 class LearningProjectDetailDTO implements DTODetail
 {
     private $tickets = [];
+    private $DailyClass = [];
 
     public function __construct(
         public int $id,
@@ -14,8 +18,8 @@ class LearningProjectDetailDTO implements DTODetail
         public string $content,
         public ?TeacherDetailDTO $teacher = null,
         public ?EnrollmentDetailDTO $enrollment = null,
-//        public ?DailyClassDTO $daily_class = null,
-//        public ?EnrollmentDTO $enrollment = null,
+        //        public ?DailyClassDTO $daily_class = null,
+        //        public ?EnrollmentDTO $enrollment = null,
     ) {}
 
     public function addTicket(TicketDetailDTO $ticket): void
@@ -26,5 +30,15 @@ class LearningProjectDetailDTO implements DTODetail
     public function getTickets(): array
     {
         return $this->tickets;
+    }
+
+    public function addDailyClasses(DailyClassDTO $DailyClass): void
+    {
+        $this->DailyClass[] = $DailyClass;
+    }
+
+    public function getDailyClasses(): array
+    {
+        return $this->DailyClass;
     }
 }

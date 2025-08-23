@@ -25,7 +25,8 @@ use App\DTOs\Details\EnrollmentDetailDTO;
 use App\DTOs\Details\TeacherDetailDTO;
 use App\DTOs\Searches\DTOSearch;
 use App\Exceptions\Teacher\TeacherNotExistException;
-use PhpParser\Node\Expr\Cast\String_;
+use App\Factories\TeacherFactory;
+use App\Factories\LearningProjectFactory;
 
 class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 {
@@ -33,7 +34,7 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
     public function __construct(
         private TeacherRepository $teacherRepository,
         private LearningProjectRepository $learningProjectRepository
-    ){}
+    ) {}
 
 
     public function create(EnrollmentDTO $enrollment): EnrollmentDTO
@@ -61,7 +62,8 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 
 
 
-    public function assignTeacher(int $id_teacher, int $id_enrollment): bool{
+    public function assignTeacher(int $id_teacher, int $id_enrollment): bool
+    {
         try {
             $enrollment = Enrollment::find($id_enrollment);
             if (!$enrollment) {
@@ -76,7 +78,24 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
             $enrollment->teacher_id = $id_teacher;
 
             return $enrollment->save();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 
+
+    public function addStudent(int $enrollment_id, int $student_id): bool
+    {
+        try {
+            $enrollment = Enrollment::find($enrollment_id);
+
+            if (!$enrollment) {
+                throw new EnrollmentNotFindException();
+            }
+
+            $enrollment->students()->syncWithoutDetaching([$student_id]);
+
+            return $enrollment->save();
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -117,18 +136,21 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 
 
 
-    public function findByTeacher(int $teacher_id): array
+    public function findByTeacher(int $teacher_id, ?String $f = null): array
     {
         try {
             $enrollments = Enrollment::where('teacher_id', $teacher_id)->get();
             if (!$enrollments) {
                 throw new EnrollmentNotFindException();
             }
-            return $this->transformListDTO($enrollments);
+            return $this->transformListDTO($enrollments, $f);
         } catch (\Throwable $th) {
-            throw new EnrollmentNotFindException($th->getMessage(), $th->getCode(), $th);
+            throw new EnrollmentNotFindException($th->getMessage());
         }
     }
+
+
+
 
     public function findByStudent(int $student_id): array
     {
@@ -225,7 +247,7 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
         }
     }
 
-	protected function transformToDTO(Model $model): DTOSummary
+    protected function transformToDTO(Model $model): DTOSummary
     {
         return new EnrollmentDTO(
             id: $model->id,
@@ -238,7 +260,7 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
         );
     }
 
-	protected function transformToDetailDTO(Model $model): DTODetail
+    protected function transformToDetailDTO(Model $model): DTODetail
     {
         return new EnrollmentDetailDTO(
             id: $model->id,
@@ -247,13 +269,12 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
             degree: $model->degree,
             section: $model->section,
             classroom: $model->classroom,
-            teacher: $model->teacher ? $this->teacherRepository->transformModel($model->teacher, 'transformToDetailDTO') : null,
-            learning_project: $model->learning_project ? $this->learningProjectRepository->transformModel($model->learning_project, 'transformToDetailDTO') : null
+            teacher: $model->teacher ? TeacherFactory::fromArrayDetail(['id' => $model->teacher->id, 'name' => $model->teacher->name, 'surname' => $model->teacher->surname, 'phone' => $model->teacher->phone]) : null,
+            learning_project: $model->learning_project ? LearningProjectFactory::fromArrayDetail(['id' => $model->learning_project->id, 'title' => $model->learning_project->title]) : null
         );
-
     }
 
-	protected function transformToSearchDTO(Model $model): DTOSearch
+    protected function transformToSearchDTO(Model $model): DTOSearch
     {
         // TODO
     }

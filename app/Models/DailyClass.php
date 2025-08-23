@@ -11,14 +11,17 @@ class DailyClass extends Model
     protected $fillable = [
         'date',
         'title',
-        'content'
+        'content',
+        'learning_project_id'
     ];
 
-    public function learning_project(): BelongsTo{
+    public function learning_project(): BelongsTo
+    {
         return $this->belongsTo(LearningProject::class);
     }
 
-    public function evaluation_item(): HasMany{
+    public function evaluation_item(): HasMany
+    {
         return $this->hasMany(EvaluationItem::class);
     }
 }

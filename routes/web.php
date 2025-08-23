@@ -3,6 +3,7 @@
 use App\DTOs\UserDTO;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\LearningProjectController;
 use App\Http\Controllers\RepresentativeController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
@@ -63,6 +64,17 @@ Route::post('/enrollment/create', [EnrollmentController::class, 'store'])->name(
 
 Route::get('/enrollment/assign-teacher/{id}', [EnrollmentController::class, 'assignTeacher']);
 Route::post('/enrollment/assign-teacher', [EnrollmentController::class, 'assignTeacherSave'])->name('enrollment.assign-teacher');
+
+Route::get('/enrollment/add-student/', [EnrollmentController::class, 'addStudent']);
+Route::post('/enrollment/add-student/', [EnrollmentController::class, 'addStudentSave'])->name('enrollment.addStudent');
+
+/**
+ * TODO: Rutas para LearningProject ;-)
+ */
+
+Route::get('/learning-project/index', [LearningProjectController::class, 'index']);
+Route::get('/learning-project/create', [LearningProjectController::class, 'create']);
+Route::post('/learning-project/create', [LearningProjectController::class, 'store'])->name('learning-project.create');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

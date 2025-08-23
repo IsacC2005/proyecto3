@@ -22,7 +22,7 @@ const mainNavItems: NavItem[] = [
         href: '#',
         children: [
             { title: 'Lista de matriculas', href: '/enrollment/index' },
-            { title: 'Crear matricula', href: '/enrollment/create' }
+            { title: 'Crear matricula', href: '/enrollment/create' },
         ]
     }
     ,
@@ -41,6 +41,15 @@ const mainNavItems: NavItem[] = [
         children: [
             { title: 'Lista de Estudiantes', href: '/student/index' },
             { title: 'Crear Estudiantes', href: '/student/create' }
+        ]
+
+    },
+    {
+        title: 'Proyecto de aprendizaje',
+        href: '#',
+        children: [
+            { title: 'Lista de Proyectos', href: '/project/index' },
+            { title: 'Crear Proyecto', href: '/project/create' }
         ]
 
     }

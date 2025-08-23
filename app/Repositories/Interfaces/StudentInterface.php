@@ -17,6 +17,8 @@ interface StudentInterface
 
     public function findStudentByEnrollment(int $enrollment_id): array;
 
+    public function findStudentByDegree(int $degree, ?bool $NotAddEnrollment = false): PaginationDTO;
+
     public function findStudentByLearningProject(int $learning_project_id): array;
 
     public function findStudentByDailyClass(int $daily_class_id): array;
@@ -27,4 +29,3 @@ interface StudentInterface
 
     public function deleteStudent($id): void;
 }
-?>

@@ -29,9 +29,9 @@ use App\DTOs\Searches\DTOSearch;
 class StudentRepository extends TransformDTOs implements StudentInterface
 {
 
-	public function createStudent(StudentDTO $student): StudentDTO
+    public function createStudent(StudentDTO $student): StudentDTO
     {
-        try{
+        try {
 
             $studentModel = Student::create([
                 'representative_id' => $student->representative_id,
@@ -59,7 +59,6 @@ class StudentRepository extends TransformDTOs implements StudentInterface
                 throw new StudentNotFindException();
             }
             return $this->transformToDTO($studentModel);
-
         } catch (\Throwable $th) {
             throw new StudentNotFindException();
         }
@@ -72,7 +71,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
         try {
             $studentModels = Student::orderBy('created_at', 'desc')->paginate(10);
 
-            if(!$studentModels){
+            if (!$studentModels) {
                 throw new StudentNotFindException();
             }
             $pagination = new PaginationDTO($studentModels);
@@ -125,6 +124,27 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
+    public function findStudentByDegree(int $degree, ?bool $NotAddEnrollment = false): PaginationDTO
+    {
+        try {
+            $studentModels = Student::where('degree', $degree)->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+            if (!$studentModels) {
+                throw new StudentNotFindException();
+            }
+            $pagination = new PaginationDTO($studentModels);
+
+            $data = $this->transformListDTO($studentModels->getCollection());
+
+            $pagination->data = $data;
+            return $pagination;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+
+
     public function findStudentByLearningProject(int $learning_project_id): array
     {
         try {
@@ -134,7 +154,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
                 });
             })->get();
 
-            if(!$studentModels){
+            if (!$studentModels) {
                 throw new StudentNotFindException();
             }
 
@@ -160,7 +180,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
                 });
             })->get();
 
-            if(!$studentModels){
+            if (!$studentModels) {
                 throw new StudentNotFindException();
             }
 
@@ -176,11 +196,11 @@ class StudentRepository extends TransformDTOs implements StudentInterface
     {
         try {
             $representativeModel = Representative::find($representative_id)->firs();
-            if(!$representativeModel){
+            if (!$representativeModel) {
                 throw new RepresentativeNotExistException();
             }
             $studentModels = Student::where('representative_id', $representative_id)->get();
-            if($studentModels){
+            if ($studentModels) {
                 throw new StudentNotFindException();
             }
 
@@ -207,7 +227,6 @@ class StudentRepository extends TransformDTOs implements StudentInterface
         } catch (\Throwable $th) {
             throw new StudentNotUpdateException();
         }
-
     }
 
 
@@ -225,7 +244,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
         }
     }
 
-	protected function transformToDTO(Model $model): DTOSummary
+    protected function transformToDTO(Model $model): DTOSummary
     {
         $representative = $model->representative;
         return new StudentDTO(
@@ -237,14 +256,13 @@ class StudentRepository extends TransformDTOs implements StudentInterface
         );
     }
 
-	protected function transformToDetailDTO(Model $model): DTODetail
+    protected function transformToDetailDTO(Model $model): DTODetail
     {
         // TODO
     }
 
-	protected function transformToSearchDTO(Model $model): DTOSearch
+    protected function transformToSearchDTO(Model $model): DTOSearch
     {
         // TODO
     }
 }
-?>

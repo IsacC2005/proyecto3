@@ -19,6 +19,8 @@ class LearningProject extends Model
     protected $fillable = [
         'title',
         'content',
+        'teacher_id',
+        'enrollment_id'
     ];
 
     public function teacher(): BelongsTo
@@ -28,7 +30,7 @@ class LearningProject extends Model
 
     public function enrollment(): HasOne
     {
-        return $this->hasOne(Enrollment::class);
+        return $this->hasOne(Enrollment::class, 'id', 'enrollment_id');
     }
 
     public function daily_classes(): HasMany

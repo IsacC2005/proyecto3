@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Repositories\DailyClassRepository;
 use App\Repositories\Interfaces\EnrollmentInterface;
 use App\Repositories\Interfaces\RepresentativeInterface;
 use App\Repositories\Interfaces\RoleInterface;
@@ -9,6 +10,9 @@ use App\Repositories\Interfaces\StudentInterface;
 use App\Repositories\Interfaces\TeacherInterface;
 use App\Repositories\Interfaces\UserInterface;
 use App\Repositories\EnrollmentRepository;
+use App\Repositories\Interfaces\DailyClassInterface;
+use App\Repositories\Interfaces\LearningProjectInterface;
+use App\Repositories\LearningProjectRepository;
 use App\Repositories\RepresentativeRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\StudentRepository;
@@ -30,6 +34,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(RepresentativeInterface::class, RepresentativeRepository::class);
         $this->app->bind(TeacherInterface::class, TeacherRepository::class);
         $this->app->bind(EnrollmentInterface::class, EnrollmentRepository::class);
+        $this->app->bind(LearningProjectInterface::class, LearningProjectRepository::class);
+        $this->app->bind(DailyClassInterface::class, DailyClassRepository::class);
     }
 
     /**
