@@ -5,6 +5,7 @@
             {{ `Estos son los estudiantes que puedes inscribir en ${grade[0][enrollment.degree]} seccion
             '${enrollment.section.toUpperCase()}' ${enrollment.school_year}` }}
         </h1>
+        select
         <DataTablet :items="students.data" :headers="headers">
             <template #body="{ item }">
                 <td class="py-4 px-6 text-primary">{{ grade[0][item.degree] }}</td>
@@ -61,6 +62,7 @@ const headers = [
 
 const grade = [
     {
+        0: 'Preescolar',
         1: 'Primer Grado',
         2: 'Segundo Grado',
         3: 'Tercer Grado',

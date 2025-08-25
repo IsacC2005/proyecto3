@@ -2,7 +2,6 @@
     <AppLayout :breadcrumbs="breadcrumbs">
 
         <!--Mostrar los datos del representante-->
-
         <div v-if="representative" class="m-1 sm:m-8">
             <h2>Datos del representante</h2>
             <div>
@@ -88,7 +87,6 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
 import { defineProps } from 'vue';
 import { router } from '@inertiajs/vue3';
 
@@ -112,7 +110,10 @@ const formRepresentative = useForm({
 })
 
 const submitCreateStudent = () => {
+    formStudent.representative_id = props.representative.id;
     formStudent.post(route('student.create'));
+    formStudent.reset();
+    router.get('/student/create/');
 }
 
 const submitFindRepresentative = (num) => {

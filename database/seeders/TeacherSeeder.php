@@ -15,14 +15,14 @@ class TeacherSeeder extends Seeder
      */
     public function run(): void
     {
-        Teacher::factory()->count(100)->create();
-        // for($i = 0; $i <= 10; $i++ ){
-        //     $representative = Representative::factory()->create();
-        //     for($ix = 0; $ix <= 2; $ix++){
-        //         $student = Student::factory()->create([
-        //             'representative_id' => $representative->id
-        //         ]);
-        //     }
-        // }
+        //Teacher::factory()->count(100)->create();
+        for ($i = 0; $i <= 10; $i++) {
+            $representative = Representative::factory()->create();
+            for ($ix = 0; $ix <= 2; $ix++) {
+                $student = Student::factory()->create([
+                    'representative_id' => $representative->id
+                ]);
+            }
+        }
     }
 }

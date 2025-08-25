@@ -7,13 +7,15 @@ use App\Models\Teacher;
 use App\Repositories\Interfaces\TeacherInterface;
 use App\Services\TeacherServices;
 use App\Repositories\TeacherRepository;
+use App\Services\EvaluationServices;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TeacherController extends Controller
 {
     public function __construct(
-        private TeacherServices $teacherServices
+        private TeacherServices $teacherServices,
+        private EvaluationServices $evaluationServices
     ) {}
     /**
      * Display a listing of the resource.
@@ -76,8 +78,38 @@ class TeacherController extends Controller
      * This method should return a view with a form to edit
      * the specified resource.
      */
-    public function edit(string $id)
+
+    public function listStudentsEvaluate(Request $request)
     {
+        $request->validate([
+            'class_id' => 'required|integer'
+        ]);
+        $class_id = $request->input('class_id');
+        $data = $this->evaluationServices->listStudentsByClass($class_id);
+        return Inertia::render('Teacher/ListStudentsEvaluate', [
+            'students' => $data
+        ]);
+    }
+
+
+    public function evaluateStudent(Request $request)
+    {
+        $evaluation_id = $request->input('evaluation_id');
+        $student_id = $request->input('student_id');
+        $note = $request->input('note');
+
+        return "El estudiante id = $student_id tiene una nota de $note en la evaluation $evaluation_id";
+        //$this->evaluationServices->evaluateStudent($evaluation_id, $student_id, $note);
+    }
+
+    public function edit(Request $request)
+    {
+        $request->validate([
+            'teacher_id' => 'required|integer',
+        ]);
+
+        $id = $request->input('teacher_id');
+
         $data = $this->teacherServices->findTeacher($id);
         return Inertia::render('Teacher/EditTeacher', [
             'data' => $data
@@ -105,6 +137,11 @@ class TeacherController extends Controller
         return Inertia::render('Teacher/ListEnrollmentAssigns', [
             'enrollments' => $data
         ]);
+    }
+
+    public function evaluate()
+    {
+        return $this->teacherServices->evaluateShowPage();
     }
 
 

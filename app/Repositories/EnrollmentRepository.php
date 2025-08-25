@@ -62,7 +62,7 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 
 
 
-    public function assignTeacher(int $id_teacher, int $id_enrollment): bool
+    public function assignTeacher(int $id_enrollment, int $id_teacher): bool
     {
         try {
             $enrollment = Enrollment::find($id_enrollment);
@@ -84,6 +84,19 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
     }
 
 
+
+    public function teacherItsAssing(int $enrollment_id, int $teacher_id): bool
+    {
+        $enrollment = Enrollment::find($enrollment_id);
+
+        if ($enrollment->teacher->id === $teacher_id) {
+            return true;
+        }
+        return false;
+    }
+
+
+
     public function addStudent(int $enrollment_id, int $student_id): bool
     {
         try {
@@ -103,7 +116,7 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 
 
 
-    public function find(int $id): EnrollmentDTO
+    public function find(int $id, ?string $fn = null): EnrollmentDTO
     {
         try {
             $enrollmentModel = Enrollment::find($id);
@@ -111,7 +124,7 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
                 throw new EnrollmentNotFindException();
             }
 
-            return $this->transformToDTO($enrollmentModel);
+            return $this->transformToDTO($enrollmentModel, $fn);
         } catch (\Throwable $th) {
             throw new EnrollmentNotFindException();
         }
@@ -190,6 +203,30 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
         } catch (\Throwable $th) {
             throw new LearningProjectNotFindException();
         }
+    }
+
+
+
+    public function findEnrollmentOnSchoolYearByTeacher(int $teacher_id, string $school_year): array
+    {
+        $enrollmentModel = Enrollment::where('school_year', $school_year, 'AND', 'teacher_id', $teacher_id)->get();
+
+        return $this->transformListDTO($enrollmentModel);
+    }
+
+
+
+    public function findEnrollmentOnSchoolYearAndSchoolMomentByTeacher(int $teacher_id, string $school_year, int $school_moment): EnrollmentDTO | null
+    {
+        $enrollmentModel = Enrollment::where('school_year', $school_year)
+            ->where('school_moment', $school_moment)
+            ->where('teacher_id', $teacher_id)->first();
+
+        if (!$enrollmentModel) {
+            return null;
+        }
+
+        return $this->transformToDTO($enrollmentModel);
     }
 
 

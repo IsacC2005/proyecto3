@@ -12,8 +12,6 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-
-
     --font-sans: Instrument Sans, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
     --radius-lg: var(--radius);
@@ -73,7 +71,6 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-
     *,
     ::after,
     ::before,
@@ -84,7 +81,6 @@
 }
 
 @layer utilities {
-
     body,
     html {
         --font-sans:

@@ -15,6 +15,8 @@ interface TeacherInterface
 
     public function findAll(): PaginationDTO;
 
+    public function findAllNotEnrollmentAssign(string $school_year, int $school_moment): PaginationDTO;
+
     public function findByName($name): array;
 
     public function update(TeacherDTO $teacher): TeacherDTO;

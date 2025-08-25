@@ -20,6 +20,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Matricula',
         href: '#',
+        icon: Folder,
         children: [
             { title: 'Lista de matriculas', href: '/enrollment/index' },
             { title: 'Crear matricula', href: '/enrollment/create' },
@@ -29,6 +30,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Profesor',
         href: '#',
+        icon: Folder,
         children: [
             { title: 'Lista de profesores', href: '/teacher/index' },
             { title: 'Crear profesor', href: '/teacher/create' },
@@ -38,6 +40,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Estudiante',
         href: '#',
+        icon: Folder,
         children: [
             { title: 'Lista de Estudiantes', href: '/student/index' },
             { title: 'Crear Estudiantes', href: '/student/create' }
@@ -47,9 +50,10 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Proyecto de aprendizaje',
         href: '#',
+        icon: Folder,
         children: [
-            { title: 'Lista de Proyectos', href: '/project/index' },
-            { title: 'Crear Proyecto', href: '/project/create' }
+            { title: 'Lista de Proyectos', href: '/learning-project/index' },
+            { title: 'Evaluar Clase', href: '/teacher/evaluate' }
         ]
 
     }

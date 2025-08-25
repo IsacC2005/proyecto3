@@ -2,7 +2,9 @@
     <AppLayout :breadcrumbs="breadcrumbs">
         <DataTablet :items="students.data" :headers="headers">
             <template #body="{ item }">
-                <td class="py-4 px-6 text-primary">{{ item.degree }} Grado</td>
+                <td class="py-4 px-6 text-primary">{{ item.degree }} <p class="inline-block" v-if="!isMobile">ㅤGrado
+                    </p>
+                </td>
                 <td class="py-4 px-6 text-primary">{{ item.name }}</td>
                 <td class="py-4 px-6 text-primary">{{ item.surname }}</td>
                 <td :key="item.id" class="py-4 px-6 text-primary">
@@ -21,7 +23,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import DataTablet from '@/components/DataTablet.vue';
-import { defineProps } from 'vue';
+import { computed, defineProps, ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import Paginator from '@/components/Paginator.vue';
 
@@ -42,11 +44,20 @@ const props = defineProps({
     },
 });
 
-const headers = [
-    'Grado',
-    'Nombre',
-    'Apellido',
-    'Acciones'
-];
+const isMobile = ref(false);
 
+const checkMobile = () => {
+    isMobile.value = window.innerWidth <= 640;
+};
+
+onMounted(() => {
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+});
+
+const headers = computed(() => {
+    return isMobile.value
+        ? ['Grado', 'Nombre', 'Apellido', 'Acciones']
+        : ['Grado', 'Nombre', 'Apellido', 'Acciones'];
+});
 </script>

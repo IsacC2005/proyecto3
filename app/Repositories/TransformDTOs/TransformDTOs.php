@@ -8,9 +8,11 @@ use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-abstract Class TransformDTOs{
+abstract class TransformDTOs
+{
 
-    public function transformModel(Model $model, ?String $function = "transformToDTO"){
+    public function transformModel(Model $model, ?String $function = "transformToDTO")
+    {
         return $this->{$function}($model);
     }
 
@@ -25,5 +27,5 @@ abstract Class TransformDTOs{
 
     abstract protected function transformToDetailDTO(Model $model): DTODetail;
 
-    abstract protected function transformToSearchDTO(Model $model): DTOSearch;
+    //abstract protected function transformToSearchDTO(Model $model): DTOSearch;
 }

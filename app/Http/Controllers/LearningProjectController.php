@@ -22,7 +22,10 @@ class LearningProjectController extends Controller
      */
     public function index()
     {
-        // Debería devolver una vista con todos los elementos.
+        $data = $this->learningProjectServices->findByTeacher();
+        return Inertia::render('LearningProject/ListLearningProjects', [
+            'projects' => $data
+        ]);
     }
 
     /**
@@ -64,7 +67,10 @@ class LearningProjectController extends Controller
      */
     public function show(string $id)
     {
-        // Debería mostrar un elemento específico según su ID.
+        $data = $this->learningProjectServices->findById($id);
+        return Inertia::render('LearningProject/ShowLearninProject', [
+            'project' => $data
+        ]);
     }
 
     /**

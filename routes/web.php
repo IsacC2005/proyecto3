@@ -1,6 +1,7 @@
 <?php
 
 use App\DTOs\UserDTO;
+use App\Http\Controllers\DailyClassController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\LearningProjectController;
@@ -32,11 +33,14 @@ Route::get('/teacher/index', [TeacherController::class, 'index']);
 Route::get('/teacher/create', [TeacherController::class, 'create']);
 Route::post('/teacher/create', [TeacherController::class, 'store'])->name('teacher.create');
 
-Route::get('/teacher/edit/{id}', [TeacherController::class, 'edit']);
+Route::get('/teacher/edit', [TeacherController::class, 'edit']);
 Route::get('/teacher/update/{id}', [TeacherController::class, 'update'])->name('teacher.update');
 
 Route::get('teacher/enrollments-assigns', [TeacherController::class, 'enrollmentsAssigns']);
 
+Route::get('/teacher/evaluate', [TeacherController::class, 'evaluate']);
+Route::get('/teacher/evaluate/class', [TeacherController::class, 'listStudentsEvaluate']);
+Route::post('/teacher/evaluate/class/save', [TeacherController::class, 'evaluateStudent'])->name('teacher.evaluateStudent');
 /**
  * TODO: Rutas para Students
  */
@@ -62,7 +66,7 @@ Route::get('/enrollment/index', [EnrollmentController::class, 'index']);
 Route::get('/enrollment/create', [EnrollmentController::class, 'create']);
 Route::post('/enrollment/create', [EnrollmentController::class, 'store'])->name('enrollment.create');
 
-Route::get('/enrollment/assign-teacher/{id}', [EnrollmentController::class, 'assignTeacher']);
+Route::get('/enrollment/assign-teacher/', [EnrollmentController::class, 'assignTeacher']);
 Route::post('/enrollment/assign-teacher', [EnrollmentController::class, 'assignTeacherSave'])->name('enrollment.assign-teacher');
 
 Route::get('/enrollment/add-student/', [EnrollmentController::class, 'addStudent']);
@@ -73,8 +77,19 @@ Route::post('/enrollment/add-student/', [EnrollmentController::class, 'addStuden
  */
 
 Route::get('/learning-project/index', [LearningProjectController::class, 'index']);
+
+Route::get('/learning-project/show/{id}', [LearningProjectController::class, 'show']);
+
 Route::get('/learning-project/create', [LearningProjectController::class, 'create']);
 Route::post('/learning-project/create', [LearningProjectController::class, 'store'])->name('learning-project.create');
+
+
+/**
+ * TODO: Rutas para DailyClass
+ */
+Route::get('/daily-class/edit/{id}', [DailyClassController::class, 'edit'])->name('learning-project.daily-class.edit');
+
+Route::put('daily-class/update/{id}', [DailyClassController::class, 'update']);
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

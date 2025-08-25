@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('representatives', function (Blueprint $table) {
             $table->id();
             $table->integer('idcard');
-            $table->integer('phone');
+            $table->string('phone')->length(11)->nullable();
             $table->string('name')->length(100);
             $table->string('surname')->length(100);
             $table->string('direction');

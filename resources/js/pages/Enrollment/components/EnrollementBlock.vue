@@ -27,7 +27,7 @@
                     {{ section.teacher.name + " " + section.teacher.surname }}
                 </p>
                 <div v-else>
-                    <Link :href="`/enrollment/assign-teacher/${section.id}`">
+                    <Link href="/enrollment/assign-teacher" :data="{ enrollment_id: section.id }">
                     Asignar profesor
                     </Link>
                 </div>

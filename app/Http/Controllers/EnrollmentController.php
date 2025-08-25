@@ -56,11 +56,16 @@ class EnrollmentController extends Controller
 
 
 
-    public function assignTeacher(int $id)
+    public function assignTeacher(Request $request)
     {
-        $data = $this->teacherServices->findAll();
+        $request->validate([
+            'enrollment_id' => 'required|integer',
+        ]);
+        $enrollment_id = $request->input('enrollment_id');
+
+        $data = $this->teacherServices->findAllNotEnrollmentPeriod($enrollment_id);
         return Inertia::render('Enrollment/AsignateTeacher', [
-            'id_enrollment' => $id,
+            'id_enrollment' => $enrollment_id,
             'teachers' => $data
         ]);
     }
@@ -86,7 +91,9 @@ class EnrollmentController extends Controller
             'enrollment_id' => 'required|integer',
         ]);
 
-        return $this->enrollmentServices->addStudentPage($request->input('enrollment_id'));
+        $id = $request->input('enrollment_id');
+
+        return $this->enrollmentServices->addStudentPage($id);
     }
 
 

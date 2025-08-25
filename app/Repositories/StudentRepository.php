@@ -169,24 +169,14 @@ class StudentRepository extends TransformDTOs implements StudentInterface
     public function findStudentByDailyClass(int $daily_class_id): array
     {
         try {
-            $dailyClassModel = DailyClass::find($daily_class_id);
-            if (!$dailyClassModel) {
+            $dailyClassModel = DailyClass::with('learning_project.enrollment.students')->find($daily_class_id);
+            if (!$dailyClassModel | !$dailyClassModel->learning_project || !$dailyClassModel->learning_project->enrollment) {
                 throw new DailyClassNotExistException();
             }
-            $id = $dailyClassModel->learning_project_id;
-            $studentModels = Student::whereHas('enrollments', function ($query) use ($id) {
-                $query->whereHas('learning_project', function ($subQuery) use ($id) {
-                    $subQuery->where('id', $id);
-                });
-            })->get();
 
-            if (!$studentModels) {
-                throw new StudentNotFindException();
-            }
-
-            return $this->transformListDTO($studentModels->toArray());
+            return $this->transformListDTO($dailyClassModel->learning_project->enrollment->students);
         } catch (\Throwable $th) {
-            throw new StudentNotFindException();
+            throw new StudentNotFindException($th->getMessage());
         }
     }
 

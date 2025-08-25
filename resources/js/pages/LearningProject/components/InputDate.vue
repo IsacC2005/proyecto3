@@ -1,7 +1,8 @@
 <template>
     <div class="date-input-container">
         <label :for="props.id" class="date-label">Selecciona una fecha:</label>
-        <input type="date" ref="myDateInput" :id="props.id"
+        <input type="date" @input="emit('update:modelValue', new Date($event.target.value))" ref="myDateInput"
+            :id="props.id"
             class="bg-input border border-muted-foreground text-foreground text-sm rounded-lg block w-full p-2.5 mt-2"
             :min="today" required />
         <p v-if="error" class="text-[0.75rem] text-red-700">{{ error }}</p>
@@ -12,10 +13,13 @@
 import { ref, onMounted, defineProps, defineEmits } from 'vue';
 
 const myDateInput = ref(null);
+const DateSelect = ref(null);
 
 //const data = ref(<string | null>(null));
 
 onMounted(() => {
+
+    setToday();
     // Verificamos que el ref tenga un valor (es decir, el elemento HTML)
     if (myDateInput.value) {
         myDateInput.value.addEventListener('change', (event) => {
@@ -38,6 +42,10 @@ onMounted(() => {
 });
 
 const props = defineProps({
+    modelValue: {
+        type: Object as () => Date,
+        required: true,
+    },
     id: {
         type: String,
         required: true,
@@ -48,6 +56,10 @@ const props = defineProps({
     },
 
 });
+
+const sendDate = () => {
+    props.onDate(DateSelect);
+}
 
 // Definición de los eventos emitidos por el componente
 const emit = defineEmits(['update:modelValue']);
@@ -65,9 +77,6 @@ const setToday = () => {
 };
 
 // Hook del ciclo de vida para inicializar el componente
-onMounted(() => {
-    setToday();
-});
 </script>
 
 <style scoped>

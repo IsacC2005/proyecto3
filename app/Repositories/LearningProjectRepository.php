@@ -21,6 +21,7 @@ use Illuminate\Support\Collection;
 use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\LearningProjectDetailDTO;
 use App\DTOs\Searches\DTOSearch;
+use App\Factories\DailyClassFactory;
 
 class LearningProjectRepository extends TransformDTOs implements LearningProjectInterface
 {
@@ -56,7 +57,7 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
 
 
-    public function find($id): LearningProjectDTO
+    public function find(int $id, ?string $fn = null): LearningProjectDTO | LearningProjectDetailDTO
     {
         try {
             $project = LearningProject::find($id);
@@ -64,9 +65,9 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
                 throw new LearningProjectNotFindException();
             }
 
-            return $this->transformToDTO($project);
+            return $this->$fn($project);
         } catch (\Throwable $th) {
-            throw new LearningProjectNotFindException();
+            throw new LearningProjectNotFindException($th->getMessage());
         }
     }
 
@@ -92,9 +93,9 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
     {
         try {
             $project = LearningProject::where('enrollment_id', $enrollment_id)->first();
+
             if (!$project) {
                 return null;
-                throw new LearningProjectNotFindException();
             }
 
             return $this->transformToDTO($project);
@@ -105,7 +106,7 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
 
 
-    public function findByTeacher(int $teacher_id): array
+    public function findByTeacher(int $teacher_id, ?string $fn = null): array
     {
         try {
 
@@ -115,9 +116,9 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
             }
 
             $projects = LearningProject::where('teacher_id', $teacherModel->id)->get();
-            return $this->transformListDTO($projects);
+            return $this->transformListDTO($projects, $fn);
         } catch (\Throwable $th) {
-            throw new LearningProjectNotFindException();
+            throw new LearningProjectNotFindException($th->getMessage());
         }
     }
 
@@ -194,14 +195,26 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
     protected function transformToDetailDTO(Model $model): DTODetail
     {
-
-        return new LearningProjectDetailDTO(
+        $project = new LearningProjectDetailDTO(
             id: $model->id,
             title: $model->title,
             content: $model->content,
             teacher: null,
             enrollment: null,
         );
+
+        $classes = $model->daily_classes;
+
+        foreach ($classes as $class) {
+            $project->addDailyClasses(DailyClassFactory::fromArray([
+                'id' => $class->id,
+                'date' => $class->date,
+                'title' => $class->title,
+                'content' => $class->content
+            ]));
+        }
+
+        return $project;
     }
 
     protected function transformToSearchDTO(Model $model): DTOSearch

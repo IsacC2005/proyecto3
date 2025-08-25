@@ -9,8 +9,8 @@ use App\Models\DailyClass;
 
 class LearningProjectDetailDTO implements DTODetail
 {
-    private $tickets = [];
-    private $DailyClass = [];
+    private array $tickets = [];
+    public array $DailyClass = [];
 
     public function __construct(
         public int $id,

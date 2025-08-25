@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTOs\Details\DailyClassDetailDTO;
 use App\DTOs\Summary\DailyClassDTO;
 use App\Exceptions\DailyClass\DailyClassNotCreateException;
 use App\Repositories\Interfaces\DailyClassInterface;
@@ -40,4 +41,15 @@ class DailyClassServices
 
         $this->dailyClassRepository->create($data);
     }
+
+
+
+    public function findById(int $id): DailyClassDTO | DailyClassDetailDTO
+    {
+        return $this->dailyClassRepository->find($id, 'transformToDetailDTO');
+    }
+
+
+
+    public function updateClass(int $id, DailyClassDetailDTO $data) {}
 }

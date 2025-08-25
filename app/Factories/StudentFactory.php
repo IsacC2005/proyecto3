@@ -18,7 +18,7 @@ class StudentFactory implements Factory
             'degree' => 'required|integer|min:0 |max:6',
             'name' => 'required|string|max:100',
             'surname' => 'required|string|max:100',
-            'representative_id' => 'integer',
+            'representative_id' => 'required|integer',
         ]);
 
         if ($validator->fails()) {

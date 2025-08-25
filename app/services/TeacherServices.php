@@ -8,19 +8,24 @@ use App\Constants\RoleConstants;
 use App\DTOs\PaginationDTO;
 use App\Exceptions\Enrollment\EnrollmentNotFindException;
 use App\Exceptions\Teacher\TeacherNotFindException;
+use App\Repositories\Interfaces\DailyClassInterface;
+use App\Repositories\Interfaces\LearningProjectInterface;
 use App\Repositories\Interfaces\TeacherInterface;
 use Dotenv\Parser\Entry;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class TeacherServices
 {
 
     public function __construct(
         private TeacherInterface $teacherRepository,
-        private EnrollmentServices $enrollmentRepository,
+        private EnrollmentServices $enrollmentServices,
         private UserServices $userServices,
-        private RoleServices $roleServices
+        private RoleServices $roleServices,
+        private LearningProjectInterface $projectRepository,
+        private DailyClassInterface $dailyClassRepository
     ) {}
 
 
@@ -47,15 +52,48 @@ class TeacherServices
     }
 
 
+    public function findAllNotEnrollmentPeriod(int $enrollment_id): PaginationDTO
+    {
+        $enrollment = $this->enrollmentServices->findEnrollment($enrollment_id);
+
+        if (!$enrollment) {
+            throw new EnrollmentNotFindException($enrollment_id);
+        }
+
+        return $this->teacherRepository->findAllNotEnrollmentAssign($enrollment->school_year, $enrollment->school_moment);
+    }
+
+
     public function enrollmentsAssigns()
     {
         $id = Auth::user()->userable_id;
 
-        if (!$id) {
-            throw new TeacherNotFindException('No se encontro a el profesor asociado a este usuario', 404);
-        }
-        return $this->enrollmentRepository->findEnrollmentByTeacher(Auth::user()->userable_id, 'transformToDetailDTO');
+        $teacher = $this->teacherRepository->find($id);
+
+        return $this->enrollmentServices->findEnrollmentByTeacher(Auth::user()->userable_id, 'transformToDetailDTO');
     }
+
+
+
+    public function evaluateShowPage()
+    {
+        $id = Auth::user()->userable_id;
+
+        $teacher = $this->teacherRepository->find($id);
+
+        $enrollment = $this->enrollmentServices->findEnrollmentActiveByTeacher($id);
+
+        $learningProject = $this->projectRepository->findByEnrollment($enrollment->id);
+
+        $dailyClasses = $this->dailyClassRepository->findByLearningProject($learningProject->id);
+
+        return Inertia::render('Teacher/EvaluateTeacher', [
+            'evaluations' => $dailyClasses
+        ]);
+    }
+
+
+    public function listStudentsEvaluate(int $class_id) {}
 
 
     public function updateTeacher(TeacherDTO $teacherDTO)

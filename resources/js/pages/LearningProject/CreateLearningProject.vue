@@ -1,8 +1,9 @@
 <template>
     <AppLayout>
         <h1>Crear un Nuevo Proyecto de Aprendizaje</h1>
+        {{ learning_project }}
 
-        <div v-if="enrollment.length > 0">
+        <div v-if="learning_project && learning_project.length != 0" class="m-8 p-4 border rounded bg-gray-100">
             <h2 class="text-2xl font-bold">¡Ya estás inscrito en un proyecto!</h2>
         </div>
 
@@ -20,19 +21,14 @@
                     <div v-if="form.errors.title" class="text-red-600 mt-2 text-sm">{{ form.errors.title }}</div>
                 </div>
 
-                <div v-for="(clase, index) in form.dailyClasses" :key="index" class="mb-4">
-                    <label :for="'daily_class_' + index"
-                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                        Clase del día {{ index + 1 }}
-                    </label>
-                    <input v-model="form.dailyClasses[index].title" type="text" :id="'daily_class_' + index"
-                        class="bg-input border border-muted-foreground text-foreground text-sm rounded-lg block w-full p-2.5"
-                        placeholder="Ej: Introducción a Vue.js" required />
-                    <div v-if="form.errors[`dailyClass.${index}`]" class="text-red-600 mt-2 text-sm">{{
-                        form.errors[`dailyClass.${index}`] }}</div>
+                <!---->
 
-                    <InputDate v-model="form.dailyClasses[index].date" :id="'daily_class_date_' + index">
-                    </InputDate>
+                <textEditor :onContent="subContent"></textEditor>
+
+
+                <!---->
+                <div v-for="(clase, index) in form.dailyClasses" :key="index" class="mb-4">
+                    <DailyClass v-model="form.dailyClasses[index]" :index="index" :dailyClass="clase" />
                 </div>
 
                 <button type="button" @click="addClass"
@@ -54,12 +50,26 @@
 
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { defineProps } from 'vue';
+import { defineProps, ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import InputDate from './components/InputDate.vue';
+import textEditor from './components/text-editor.vue';
+import DailyClass from './components/DailyClass.vue';
+import Modal from './components/Modal.vue';
+
+
+const isModalOpen = ref(false);
+
+const openModal = () => {
+    isModalOpen.value = true;
+};
+
+const alert = () => {
+
+    return console.log('Holaa')
+}
 
 const props = defineProps({
-    enrollment: {
+    learning_project: {
         type: Array,
         required: true,
         default: () => [],
@@ -102,11 +112,27 @@ const form = useForm<LearningProject>({
     }],
 });
 
+const showModal = () => {
+    // Show the modal
+}
+
+const onContent = ref({});
+
+const subContent = (content) => {
+    onContent.value = content;
+}
+
+const onDate = ref({});
+
+const subDate = (date) => {
+    onDate.value = date;
+}
 const test = () => {
     console.log(form.dailyClasses[0])
 }
 
 const submit = () => {
+    form.content = onContent.value;
     form.post(route('learning-project.create'), {
         preserveScroll: true,
         onSuccess: () => {

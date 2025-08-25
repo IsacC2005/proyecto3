@@ -2,13 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Factories\DailyClassFactory;
+use App\Services\DailyClassServices;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class DailyClassController extends Controller
 {
+
+    public function __construct(
+        private DailyClassServices $dailyClassServices
+    ) {}
     /**
      * Display a listing of the resource.
-     * 
+     *
      * This method should retrieve all resources from the database
      * and return a view displaying the list of resources.
      */
@@ -19,7 +26,7 @@ class DailyClassController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     * 
+     *
      * This method should return a view containing a form
      * to create a new resource.
      */
@@ -30,7 +37,7 @@ class DailyClassController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * 
+     *
      * This method should validate the request data and store
      * a new resource in the database.
      */
@@ -41,7 +48,7 @@ class DailyClassController extends Controller
 
     /**
      * Display the specified resource.
-     * 
+     *
      * This method should retrieve and display a single resource
      * identified by its ID.
      */
@@ -52,29 +59,40 @@ class DailyClassController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     * 
+     *
      * This method should return a view with a form to edit
      * the specified resource.
      */
     public function edit(string $id)
     {
-        // Debería mostrar el formulario para editar un elemento existente.
+        $data = $this->dailyClassServices->findById($id);
+        return Inertia::render(
+            'LearningProject/DailyClass/EditDailyClass',
+            [
+                'dailyClass' => $data
+            ]
+        );
     }
 
     /**
      * Update the specified resource in storage.
-     * 
+     *
      * This method should validate the request data and update
      * the specified resource in the database.
      */
     public function update(Request $request, string $id)
     {
-        // Debería actualizar un elemento existente en la base de datos.
+
+        $data = DailyClassFactory::fromRequestDetail($request);
+
+        $this->dailyClassServices->updateClass($id, $data);
+
+        return $request;
     }
 
     /**
      * Remove the specified resource from storage.
-     * 
+     *
      * This method should delete the specified resource from the database.
      */
     public function destroy(string $id)

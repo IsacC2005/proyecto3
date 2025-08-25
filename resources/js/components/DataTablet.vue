@@ -1,7 +1,7 @@
 <template>
 
 
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg" :class="{ 'max-w-xs mx-auto': isMobile }">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-card-foreground uppercase bg-card dark:bg-card dark:text-gray-400">
                 <tr>
@@ -35,5 +35,18 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+});
+
+import { ref, computed, onMounted } from 'vue';
+
+const isMobile = ref(false);
+
+const checkMobile = () => {
+    isMobile.value = window.innerWidth <= 640;
+};
+
+onMounted(() => {
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
 });
 </script>

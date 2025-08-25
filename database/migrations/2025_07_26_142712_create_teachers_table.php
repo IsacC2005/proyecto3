@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->length(100);
             $table->string('surname')->length(100);
-            $table->integer('phone')->nullable();
+            $table->string('phone')->length(11)->nullable();
             $table->timestamps();
         });
     }

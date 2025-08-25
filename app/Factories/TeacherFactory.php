@@ -21,7 +21,7 @@ class TeacherFactory implements Factory
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
             'surname' => 'required|string|max:100',
-            'phone' => 'required|integer',
+            'phone' => 'required|string|max:11',
             'email' => 'required|string|unique:users',
             'password' => 'required|string|min:8',
         ]);

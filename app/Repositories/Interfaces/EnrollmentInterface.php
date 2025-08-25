@@ -9,7 +9,9 @@ interface EnrollmentInterface
 {
     public function create(EnrollmentDTO $enrollment): EnrollmentDTO;
 
-    public function assignTeacher(int $id_teacher, int $id_enrollment): bool;
+    public function assignTeacher(int $id_enrollment, int $id_teacher): bool;
+
+    public function teacherItsAssing(int $enrollment_id, int $teacher_id): bool;
 
     public function addStudent(int $enrollment_id, int $student_id): bool;
 
@@ -22,6 +24,10 @@ interface EnrollmentInterface
     public function findByStudent(int $student_id): array;
 
     public function findByLearningProject(int $learningProject): EnrollmentDTO;
+
+    public function findEnrollmentOnSchoolYearByTeacher(int $teacher_id, string $school_year): array;
+
+    public function findEnrollmentOnSchoolYearAndSchoolMomentByTeacher(int $teacher_id, string $school_year, int $school_moment): EnrollmentDTO | null;
 
     public function search(EnrollmentDTO $enrollment): array;
 

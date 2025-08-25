@@ -9,13 +9,13 @@ interface LearningProjectInterface
 {
     public function create(LearningProjectDetailDTO $learningProject): LearningProjectDTO;
 
-    public function find($id): LearningProjectDTO;
+    public function find(int $id, ?string $fn = null): LearningProjectDTO | LearningProjectDetailDTO;
 
     public function findAll(): array;
 
     public function findByEnrollment(int $enrollment_id): LearningProjectDTO | null;
 
-    public function findByTeacher(int $teacher_id): array;
+    public function findByTeacher(int $teacher_id, ?string $fn = null): array;
 
     public function search(LearningProjectDTO $learningProject): array;
 

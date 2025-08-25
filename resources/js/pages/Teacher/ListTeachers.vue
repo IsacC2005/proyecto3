@@ -6,19 +6,20 @@
 
             <DataTable :items="teachers.data" :headers="headers">
                 <template #body="{ item }">
+                    <td v-if="!isMobile" class="py-4 px-6 text-primary text-sm">{{ item.id }}</td>
                     <td class="py-4 px-6 text-primary">{{ item.name }}</td>
                     <td class="py-4 px-6 text-primary">{{ item.surname }}</td>
-                    <td class="py-4 px-6 text-primary">{{ item.phone }}</td>
+                    <td v-if="!isMobile" class="py-4 px-6 text-primary text-sm">{{ item.phone }}</td>
                     <td :key="item.id" class="py-4 px-6 text-primary">
-                        <a :href="`/teacher/edit/${item.id}`" class="
+                        <Link href="/teacher/edit" :data="{ teacher_id: item.id }" class="
                             text-foreground
                             border border-muted-foreground
                             hover:text-background hover:bg-foreground
-                            font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 00">Modificar</a>
+                            font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 00">Modificar</Link>
                     </td>
                 </template>
             </DataTable>
-            <Paginator :pages="teachers.links"/>
+            <Paginator :pages="teachers.links" />
         </div>
     </AppLayout>
 </template>
@@ -27,9 +28,9 @@
 import { defineProps } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import DataTable from '@/components/DataTablet.vue'
-import BotomGrup from '@/components/BotomGrup.vue';
 import Paginator from '@/components/Paginator.vue';
-
+import { ref, computed, onMounted } from 'vue';
+import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
     teachers: {
@@ -38,11 +39,20 @@ const props = defineProps({
     },
 });
 
-// Definimos las columnas de la tabla de forma declarativa
-const headers = [
-    'Nombre',
-    'Apellido',
-    'Teléfono',
-    'Acciones'
-];
+const isMobile = ref(false);
+
+const checkMobile = () => {
+    isMobile.value = window.innerWidth <= 640;
+};
+
+onMounted(() => {
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+});
+
+const headers = computed(() => {
+    return isMobile.value
+        ? ['Nombre', 'Apellido', 'Acciones']
+        : ['ID', 'Nombre', 'Apellido', 'Teléfono', 'Acciones'];
+});
 </script>

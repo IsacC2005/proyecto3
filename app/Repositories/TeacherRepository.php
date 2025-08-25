@@ -75,7 +75,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
 
     public function findAll(): PaginationDTO
     {
-        $teacherModels = Teacher::orderBy('created_at', 'desc')->paginate(10);
+        $teacherModels = Teacher::orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
         $paginationDTO = new PaginationDTO($teacherModels);
 
@@ -86,6 +86,22 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
         return $paginationDTO;
     }
 
+
+    public function findAllNotEnrollmentAssign(string $school_year, int $school_moment): PaginationDTO
+    {
+        $teacherModels = Teacher::whereDoesntHave('enrollments', function ($query) use ($school_year, $school_moment) {
+            $query->where('school_year', $school_year)
+                ->where('school_moment', $school_moment);
+        })->orderBy('created_at', 'desc')->paginate(10)->withQueryString();;
+
+        $paginationDTO = new PaginationDTO($teacherModels);
+
+        $data = $this->transformListDTO($teacherModels->getCollection());
+
+        $paginationDTO->data = $data;
+
+        return $paginationDTO;
+    }
 
 
     public function findByEmail($email): TeacherDTO
@@ -166,7 +182,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
         );
     }
 
-	protected function transformToDetailDTO(Model $model): DTODetail
+    protected function transformToDetailDTO(Model $model): DTODetail
     {
         return new TeacherDetailDTO(
             id: $model->id,
@@ -177,7 +193,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
         );
     }
 
-	protected function transformToSearchDTO(Model $model): DTOSearch
+    protected function transformToSearchDTO(Model $model): DTOSearch
     {
         // TODO
     }
