@@ -3,6 +3,7 @@
 
 namespace App\Repositories;
 
+use App\Constants\TDTO;
 use App\DTOs\PaginationDTO;
 use App\DTOs\Summary\StudentDTO;
 use App\Exceptions\DailyClass\DailyClassNotExistException;
@@ -20,11 +21,8 @@ use App\Models\Student;
 use App\Repositories\interfaces\StudentInterface;
 use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use App\DTOs\Details\DTODetail;
-use App\DTOs\Searches\DTOSearch;
 
 class StudentRepository extends TransformDTOs implements StudentInterface
 {
@@ -34,8 +32,8 @@ class StudentRepository extends TransformDTOs implements StudentInterface
         try {
 
             $studentModel = Student::create([
-                'representative_id' => $student->representative_id,
-                'degree' => $student->degree,
+                'representative_id' => $student->representativeId,
+                'grade' => $student->grade,
                 'name' => $student->name,
                 'surname' => $student->surname
             ]);
@@ -66,7 +64,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function findAllStudent(): PaginationDTO
+    public function findAllStudent(?string $fn = TDTO::SUMMARY): PaginationDTO
     {
         try {
             $studentModels = Student::orderBy('created_at', 'desc')->paginate(10);
@@ -103,17 +101,17 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function findStudentByEnrollment(int $enrollment_id): array
+    public function findStudentByEnrollment(int $enrollmentId): array
     {
 
         try {
-            $enrollment = Enrollment::find($enrollment_id);
+            $enrollment = Enrollment::find($enrollmentId);
             if (!$enrollment) {
                 throw new StudentNotFindInTheEnrollmentException();
             }
 
-            $students = Student::whereHas('enrollments', function ($query) use ($enrollment_id) {
-                $query->where('id', $enrollment_id);
+            $students = Student::whereHas('enrollments', function ($query) use ($enrollmentId) {
+                $query->where('id', $enrollmentId);
             })->get();
 
             return $this->transformListDTO($students->toArray());
@@ -145,12 +143,12 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function findStudentByLearningProject(int $learning_project_id): array
+    public function findStudentByLearningProject(int $learningProjectId): array
     {
         try {
-            $studentModels = Student::whereHas('enrollments', function ($query) use ($learning_project_id) {
-                $query->whereHas('learning_project', function ($subQuery) use ($learning_project_id) {
-                    $subQuery->where('id', $learning_project_id);
+            $studentModels = Student::whereHas('enrollments', function ($query) use ($learningProjectId) {
+                $query->whereHas('learning_project', function ($subQuery) use ($learningProjectId) {
+                    $subQuery->where('id', $learningProjectId);
                 });
             })->get();
 
@@ -166,10 +164,10 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function findStudentByDailyClass(int $daily_class_id): array
+    public function findStudentByDailyClass(int $dailyClassId): array
     {
         try {
-            $dailyClassModel = DailyClass::with('learning_project.enrollment.students')->find($daily_class_id);
+            $dailyClassModel = DailyClass::with('learning_project.enrollment.students')->find($dailyClassId);
             if (!$dailyClassModel | !$dailyClassModel->learning_project || !$dailyClassModel->learning_project->enrollment) {
                 throw new DailyClassNotExistException();
             }
@@ -182,14 +180,14 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function findStudentByRepresentative(int $representative_id): array
+    public function findStudentByRepresentative(int $representativeId): array
     {
         try {
-            $representativeModel = Representative::find($representative_id)->firs();
+            $representativeModel = Representative::find($representativeId)->firs();
             if (!$representativeModel) {
                 throw new RepresentativeNotExistException();
             }
-            $studentModels = Student::where('representative_id', $representative_id)->get();
+            $studentModels = Student::where('representative_id', $representativeId)->get();
             if ($studentModels) {
                 throw new StudentNotFindException();
             }
@@ -239,19 +237,14 @@ class StudentRepository extends TransformDTOs implements StudentInterface
         $representative = $model->representative;
         return new StudentDTO(
             id: $model->id,
-            degree: $model->degree,
+            grade: $model->grade,
             name: $model->name,
             surname: $model->surname,
-            representative_id: $representative->id
+            representativeId: $representative->id
         );
     }
 
     protected function transformToDetailDTO(Model $model): DTODetail
-    {
-        // TODO
-    }
-
-    protected function transformToSearchDTO(Model $model): DTOSearch
     {
         // TODO
     }

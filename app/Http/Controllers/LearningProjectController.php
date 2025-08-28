@@ -24,7 +24,9 @@ class LearningProjectController extends Controller
     {
         $data = $this->learningProjectServices->findByTeacher();
         return Inertia::render('LearningProject/ListLearningProjects', [
-            'projects' => $data
+            'projects' => array_map(function ($aux) {
+                return $aux->toArray();
+            }, $data)
         ]);
     }
 
@@ -37,12 +39,12 @@ class LearningProjectController extends Controller
     public function create(Request $request)
     {
         $validated = $request->validate([
-            'enrollment_id' => 'required|numeric',
-            'teacher_id' => 'required|numeric',
+            'enrollmentId' => 'required|numeric',
+            'teacherId' => 'required|numeric',
         ]);
-        $enrollment_id = $validated['enrollment_id'];
-        $teacher_id = $validated['teacher_id'];
-        return $this->learningProjectServices->findByEnrollment($enrollment_id, $teacher_id);
+        $enrollmentId = $validated['enrollmentId'];
+        $teacherId = $validated['teacherId'];
+        return $this->learningProjectServices->findByEnrollment($enrollmentId, $teacherId);
     }
 
     /**
@@ -69,7 +71,7 @@ class LearningProjectController extends Controller
     {
         $data = $this->learningProjectServices->findById($id);
         return Inertia::render('LearningProject/ShowLearninProject', [
-            'project' => $data
+            'project' => $data->toArray()
         ]);
     }
 

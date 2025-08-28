@@ -17,6 +17,8 @@ class DailyClassServices
         private DailyClassInterface $dailyClassRepository
     ) {}
 
+
+
     public function createDailyClass(DailyClassDTO $data)
     {
 
@@ -51,5 +53,9 @@ class DailyClassServices
 
 
 
-    public function updateClass(int $id, DailyClassDetailDTO $data) {}
+    public function updateClass(int $id, DailyClassDetailDTO $data)
+    {
+        $data->id = $id;
+        $this->dailyClassRepository->update($data);
+    }
 }

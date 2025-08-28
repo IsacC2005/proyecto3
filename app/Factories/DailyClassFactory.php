@@ -6,6 +6,7 @@ use App\DTOs\Details\DailyClassDetailDTO;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Http\Request;
 use App\DTOs\Details\DTODetail;
+use App\DTOs\Details\ItemEvaluationDetailDTO;
 use App\DTOs\Summary\DailyClassDTO;
 use DateTime;
 use Dotenv\Exception\ValidationException;
@@ -29,15 +30,17 @@ class DailyClassFactory implements Factory
             date: new DateTime(),
             title: '',
             content: '',
-            learning_project_id: -0,
+            learningProjectId: -0,
         );
     }
 
     public static function fromRequestDetail(Request $request): DailyClassDetailDTO
     {
         $validator = Validator::make($request->all(), [
-            'grade' => 'required|integer|min:0 |max:6',
-            'secction' => 'required|string|max:1',
+            'title' => 'required|string|max:255',
+            'content' => 'string|nullable',
+            'indicators' => 'array|nullable',
+            'indicators*title' => 'string|nullable|max:255'
         ]);
 
         if ($validator->fails()) {
@@ -47,10 +50,19 @@ class DailyClassFactory implements Factory
         $data = new DailyClassDetailDTO(
             id: 0,
             date: new DateTime(),
-            title: '',
-            content: '',
-            learning_project: null,
+            title: $request->input('title'),
+            content: $request->input('content') ? $request->input('content') : '',
+            learningProject: null,
         );
+
+        if ($request->input('indicators')) {
+            foreach ($request->input('indicators') as $item) {
+                $data->addItemEvaluation(new ItemEvaluationDetailDTO(
+                    id: $item['id'] ?? 0,
+                    title: $item['title']
+                ));
+            }
+        }
 
         return $data;
     }
@@ -62,7 +74,7 @@ class DailyClassFactory implements Factory
             date: isset($data['date']) ? new DateTime($data['date']) : new DateTime(),
             title: $data['title'] ?? '',
             content: $data['content'] ?? '',
-            learning_project_id: $data['learning_project_id'] ?? 0,
+            learningProjectId: $data['learningProjectId'] ?? 0,
         );
     }
 
@@ -73,7 +85,7 @@ class DailyClassFactory implements Factory
             date: isset($data['date']) ? new DateTime($data['date']) : new DateTime(),
             title: $data['title'] ?? '',
             content: $data['content'] ?? '',
-            learning_project: isset($data['learning_project']) ? LearningProjectFactory::fromArray($data['learning_project']) : null,
+            learningProject: isset($data['learningProject']) ? LearningProjectFactory::fromArray($data['learningProject']) : null,
         );
     }
 }

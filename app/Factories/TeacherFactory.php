@@ -8,8 +8,6 @@ use App\DTOs\Summary\UserDTO;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Constants\RoleConstants;
-use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\TeacherDetailDTO;
 
 class TeacherFactory implements Factory

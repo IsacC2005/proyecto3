@@ -49,9 +49,9 @@ class StudentServices
 
 
 
-    public function findStudentByEnrollment(int $enrollment_id): array
+    public function findStudentByEnrollment(int $enrollmentId): array
     {
-        return $this->findStudentByEnrollment($enrollment_id);
+        return $this->findStudentByEnrollment($enrollmentId);
     }
 
 

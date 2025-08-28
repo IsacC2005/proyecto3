@@ -9,37 +9,37 @@ use App\DTOs\Summary\Userable\UserableTrait;
 
 class TeacherDTO implements UserableInterface, DTOSummary
 {
- 
+
     use UserableTrait;
 
-    private $learning_project_ids = [];
-    private $enrollment_ids = [];
+    private $learningProjectIds = [];
+    private $enrollmentIds = [];
 
     public function __construct(
         public int $id,
         public string $name,
         public string $surname,
         public int $phone,
-        public ?int $user_id = 0
+        public ?int $userId = 0
     ) {}
 
-    public function addLearningProject(int $project_id): void
+    public function addLearningProject(int $projectId): void
     {
-        $this->learning_project_ids[] = $project_id;
+        $this->learningProjectIds[] = $projectId;
     }
 
     public function getLearningProjects(): array
     {
-        return $this->learning_project_ids;
+        return $this->learningProjectIds;
     }
 
-    public function addEnrollment(int $enrollment_id): void
+    public function addEnrollment(int $enrollmentId): void
     {
-        $this->enrollment_ids[] = $enrollment_id;
+        $this->enrollmentIds[] = $enrollmentId;
     }
 
     public function getEnrollments(): array
     {
-        return $this->enrollment_ids;
+        return $this->enrollmentIds;
     }
 }

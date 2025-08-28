@@ -7,8 +7,6 @@ class ItemEvaluationDetailDTO implements DTODetail
     public function __construct(
         public int $id,
         public string $title,
-        public ?DailyClassDetailDTO $daily_class = null
+        public ?DailyClassDetailDTO $dailyClass = null
     ) {}
 }
-
-?>

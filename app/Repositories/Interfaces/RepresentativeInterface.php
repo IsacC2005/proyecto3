@@ -5,7 +5,8 @@ namespace App\Repositories\Interfaces;
 
 use App\DTOs\Summary\RepresentativeDTO;
 
-interface RepresentativeInterface {
+interface RepresentativeInterface
+{
 
     public function createRepresentative(RepresentativeDTO $representative): RepresentativeDTO;
 
@@ -15,14 +16,13 @@ interface RepresentativeInterface {
 
     public function findAllRepresentative(): array;
 
-    public function findRepresentativeByStudent(int $student_id): RepresentativeDTO;
+    public function findRepresentativeByStudent(int $studentId): RepresentativeDTO;
 
     public function findRepresentativeByName(String $name): array;
 
-    public function findRepresentativeByEnrollment(int $enrollment_id): array;
+    public function findRepresentativeByEnrollment(int $enrollmentId): array;
 
     public function updateRepresentative(RepresentativeDTO $representative): RepresentativeDTO;
 
     public function deleteRepresentative(int $id): void;
 }
-?>

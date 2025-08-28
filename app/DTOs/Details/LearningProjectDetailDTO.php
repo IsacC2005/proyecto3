@@ -10,7 +10,7 @@ use App\Models\DailyClass;
 class LearningProjectDetailDTO implements DTODetail
 {
     private array $tickets = [];
-    public array $DailyClass = [];
+    private array $DailyClass = [];
 
     public function __construct(
         public int $id,
@@ -40,5 +40,17 @@ class LearningProjectDetailDTO implements DTODetail
     public function getDailyClasses(): array
     {
         return $this->DailyClass;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'content' => $this->content,
+            'teacher' => $this->teacher ?? null,
+            'enrollment' => $this->enrollment ?? null,
+            'daily_classes' => $this->getDailyClasses()
+        ];
     }
 }

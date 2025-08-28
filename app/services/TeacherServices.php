@@ -3,16 +3,13 @@
 namespace App\Services;
 
 use App\DTOs\Summary\TeacherDTO;
-use App\DTOs\Summary\UserDTO;
 use App\Constants\RoleConstants;
+use App\Constants\TDTO;
 use App\DTOs\PaginationDTO;
 use App\Exceptions\Enrollment\EnrollmentNotFindException;
-use App\Exceptions\Teacher\TeacherNotFindException;
 use App\Repositories\Interfaces\DailyClassInterface;
 use App\Repositories\Interfaces\LearningProjectInterface;
 use App\Repositories\Interfaces\TeacherInterface;
-use Dotenv\Parser\Entry;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -32,15 +29,15 @@ class TeacherServices
 
     public function createTeacher(TeacherDTO $teacherDTO)
     {
-        $id_role = $this->roleServices->findRoleByName(RoleConstants::PROFESOR);
+        $roleId = $this->roleServices->findRoleByName(RoleConstants::PROFESOR);
 
         $userDTO = $teacherDTO->UserDTO;
 
-        $userDTO->rol_id = $id_role->id;
+        $userDTO->roleId = $roleId->id;
 
         $userModel = $this->userServices->createUser($userDTO);
 
-        $teacherDTO->user_id = $userModel->id;
+        $teacherDTO->userId = $userModel->id;
 
         $this->teacherRepository->createTeacher($teacherDTO);
     }
@@ -52,15 +49,15 @@ class TeacherServices
     }
 
 
-    public function findAllNotEnrollmentPeriod(int $enrollment_id): PaginationDTO
+    public function findAllNotEnrollmentPeriod(int $enrollmentId): PaginationDTO
     {
-        $enrollment = $this->enrollmentServices->findEnrollment($enrollment_id);
+        $enrollment = $this->enrollmentServices->findEnrollment($enrollmentId);
 
         if (!$enrollment) {
-            throw new EnrollmentNotFindException($enrollment_id);
+            throw new EnrollmentNotFindException($enrollmentId);
         }
 
-        return $this->teacherRepository->findAllNotEnrollmentAssign($enrollment->school_year, $enrollment->school_moment);
+        return $this->teacherRepository->findAllNotEnrollmentAssign($enrollment->schoolYear, $enrollment->schoolMoment);
     }
 
 
@@ -70,7 +67,7 @@ class TeacherServices
 
         $teacher = $this->teacherRepository->find($id);
 
-        return $this->enrollmentServices->findEnrollmentByTeacher(Auth::user()->userable_id, 'transformToDetailDTO');
+        return $this->enrollmentServices->findEnrollmentByTeacher(Auth::user()->userable_id, TDTO::DETAIL);
     }
 
 
@@ -85,7 +82,7 @@ class TeacherServices
 
         $learningProject = $this->projectRepository->findByEnrollment($enrollment->id);
 
-        $dailyClasses = $this->dailyClassRepository->findByLearningProject($learningProject->id);
+        $dailyClasses = $this->dailyClassRepository->findByLearningProject($learningProject->id, TDTO::DETAIL);
 
         return Inertia::render('Teacher/EvaluateTeacher', [
             'evaluations' => $dailyClasses
@@ -93,7 +90,7 @@ class TeacherServices
     }
 
 
-    public function listStudentsEvaluate(int $class_id) {}
+    public function listStudentsEvaluate(int $classId) {}
 
 
     public function updateTeacher(TeacherDTO $teacherDTO)

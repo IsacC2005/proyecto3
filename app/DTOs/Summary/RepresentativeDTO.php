@@ -6,7 +6,7 @@ namespace App\DTOs\Summary;
 class RepresentativeDTO implements DTOSummary
 {
 
-    private $student_ids = [];
+    private $studentIds = [];
 
     public function __construct(
         public int $id,
@@ -17,14 +17,13 @@ class RepresentativeDTO implements DTOSummary
         public string $direction,
     ) {}
 
-    public function addStudent(int $student_id): void
+    public function addStudent(int $studentId): void
     {
-        $this->student_ids[] = $student_id;
+        $this->studentIds[] = $studentId;
     }
 
     public function getStudents(): array
     {
-        return $this->student_ids;
+        return $this->studentIds;
     }
 }
-?>

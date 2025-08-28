@@ -11,7 +11,9 @@ use App\Repositories\Interfaces\TeacherInterface;
 use App\Repositories\Interfaces\UserInterface;
 use App\Repositories\EnrollmentRepository;
 use App\Repositories\Interfaces\DailyClassInterface;
+use App\Repositories\Interfaces\ItemEvaluationInterface;
 use App\Repositories\Interfaces\LearningProjectInterface;
+use App\Repositories\ItemEvaluationRepository;
 use App\Repositories\LearningProjectRepository;
 use App\Repositories\RepresentativeRepository;
 use App\Repositories\RoleRepository;
@@ -36,6 +38,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(EnrollmentInterface::class, EnrollmentRepository::class);
         $this->app->bind(LearningProjectInterface::class, LearningProjectRepository::class);
         $this->app->bind(DailyClassInterface::class, DailyClassRepository::class);
+        $this->app->bind(ItemEvaluationInterface::class, ItemEvaluationRepository::class);
     }
 
     /**

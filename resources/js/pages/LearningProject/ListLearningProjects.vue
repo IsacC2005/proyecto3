@@ -1,6 +1,5 @@
 <template>
     <AppLayout>
-
         <div class="p-4 sm:p-6 md:p-8">
             <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">
                 Proyectos de Aprendizaje

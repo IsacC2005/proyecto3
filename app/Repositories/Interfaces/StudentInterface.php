@@ -11,21 +11,21 @@ interface StudentInterface
 
     public function findStudentById($id): StudentDTO;
 
-    public function findAllStudent(): PaginationDTO;
+    public function findAllStudent(?string $fn = null): PaginationDTO;
 
     public function findStudentByName($name): StudentDTO;
 
-    public function findStudentByEnrollment(int $enrollment_id): array;
+    public function findStudentByEnrollment(int $enrollmentId): array;
 
     public function findStudentByDegree(int $degree, ?bool $NotAddEnrollment = false): PaginationDTO;
 
-    public function findStudentByLearningProject(int $learning_project_id): array;
+    public function findStudentByLearningProject(int $learningProjectId): array;
 
-    public function findStudentByDailyClass(int $daily_class_id): array;
+    public function findStudentByDailyClass(int $dailyClassId): array;
 
-    public function findStudentByRepresentative(int $representative_id): array;
+    public function findStudentByRepresentative(int $representativeId): array;
 
     public function updateStudent(StudentDTO $student): StudentDTO;
 
-    public function deleteStudent($id): void;
+    public function deleteStudent(int $id): void;
 }

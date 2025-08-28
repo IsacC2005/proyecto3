@@ -20,20 +20,23 @@ class Enrollment extends Model
     protected $fillable = [
         'school_year',
         'school_moment',
-        'degree',
+        'grade',
         'section',
         'classroom'
     ];
 
-    public function teacher(): BelongsTo{
+    public function teacher(): BelongsTo
+    {
         return $this->belongsTo(Teacher::class);
     }
 
-    public function learning_project(): HasOne{
+    public function learning_project(): HasOne
+    {
         return $this->hasOne(LearningProject::class);
     }
 
-    public function students(): BelongsToMany{
+    public function students(): BelongsToMany
+    {
         return $this->belongsToMany(Student::class);
     }
 }

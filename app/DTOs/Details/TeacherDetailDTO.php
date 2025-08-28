@@ -12,7 +12,7 @@ class TeacherDetailDTO implements UserableDetailInterface, DTODetail
 
     use UserableDetailTrait;
 
-    private $learning_projects = [];
+    private $learningProjects = [];
     private $enrollments = [];
 
     public function __construct(
@@ -25,12 +25,12 @@ class TeacherDetailDTO implements UserableDetailInterface, DTODetail
 
     public function addLearningProject(LearningProjectDetailDTO $learningProject): void
     {
-        $this->learning_projects[] = $learningProject;
+        $this->learningProjects[] = $learningProject;
     }
 
     public function getLearningProjects(): array
     {
-        return $this->learning_projects;
+        return $this->learningProjects;
     }
 
     public function addEnrollment(EnrollmentDetailDTO $enrollment): void

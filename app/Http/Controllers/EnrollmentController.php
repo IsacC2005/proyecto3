@@ -26,8 +26,11 @@ class EnrollmentController extends Controller
     public function index()
     {
         $data = $this->enrollmentServices->findAllEnrollment('transformToDetailDTO');
-        return Inertia::render('Enrollment/ListEnrollment', [
-            'sections' => $data
+        return Inertia::render('Enrollment/ListSections', [
+            'sections' => array_map(function ($item) {
+                return $item->toArray();
+            }, $data),
+            'message' => "Todas las matriculas"
         ]);
     }
 
@@ -59,13 +62,13 @@ class EnrollmentController extends Controller
     public function assignTeacher(Request $request)
     {
         $request->validate([
-            'enrollment_id' => 'required|integer',
+            'enrollmentId' => 'required|integer',
         ]);
-        $enrollment_id = $request->input('enrollment_id');
+        $enrollmentId = $request->input('enrollmentId');
 
-        $data = $this->teacherServices->findAllNotEnrollmentPeriod($enrollment_id);
+        $data = $this->teacherServices->findAllNotEnrollmentPeriod($enrollmentId);
         return Inertia::render('Enrollment/AsignateTeacher', [
-            'id_enrollment' => $enrollment_id,
+            'enrollmentId' => $enrollmentId,
             'teachers' => $data
         ]);
     }
@@ -74,13 +77,13 @@ class EnrollmentController extends Controller
 
     public function assignTeacherSave(Request $request)
     {
-        $id_enrollment = $request->input('id_enrollment');
-        $id_teacher = $request->input('id_teacher');
+        $enrollmentId = $request->input('enrollmentId');
+        $teacherId = $request->input('teacherId');
 
-        if (!is_numeric($id_enrollment) || !is_numeric($id_teacher)) {
-            throw new \InvalidArgumentException('El id_enrollment y id_teacher deben ser numéricos.');
+        if (!is_numeric($enrollmentId) || !is_numeric($teacherId)) {
+            throw new \InvalidArgumentException('El enrollmentId y teacherId deben ser numéricos.');
         }
-        return $this->enrollmentServices->assignTeacherToEnrollment($id_enrollment, $id_teacher);
+        return $this->enrollmentServices->assignTeacherToEnrollment($enrollmentId, $teacherId);
     }
 
 
@@ -88,10 +91,10 @@ class EnrollmentController extends Controller
     public function addStudent(Request $request)
     {
         $validated = $request->validate([
-            'enrollment_id' => 'required|integer',
+            'enrollmentId' => 'required|integer',
         ]);
 
-        $id = $request->input('enrollment_id');
+        $id = $request->input('enrollmentId');
 
         return $this->enrollmentServices->addStudentPage($id);
     }
@@ -100,15 +103,15 @@ class EnrollmentController extends Controller
     public function addStudentSave(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'enrollment_id' => 'required|integer',
-            'student_id' => 'required|integer',
+            'enrollmentId' => 'required|integer',
+            'studentId' => 'required|integer',
         ]);
 
         if ($validate->fails()) {
             throw new ValidationException($validate->messages());
         }
 
-        return $this->enrollmentServices->addStudentSave($request->input('enrollment_id'), $request->input('student_id'));
+        return $this->enrollmentServices->addStudentSave($request->input('enrollmentId'), $request->input('studentId'));
     }
     /**
      * Display the specified resource.
@@ -119,6 +122,12 @@ class EnrollmentController extends Controller
     public function show(string $id)
     {
         // Debería mostrar un elemento específico según su ID.
+    }
+
+
+    public function findEnrollmentByYearSchool(string $moment)
+    {
+        return $this->enrollmentServices->findEnrollmentByYearSchool($moment);
     }
 
     /**

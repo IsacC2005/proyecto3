@@ -20,7 +20,7 @@ class DailyClass extends Model
         return $this->belongsTo(LearningProject::class);
     }
 
-    public function evaluation_item(): HasMany
+    public function evaluation_items(): HasMany
     {
         return $this->hasMany(EvaluationItem::class);
     }

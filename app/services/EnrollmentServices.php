@@ -3,6 +3,7 @@
 
 namespace App\Services;
 
+use App\Constants\TDTO;
 use App\DTOs\Summary\EnrollmentDTO;
 use App\Exceptions\Enrollment\EnrollmentNotFindException;
 use App\Repositories\Interfaces\EnrollmentInterface;
@@ -25,12 +26,12 @@ class EnrollmentServices
     public function createEnrollment(EnrollmentDTO $enrollment)
     {
         try {
-            if ($enrollment->school_year === '') {
-                $enrollment->school_year = $this->getSchoolYearActual();
+            if ($enrollment->schoolYear === '') {
+                $enrollment->schoolYear = $this->getSchoolYearActual();
             }
 
-            if ($enrollment->school_moment === 0) {
-                $enrollment->school_moment = $this->getSchoolMomentActual();
+            if ($enrollment->schoolMoment === 0) {
+                $enrollment->schoolMoment = $this->getSchoolMomentActual();
             }
             $this->enrollmentRepository->create($enrollment);
         } catch (\Throwable $th) {
@@ -47,11 +48,27 @@ class EnrollmentServices
     }
 
 
-
-    public function addStudentPage(int $enrollment_id)
+    public function findEnrollmentByYearSchool(?String $year = null)
     {
-        $enrollment = $this->enrollmentRepository->find($enrollment_id);
-        $data = $this->studentRepository->findStudentByDegree($enrollment->degree - 1);
+        if (strlen($year) != 9) {
+            throw new \InvalidArgumentException('El formato del momento es inválido.');
+        }
+
+        $data = $this->enrollmentRepository->findByYearSchool($year, TDTO::DETAIL);
+        return Inertia::render('Enrollment/ListSections', [
+            'sections' => array_map(function ($item) {
+                return $item->toArray();
+            }, $data),
+            'message' => "Todas las matriculas del $year"
+
+        ]);
+    }
+
+
+    public function addStudentPage(int $enrollmentId)
+    {
+        $enrollment = $this->enrollmentRepository->find($enrollmentId);
+        $data = $this->studentRepository->findStudentByDegree($enrollment->grade - 1);
         return Inertia::render('Enrollment/AddStudent', [
             'enrollment' => $enrollment,
             'students' => $data
@@ -59,22 +76,22 @@ class EnrollmentServices
     }
 
 
-    public function addStudentSave(int $enrollment_id, int $student_id): void
+    public function addStudentSave(int $enrollmentId, int $studentId): void
     {
-        $this->enrollmentRepository->addStudent($enrollment_id, $student_id);
+        $this->enrollmentRepository->addStudent($enrollmentId, $studentId);
     }
 
-    public function findEnrollmentActiveByTeacher(int $teacher_id, ?string $fn = null): EnrollmentDTO
+    public function findEnrollmentActiveByTeacher(int $teacherId, ?string $fn = null): EnrollmentDTO
     {
-        $school_year = $this->getSchoolYearActual();
-        $school_moment = $this->getSchoolMomentActual();
+        $schoolYear = $this->getSchoolYearActual();
+        $schoolMoment = $this->getSchoolMomentActual();
 
         return $enrollment = $this
             ->enrollmentRepository
             ->findEnrollmentOnSchoolYearAndSchoolMomentByTeacher(
-                $teacher_id,
-                $school_year,
-                $school_moment,
+                $teacherId,
+                $schoolYear,
+                $schoolMoment,
                 $fn
             );
     }
@@ -89,32 +106,32 @@ class EnrollmentServices
         return $this->enrollmentRepository->find($id);
     }
 
-    public function findEnrollmentByTeacher(int $id_teacher, ?String $f = null): array
+    public function findEnrollmentByTeacher(int $teacherId, ?String $f = null): array
     {
-        return $this->enrollmentRepository->findByTeacher($id_teacher, $f);
+        return $this->enrollmentRepository->findByTeacher($teacherId, $f);
     }
 
     public function deleteEnrollment() {}
 
     public function addStudentEnrollent() {}
 
-    public function assignTeacherToEnrollment(int $id_enrollment, int $id_teacher)
+    public function assignTeacherToEnrollment(int $enrollmentId, int $teacherId)
     {
 
-        $enrollment = $this->enrollmentRepository->find($id_enrollment);
+        $enrollment = $this->enrollmentRepository->find($enrollmentId);
 
         $relation = $this->enrollmentRepository
             ->findEnrollmentOnSchoolYearAndSchoolMomentByTeacher(
-                $id_teacher,
-                $enrollment->school_year,
-                $enrollment->school_moment
+                $teacherId,
+                $enrollment->schoolYear,
+                $enrollment->schoolMoment
             );
 
         if ($relation) {
             throw new EnrollmentNotFindException('El profesor ya esta asignada a otra matricula', 422);
         }
 
-        $rs = $this->enrollmentRepository->assignTeacher($id_enrollment, $id_teacher);
+        $rs = $this->enrollmentRepository->assignTeacher($enrollmentId, $teacherId);
 
         if ($rs) {
             return 'Se asignó el profesor correctamente.';

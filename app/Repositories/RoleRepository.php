@@ -135,7 +135,7 @@ class RoleRepository extends TransformDTOs implements RoleInterface
     {
         $roleModel = Role::find($id);
 
-        if(!$roleModel){
+        if (!$roleModel) {
             throw new RoleNotExistException();
         }
 
@@ -164,12 +164,7 @@ class RoleRepository extends TransformDTOs implements RoleInterface
         return $roleDTO;
     }
 
-	protected function transformToDetailDTO(Model $model): DTODetail
-    {
-        // TODO
-    }
-
-	protected function transformToSearchDTO(Model $model): DTOSearch
+    protected function transformToDetailDTO(Model $model): DTODetail
     {
         // TODO
     }

@@ -26,35 +26,4 @@ export type AppPageProps<T extends Record<string, unknown> = Record<string, unkn
     sidebarOpen: boolean;
 };
 
-export interface User {
-    id: number;
-    name: string;
-    email: string;
-    avatar?: string;
-    email_verified_at: string | null;
-    created_at: string;
-    updated_at: string;
-}
-
-export interface Enrollment {
-    id: number;
-    schoole_year: string;
-    schoole_moment: number;
-    degree: number;
-    section: string;
-    classroom: number,
-    teacher: Teacher,
-    learning_project?: {
-        id: number;
-        title: string;
-    };
-}
-
-export interface Teacher {
-    id: number;
-    name: string;
-    surname: string;
-    email: string;
-}
-
 export type BreadcrumbItemType = BreadcrumbItem;

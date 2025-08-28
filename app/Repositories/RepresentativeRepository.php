@@ -64,7 +64,7 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
     {
         $representativeModel = Representative::where('idcard', $idcard)->first();
 
-        if(!$representativeModel){
+        if (!$representativeModel) {
             throw new RepresentativeNotFindException('No se encontro ningun representante con esa cedula', 404);
         }
 
@@ -88,9 +88,9 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
 
 
 
-    public function findRepresentativeByStudent(int $student_id): RepresentativeDTO
+    public function findRepresentativeByStudent(int $studentId): RepresentativeDTO
     {
-        $student = Student::find($student_id);
+        $student = Student::find($studentId);
 
         if (!$student) {
             throw new StudentNotExistException();
@@ -98,7 +98,7 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
 
         $representative = $student->representative;
 
-        if(!$representative){
+        if (!$representative) {
             throw new RepresentativeNotFindException("No se encontro el representante", 404);
         }
 
@@ -122,14 +122,16 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
 
 
 
-    public function findRepresentativeByEnrollment(int $enrollment_id): array
+    public function findRepresentativeByEnrollment(int $enrollmentId): array
     {
-        $representativeModel = Representative::whereHas('students',
-        function ($student) use ($enrollment_id){
-            $student->whereHas('enrollments', function ($query) use ($enrollment_id){
-                $query->where('id', $enrollment_id);
-            });
-        })->get();
+        $representativeModel = Representative::whereHas(
+            'students',
+            function ($student) use ($enrollmentId) {
+                $student->whereHas('enrollments', function ($query) use ($enrollmentId) {
+                    $query->where('id', $enrollmentId);
+                });
+            }
+        )->get();
 
         return $this->transformListDTO($representativeModel);
     }
@@ -174,7 +176,7 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
 
 
 
-    protected function transformToDTO(Model $model): DTOSummary
+    protected function transformToDTO(Model $model): RepresentativeDTO
     {
         return new RepresentativeDTO(
             id: $model->id,
@@ -186,12 +188,7 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
         );
     }
 
-	protected function transformToDetailDTO(Model $model): DTODetail
-    {
-        // TODO
-    }
-
-	protected function transformToSearchDTO(Model $model): DTOSearch
+    protected function transformToDetailDTO(Model $model): DTODetail
     {
         // TODO
     }

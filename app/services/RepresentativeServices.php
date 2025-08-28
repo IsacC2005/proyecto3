@@ -27,21 +27,21 @@ class RepresentativeServices
 
     public function findRepresentativeByIdcard(int $idcard): RepresentativeDTO
     {
-        return $this->representativeRepository->findRepresentativeByIdcard($idcard );
+        return $this->representativeRepository->findRepresentativeByIdcard($idcard);
     }
 
 
 
-    public function findRepresentativeByStudent(int $student_id): RepresentativeDTO
+    public function findRepresentativeByStudent(int $studentId): RepresentativeDTO
     {
-        return $this->representativeRepository->findRepresentativeByStudent($student_id);
+        return $this->representativeRepository->findRepresentativeByStudent($studentId);
     }
 
 
 
-    public function findRepresentativeByEnrollment(int $enrollment_id): array
+    public function findRepresentativeByEnrollment(int $enrollmentId): array
     {
-        return $this->representativeRepository->findRepresentativeByEnrollment($enrollment_id);
+        return $this->representativeRepository->findRepresentativeByEnrollment($enrollmentId);
     }
 
 
@@ -53,7 +53,8 @@ class RepresentativeServices
 
 
 
-    public function deleteRepresentative(int $id): void{
+    public function deleteRepresentative(int $id): void
+    {
         $this->representativeRepository->deleteRepresentative($id);
     }
 }

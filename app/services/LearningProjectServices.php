@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\TDTO;
 use App\DTOs\Details\LearningProjectDetailDTO;
 use App\Exceptions\LearningProject\LearningProjectNotCreatedException;
 use App\Exceptions\LearningProject\LearningProjectNotFindException;
@@ -38,39 +39,44 @@ class LearningProjectServices
 
     public function findById(int $id)
     {
-        return $this->projectRepository->find($id, 'transformToDetailDTO');
+        return $this->projectRepository->find($id, TDTO::DETAIL);
     }
 
     public function findByTeacher(): array
     {
-        $teacher = Auth::user()->userable;
+        $user = Auth::user();
+        if ($user->userable_type === 'App\Models\Teacher') {
+            $teacher = $user->userable;
+        } else {
+            return [];
+        }
 
-        return $this->projectRepository->findByTeacher($teacher->id ? $teacher->id : 0, 'transformToDetailDTO');
+        return $this->projectRepository->findByTeacher($teacher->id ? $teacher->id : 0, TDTO::DETAIL);
     }
 
 
-    public function findByEnrollment(int $enrollment_id, int $teacher_id)
+    public function findByEnrollment(int $enrollmentId, int $teacherId)
     {
 
-        $assingEnrollmentTeacher = $this->enrollmentRepository->teacherItsAssing($enrollment_id, $teacher_id);
+        $assingEnrollmentTeacher = $this->enrollmentRepository->teacherItsAssing($enrollmentId, $teacherId);
 
         if (!$assingEnrollmentTeacher) {
             throw new LearningProjectNotFindException("Este Profesor no tiene asignado esta matricula", 422);
         }
 
-        $rs = $this->projectRepository->findByEnrollment($enrollment_id);
+        $rs = $this->projectRepository->findByEnrollment($enrollmentId);
 
         if ($rs) {
             return Inertia::render('LearningProject/CreateLearningProject', [
-                'learning_project' => $rs,
-                'teacher_id' => $teacher_id
+                'learningProject' => $rs,
+                'teacherId' => $teacherId
 
             ]);
         } else {
             return Inertia::render('LearningProject/CreateLearningProject', [
-                'learning_project' => [],
-                'enrollment_id' => $enrollment_id,
-                'teacher_id' => $teacher_id
+                'learningProject' => [],
+                'enrollmentId' => $enrollmentId,
+                'teacherId' => $teacherId
 
             ]);
         }

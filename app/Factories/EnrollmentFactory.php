@@ -27,9 +27,9 @@ class EnrollmentFactory implements Factory
 
         return new EnrollmentDTO(
             id: 0,
-            school_year: '',
-            school_moment: 0,
-            degree: $request->input('grade'),
+            schoolYear: '',
+            schoolMoment: 0,
+            grade: $request->input('grade'),
             section: $request->input('secction'),
             classroom: 0,
         );
@@ -39,9 +39,9 @@ class EnrollmentFactory implements Factory
     {
         return new EnrollmentDetailDTO(
             id: 0,
-            school_year: $request->input('school_year'),
-            school_moment: $request->input('school_moment'),
-            degree: $request->input('grade'),
+            schoolYear: $request->input('school_year'),
+            schoolMoment: $request->input('school_moment'),
+            grade: $request->input('grade'),
             section: $request->input('secction'),
             classroom: 0,
         );
@@ -51,9 +51,9 @@ class EnrollmentFactory implements Factory
     {
         return new EnrollmentDTO(
             id: $data['id'] ?? 0,
-            school_year: $data['school_year'] ?? '',
-            school_moment: $data['school_moment'] ?? 0,
-            degree: $data['degree'] ?? 0,
+            schoolYear: $data['schoolYear'] ?? '',
+            schoolMoment: $data['schoolMoment'] ?? 0,
+            grade: $data['grade'] ?? 0,
             section: $data['section'] ?? '',
             classroom: $data['classroom'] ?? 0,
         );
@@ -63,9 +63,9 @@ class EnrollmentFactory implements Factory
     {
         return new EnrollmentDetailDTO(
             id: $data['id'] ?? 0,
-            school_year: $data['school_year'] ?? '',
-            school_moment: $data['school_moment'] ?? 0,
-            degree: $data['degree'] ?? 0,
+            schoolYear: $data['schoolYear'] ?? '',
+            schoolMoment: $data['schoolMoment'] ?? 0,
+            grade: $data['grade'] ?? 0,
             section: $data['section'] ?? '',
             classroom: $data['classroom'] ?? 0,
         );

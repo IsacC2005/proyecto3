@@ -86,7 +86,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.get(route('teaceher.update', { id: props.data.id }));
+    form.get(route('teacher.update', { id: props.data.id }));
 }
 
 

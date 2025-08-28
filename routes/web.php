@@ -62,6 +62,7 @@ Route::get('/representative/show/idcard/{id}', [RepresentativeController::class,
  */
 
 Route::get('/enrollment/index', [EnrollmentController::class, 'index']);
+Route::get('/enrollment/list/moment/{moment}', [EnrollmentController::class, 'findEnrollmentByYearSchool']);
 
 Route::get('/enrollment/create', [EnrollmentController::class, 'create']);
 Route::post('/enrollment/create', [EnrollmentController::class, 'store'])->name('enrollment.create');

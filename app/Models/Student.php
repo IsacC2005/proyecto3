@@ -11,22 +11,25 @@ class Student extends Model
 {
     use HasFactory;
 
-    protected $fillable =[
+    protected $fillable = [
         'representative_id',
-        'degree',
+        'grade',
         'name',
         'surname'
     ];
 
-    public function representative(): BelongsTo{
+    public function representative(): BelongsTo
+    {
         return $this->belongsTo(Representative::class);
     }
 
-    public function enrollments(): BelongsToMany{
+    public function enrollments(): BelongsToMany
+    {
         return $this->belongsToMany(Enrollment::class);
     }
 
-    public function evaluation_items(): BelongsToMany{
+    public function evaluation_items(): BelongsToMany
+    {
         return $this->belongsToMany(EvaluationItem::class)
             ->withPivot('note')
             ->withTimestamps();

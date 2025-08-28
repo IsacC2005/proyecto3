@@ -9,14 +9,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class EvaluationItem extends Model
 {
     protected $fillable = [
-        'title'
+        'title',
+        'daily_class_id',
+        'note'
     ];
 
-    public function daily_class(): BelongsTo{
+    public function daily_class(): BelongsTo
+    {
         return $this->belongsTo(DailyClass::class);
     }
 
-    public function students(): BelongsToMany{
+    public function students(): BelongsToMany
+    {
         return $this->belongsToMany(Student::class)
             ->withPivot('note')
             ->withTimestamps();

@@ -82,24 +82,28 @@ class TeacherController extends Controller
     public function listStudentsEvaluate(Request $request)
     {
         $request->validate([
-            'class_id' => 'required|integer'
+            'classId' => 'required|integer'
         ]);
-        $class_id = $request->input('class_id');
-        $data = $this->evaluationServices->listStudentsByClass($class_id);
-        return Inertia::render('Teacher/ListStudentsEvaluate', [
-            'students' => $data
-        ]);
+        $classId = $request->input('classId');
+        return $this->evaluationServices->listStudentsByClass($classId);
     }
 
 
     public function evaluateStudent(Request $request)
     {
-        $evaluation_id = $request->input('evaluation_id');
-        $student_id = $request->input('student_id');
+
+        $request->validate([
+            'indicatorId' => 'required|integer',
+            'studentId' => 'required|integer',
+            'note' => 'required|string|min:1|max:2'
+        ]);
+
+        $evaluationId = $request->input('indicatorId');
+        $studentId = $request->input('studentId');
         $note = $request->input('note');
 
-        return "El estudiante id = $student_id tiene una nota de $note en la evaluation $evaluation_id";
-        //$this->evaluationServices->evaluateStudent($evaluation_id, $student_id, $note);
+        //return "El estudiante id = $student_id tiene una nota de $note en la evaluation $evaluation_id";
+        $this->evaluationServices->evaluateStudent($evaluationId, $studentId, $note);
     }
 
     public function edit(Request $request)

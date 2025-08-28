@@ -1,5 +1,6 @@
 <template>
-    <AppLayout>s
+    <AppLayout>
+        {{ props.project }}
         <div class="p-4 sm:p-6 md:p-8">
             <h1 class="text-3xl sm:text-4xl font-bold mb-4 text-gray-800">
                 Detalles del Proyecto
@@ -23,7 +24,7 @@
                     <div v-html="props.project.content" class="text-gray-600 leading-relaxed prose max-w-none"></div>
                 </div>
 
-                <div v-for="dailyClass in props.project.DailyClass" :key="dailyClass.id"
+                <div v-for="dailyClass in props.project.daily_classes" :key="dailyClass.id"
                     class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex justify-between items-start mb-4">
                         <div>
@@ -40,18 +41,6 @@
                     </div>
 
                     <div v-html="dailyClass.content" class="text-gray-600 mb-4 prose max-w-none"></div>
-
-                    <div v-if="dailyClass.evaluations && dailyClass.evaluations.length > 0">
-                        <h4 class="text-md font-semibold text-gray-700 mt-4 mb-2">Puntos de Evaluación:</h4>
-                        <ul class="list-disc list-inside space-y-1 text-gray-600">
-                            <li v-for="evalItem in dailyClass.evaluations" :key="evalItem.id">
-                                {{ evalItem.description }}
-                            </li>
-                        </ul>
-                    </div>
-                    <div v-else class="text-sm text-gray-500 mt-4">
-                        No hay puntos de evaluación definidos para esta clase.
-                    </div>
                 </div>
             </div>
         </div>
@@ -69,7 +58,7 @@ const props = defineProps({
         required: true,
         // Añadimos una validación básica para asegurarnos de que la estructura sea la esperada
         validator: (value: any) => {
-            return value.hasOwnProperty('id') && value.hasOwnProperty('title') && value.hasOwnProperty('DailyClass');
+            return value.hasOwnProperty('id') && value.hasOwnProperty('title') && value.hasOwnProperty('daily_classes');
         }
     }
 });

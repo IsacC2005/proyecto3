@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-
+use App\Constants\TDTO;
 use App\DTOs\Summary\LearningProjectDTO;
 use App\Models\LearningProject;
 use App\Exceptions\LearningProject\LearningProjectNotCreatedException;
@@ -57,7 +57,7 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
 
 
-    public function find(int $id, ?string $fn = null): LearningProjectDTO | LearningProjectDetailDTO
+    public function find(int $id, ?string $fn = TDTO::SUMMARY): LearningProjectDTO | LearningProjectDetailDTO
     {
         try {
             $project = LearningProject::find($id);
@@ -73,7 +73,7 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
 
 
-    public function findAll(): array
+    public function findAll(?string $fn = null): array
     {
         try {
             $projects = LearningProject::all();
@@ -89,10 +89,10 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
 
 
-    public function findByEnrollment(int $enrollment_id): LearningProjectDTO | null
+    public function findByEnrollment(int $enrollmentId): LearningProjectDTO | null
     {
         try {
-            $project = LearningProject::where('enrollment_id', $enrollment_id)->first();
+            $project = LearningProject::where('enrollment_id', $enrollmentId)->first();
 
             if (!$project) {
                 return null;
@@ -106,11 +106,11 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
 
 
-    public function findByTeacher(int $teacher_id, ?string $fn = null): array
+    public function findByTeacher(int $teacherId, ?string $fn = null): array
     {
         try {
 
-            $teacherModel = Teacher::find($teacher_id);
+            $teacherModel = Teacher::find($teacherId);
             if (!$teacherModel) {
                 throw new TeacherNotExistException();
             }
@@ -142,15 +142,15 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
             $projectModel->title = $learningProject->title;
             $projectModel->content = $learningProject->content;
 
-            if ($learningProject->teacher_id) {
-                $teacher = Teacher::find($learningProject->teacher_id);
+            if ($learningProject->teacherId) {
+                $teacher = Teacher::find($learningProject->teacherId);
                 if ($teacher) {
                     $projectModel->teacher()->associate($teacher);
                 }
             }
 
-            if ($learningProject->enrollment_id) {
-                $enrollment = Enrollment::find($learningProject->enrollment_id);
+            if ($learningProject->enrollmentId) {
+                $enrollment = Enrollment::find($learningProject->enrollmentId);
                 if ($enrollment) {
                     $projectModel->enrollment()->associate($enrollment);
                 }
@@ -188,8 +188,8 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
             id: $model->id,
             title: $model->title,
             content: $model->content,
-            teacher_id: $teacher->id,
-            enrollment_id: $enrollment->id
+            teacherId: $teacher->id,
+            enrollmentId: $enrollment->id
         );
     }
 

@@ -12,8 +12,7 @@ class TicketDetailDTO implements DTODetail
         public string $average,
         public string $content,
         public string $suggestions,
-        public ?LearningProjectDetailDTO $learning_project = null,
+        public ?LearningProjectDetailDTO $learningProject = null,
         public ?StudentDetailDTO $student = null
     ) {}
 }
-?>

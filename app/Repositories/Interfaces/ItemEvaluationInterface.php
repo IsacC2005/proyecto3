@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 namespace App\Repositories\Interfaces;
@@ -9,12 +9,17 @@ interface ItemEvaluationInterface
 {
     public function create(ItemEvaluationDTO $itemEvaluation): ItemEvaluationDTO;
 
-    public function find($id): ItemEvaluationDTO;
+    public function find(int $id): ItemEvaluationDTO;
 
-    public function findAll(): array;
+    public function findAll(?string $fn = null): array;
+
+    public function getAllEvaluationByClass(int $classId): array;
+
+    public function evaluateClass(int $evaluationId, int $studentId, string $note): void;
 
     public function update(ItemEvaluationDTO $itemEvaluation): ItemEvaluationDTO;
 
-    public function delete($id): void;
+    public function delete(int $id): void;
+
+    public function deleteAllByDailyClass(int $dailyClassId): void;
 }
-?>

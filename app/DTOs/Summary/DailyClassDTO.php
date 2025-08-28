@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 namespace App\DTOs\Summary;
@@ -8,24 +8,23 @@ use DateTime;
 class DailyClassDTO implements DTOSummary
 {
 
-    private $item_evaluation_ids = [];
+    private $itemEvaluationIds = [];
 
     public function __construct(
         public int $id,
         public DateTime $date,
         public string $title,
         public string $content,
-        public int $learning_project_id
+        public int $learningProjectId
     ) {}
 
-    public function addItemEvaluation(int $itemEvaluation_id): void
+    public function addItemEvaluation(int $itemEvaluationId): void
     {
-        $this->item_evaluation_ids[] = $itemEvaluation_id;
+        $this->itemEvaluationIds[] = $itemEvaluationId;
     }
 
     public function getItemEvaluations(): array
     {
-        return $this->item_evaluation_ids;
+        return $this->itemEvaluationIds;
     }
 }
-?>

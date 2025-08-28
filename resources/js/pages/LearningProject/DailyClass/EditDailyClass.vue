@@ -37,8 +37,7 @@
 
                     <div v-for="(indicator, index) in form.indicators" :key="index"
                         class="flex items-center gap-4 mb-4">
-                        <input type="text" v-model="indicator.description"
-                            placeholder="Ej: Resuelve problemas con código"
+                        <input type="text" v-model="indicator.title" placeholder="Ej: Resuelve problemas con código"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             required>
                         <button type="button" @click="removeIndicator(index)"
@@ -70,11 +69,8 @@
                     <button type="submit" :disabled="form.processing"
                         class="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
                         <span v-if="form.processing">Guardando...</span>
-                        <Link :href="`/daily-class/update/${props.dailyClass.id}`" method="put" :data="{
-                            title: form.title,
-                            content: form.content,
-                            indicators: form.indicators
-                        }" v-else>Actualizar Clase</Link>
+                        <button v-else @click="submit" method="put">
+                            Actualizar Clase</button>
                     </button>
                     <button type="button" @click="cancel"
                         class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
@@ -90,7 +86,6 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { defineProps } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
     dailyClass: {
@@ -115,12 +110,11 @@ const props = defineProps({
 const form = useForm({
     title: props.dailyClass.title,
     content: props.dailyClass.content,
-    indicators: props.indicators, // Incluimos los indicadores
+    indicators: props.dailyClass.indicators, // Incluimos los indicadores
 });
 
 const submit = () => {
-    // La petición PUT enviará todos los datos, incluyendo el array 'indicators'
-    form.put(props.updateUrl, {
+    form.put(`/daily-class/update/${props.dailyClass.id}`, {
         preserveScroll: true,
         preserveState: true,
     });

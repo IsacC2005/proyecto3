@@ -1,51 +1,50 @@
-<?php 
+<?php
 
 namespace App\DTOs\Summary;
 
 class StudentDTO implements DTOSummary
 {
-    private $enrollment_ids = [];
-    private $ticket_ids = [];
-    private $evaluation_items_student_ids = [];
+    private $enrollmentIds = [];
+    private $ticketIds = [];
+    private $evaluationItemsStudentIds = [];
 
 
     public function __construct(
         public int $id,
-        public int $degree,
+        public int $grade,
         public string $name,
         public string $surname,
-        public ?int $representative_id = 0,
+        public ?int $representativeId = 0,
     ) {}
 
- 
-    public function addEnrollment(int  $enrollment_id): void
+
+    public function addEnrollment(int  $enrollmentId): void
     {
-        $this->enrollment_ids[] = $enrollment_id;
+        $this->enrollmentIds[] = $enrollmentId;
     }
 
     public function getEnrollments(): array
     {
-        return $this->enrollment_ids;
+        return $this->enrollmentIds;
     }
 
-    public function addTicket(int $ticket_id): void
+    public function addTicket(int $ticketId): void
     {
-        $this->ticket_ids[] = $ticket_id;
+        $this->ticketIds[] = $ticketId;
     }
 
     public function getTickets(): array
     {
-        return $this->ticket_ids;
+        return $this->ticketIds;
     }
 
-    public function addEvaluationItemStudent(int $item_id): void
+    public function addEvaluationItemStudent(int $itemId): void
     {
-        $this->evaluation_items_student_ids[] = $item_id;
+        $this->evaluationItemsStudentIds[] = $itemId;
     }
 
     public function getEvaluationItemsStudent(): array
     {
-        return $this->evaluation_items_student_ids;
+        return $this->evaluationItemsStudentIds;
     }
 }
-?>

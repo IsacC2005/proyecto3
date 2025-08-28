@@ -9,17 +9,17 @@ interface TeacherInterface
 {
     public function createTeacher(TeacherDTO $teacher): TeacherDTO;
 
-    public function find($id): TeacherDTO;
+    public function find(int $id): TeacherDTO;
 
-    public function findByEmail($email): TeacherDTO;
+    public function findByEmail(string $email): TeacherDTO;
 
-    public function findAll(): PaginationDTO;
+    public function findAll(?string $fn = null): PaginationDTO;
 
-    public function findAllNotEnrollmentAssign(string $school_year, int $school_moment): PaginationDTO;
+    public function findAllNotEnrollmentAssign(string $schoolYear, int $schoolMoment): PaginationDTO;
 
-    public function findByName($name): array;
+    public function findByName(string $name): array;
 
     public function update(TeacherDTO $teacher): TeacherDTO;
 
-    public function delete($id): void;
+    public function delete(int $id): void;
 }

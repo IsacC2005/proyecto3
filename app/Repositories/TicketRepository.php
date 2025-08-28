@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Repositories;
+
+use App\Constants\TDTO;
 use App\Repositories\Interfaces\TicketInterface;
 use App\DTOs\Summary\TicketDTO;
 use App\Exceptions\Ticket\TicketNotCreatedException;
@@ -9,17 +11,16 @@ use App\Exceptions\Ticket\TicketNotExistException;
 use App\Exceptions\Ticket\TicketNotFindException;
 use App\Exceptions\Ticket\TicketNotUpdateException;
 use App\Models\Ticket;
-
 use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use App\DTOs\Details\DTODetail;
 use App\DTOs\Searches\DTOSearch;
 
-class TicketRepository extends TransformDTOs implements TicketInterface{
+class TicketRepository extends TransformDTOs implements TicketInterface
+{
 
-	public function create(TicketDTO $ticket): TicketDTO
+    public function create(TicketDTO $ticket): TicketDTO
     {
         try {
             $ticketModel = Ticket::create([
@@ -28,7 +29,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
                 'suggestions' => $ticket->suggestions
             ]);
 
-            if(!$ticketModel){
+            if (!$ticketModel) {
                 throw new TicketNotCreatedException();
             }
 
@@ -57,7 +58,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
 
 
 
-    public function findAll(): array
+    public function findAll(?string $fn = TDTO::SUMMARY): array
     {
         try {
             $ticketModel = Ticket::all();
@@ -74,10 +75,10 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
 
 
 
-    public function findByStudent(int $student_id): array
+    public function findByStudent(int $studentId): array
     {
         try {
-            $ticketModel = Ticket::where('student_id', $student_id)->get();
+            $ticketModel = Ticket::where('student_id', $studentId)->get();
 
             if (!$ticketModel) {
                 throw new TicketNotFindException();
@@ -91,10 +92,10 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
 
 
 
-    public function findByLearningProject(int $project_id): array
+    public function findByLearningProject(int $projectId): array
     {
         try {
-            $ticketModel = Ticket::where('learning_project_id', $project_id);
+            $ticketModel = Ticket::where('learning_project_id', $projectId);
 
             if (!$ticketModel) {
                 throw new TicketNotFindException();
@@ -113,7 +114,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
         try {
             $ticketModel = Ticket::find($ticket->id);
 
-            if(!$ticketModel){
+            if (!$ticketModel) {
                 throw new TicketNotExistException();
             }
 
@@ -136,7 +137,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
         try {
             $ticketModel = Ticket::find($id);
 
-            if(!$ticketModel){
+            if (!$ticketModel) {
                 throw new TicketNotExistException();
             }
 
@@ -146,24 +147,19 @@ class TicketRepository extends TransformDTOs implements TicketInterface{
         }
     }
 
-	protected function transformToDTO(Model $model): DTOSummary
+    protected function transformToDTO(Model $model): DTOSummary
     {
         return new TicketDTO(
             id: $model->id,
             average: $model->average,
             content: $model->content,
             suggestions: $model->suggestions,
-            learning_project_id: $model->learning_project->id,
-            student_id: $model->student->id
+            learningProjectId: $model->learning_project->id,
+            studentId: $model->student->id
         );
     }
 
-	protected function transformToDetailDTO(Model $model): DTODetail
-    {
-        // TODO
-    }
-
-	protected function transformToSearchDTO(Model $model): DTOSearch
+    protected function transformToDetailDTO(Model $model): DTODetail
     {
         // TODO
     }

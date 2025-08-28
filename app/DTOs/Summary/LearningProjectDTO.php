@@ -6,25 +6,25 @@ namespace App\DTOs\Summary;
 
 class LearningProjectDTO implements DTOSummary
 {
-    private $ticket_ids = [];
+    private $ticketIds = [];
 
     public function __construct(
         public int $id,
         public string $title,
         public string $content,
-        public ?int $teacher_id = 0,
-        public ?int $enrollment_id = 0,
-//        public ?DailyClassDTO $daily_class = null,
-//        public ?EnrollmentDTO $enrollment = null,
+        public ?int $teacherId = 0,
+        public ?int $enrollmentId = 0,
+        //        public ?DailyClassDTO $daily_class = null,
+        //        public ?EnrollmentDTO $enrollment = null,
     ) {}
 
-    public function addTicket(int $ticket_id): void
+    public function addTicket(int $ticketId): void
     {
-        $this->ticket_ids[] = $ticket_id;
+        $this->ticketIds[] = $ticketId;
     }
 
     public function getTickets(): array
     {
-        return $this->ticket_ids;
+        return $this->ticketIds;
     }
 }

@@ -69,7 +69,7 @@ class DailyClassController extends Controller
         return Inertia::render(
             'LearningProject/DailyClass/EditDailyClass',
             [
-                'dailyClass' => $data
+                'dailyClass' => $data->toArray()
             ]
         );
     }
@@ -86,10 +86,7 @@ class DailyClassController extends Controller
         $data = DailyClassFactory::fromRequestDetail($request);
 
         $this->dailyClassServices->updateClass($id, $data);
-
-        return $request;
     }
-
     /**
      * Remove the specified resource from storage.
      *

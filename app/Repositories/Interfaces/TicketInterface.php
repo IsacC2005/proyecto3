@@ -10,16 +10,15 @@ interface TicketInterface
 {
     public function create(TicketDTO $ticket): TicketDTO;
 
-    public function find($id): TicketDTO;
+    public function find(int $id): TicketDTO;
 
-    public function findAll(): array;
+    public function findAll(?string $fn = null): array;
 
-    public function findByStudent(int $student_id): array;
+    public function findByStudent(int $studentId): array;
 
-    public function findByLearningProject(int $project_id): array;
+    public function findByLearningProject(int $projectId): array;
 
     public function update(TicketDTO $ticket): TicketDTO;
 
-    public function delete($id): void;
+    public function delete(int $id): void;
 }
-?>

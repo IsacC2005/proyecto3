@@ -1,7 +1,7 @@
 <template>
     <AppLayout>
         <ul v-for="evaluation in evaluations"
-            class="w-full flex flex-wrap items-center gap-4 text-sm font-medium text-gray-500 dark:text-gray-400">
+            class="p-4 sm:p-6 md:p-8 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-inner">
             <Evaluation :id="evaluation.id" :name="evaluation.title"></Evaluation>
         </ul>
     </AppLayout>

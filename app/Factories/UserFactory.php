@@ -7,20 +7,22 @@ use App\DTOs\Summary\UserDTO;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\DTOs\Details\DTODetail;
 
-class UserFactory implements Factory{
+class UserFactory implements Factory
+{
 
 
-	public static function fromRequest(Request $request): UserDTO 
+    public static function fromRequest(Request $request): UserDTO
     {
-        $validate = Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|unique:users',
             'password' => 'required|string|min:8',
-            'rol_id' => 'required|exists:roles,id'
+            'roleId' => 'required|exists:roles,id'
         ]);
 
-        if($validate->fails()){
+        if ($validate->fails()) {
             throw new ValidationException();
         }
 
@@ -29,7 +31,22 @@ class UserFactory implements Factory{
             name: $request->name,
             email: $request->email,
             password: $request->password,
-            rol_id: $request->rol_id
+            roleId: $request->roleId
         );
+    }
+
+    public static function fromRequestDetail(Request $request): DTODetail
+    {
+        // TODO
+    }
+
+    public static function fromArray(array $data): DTOSummary
+    {
+        // TODO
+    }
+
+    public static function fromArrayDetail(array $data): DTODetail
+    {
+        // TODO
     }
 }

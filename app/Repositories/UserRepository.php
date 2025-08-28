@@ -22,29 +22,33 @@ use Illuminate\Support\Collection;
 use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\UserDetailDTO;
 use App\DTOs\Searches\DTOSearch;
+use Illuminate\Support\Facades\DB;
 
 class UserRepository extends TransformDTOs implements UserInterface
 {
 
     public function createUser(UserDTO $user): UserDTO
     {
-        $existingUser = User::where('email', $user->email)->first();
-        if ($existingUser) {
-            throw new EmailDuplicateException();
-        }
-        $userModel = User::create([
-            'name' => $user->name,
-            'email' => $user->email,
-            'password' => bcrypt($user->password),
-        ]);
+        $model = null;
+        DB::transaction(function () use ($user, &$model) {
+            $existingUser = User::where('email', $user->email)->first();
+            if ($existingUser) {
+                throw new EmailDuplicateException();
+            }
+            $model = User::create([
+                'name' => $user->name,
+                'email' => $user->email,
+                'password' => bcrypt($user->password),
+            ]);
 
-        $role = Role::find($user->rol_id);
+            $role = Role::find($user->roleId);
 
-        if (!$role) {
-            throw new RoleNotExistException();
-        }
-        $userModel->assignRole($role);
-        return $this->transformToDTO($userModel);
+            if (!$role) {
+                throw new RoleNotExistException();
+            }
+            $model->assignRole($role);
+        });
+        return $this->transformToDTO($model);
     }
 
 

@@ -2,13 +2,13 @@
 
 namespace App\Repositories;
 
+use App\Constants\TDTO;
 use App\DTOs\PaginationDTO;
 use App\DTOs\Summary\TeacherDTO;
 use App\Exceptions\Teacher\TeacherNotDeleteException;
 use App\Exceptions\Teacher\TeacherNotExistException;
 use App\Exceptions\Teacher\TeacherNotFindException;
 use App\Exceptions\Teacher\TeacherNotUpdateException;
-use App\Exceptions\TeacherNotCreateException;
 use App\Exceptions\User\UserNotExistException;
 use App\Models\Teacher;
 use App\Models\User;
@@ -16,13 +16,9 @@ use App\Repositories\Interfaces\TeacherInterface;
 use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\TeacherDetailDTO;
-use App\DTOs\Details\UserDetailDTO;
 use App\DTOs\Searches\DTOSearch;
-use App\Models\Enrollment;
-use Illuminate\Support\Facades\Auth;
 
 class TeacherRepository extends TransformDTOs implements TeacherInterface
 {
@@ -39,7 +35,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
             'phone' => $teacher->phone,
         ]);
 
-        $userModel = User::find($teacher->user_id);
+        $userModel = User::find($teacher->userId);
 
         if (!$userModel) {
             throw new UserNotExistException();
@@ -54,7 +50,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
 
 
 
-    public function find($id): TeacherDTO
+    public function find(int $id): TeacherDTO
     {
         try {
             $teacherModel = Teacher::find($id);
@@ -73,7 +69,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
 
 
 
-    public function findAll(): PaginationDTO
+    public function findAll(?string $fn = TDTO::SUMMARY): PaginationDTO
     {
         $teacherModels = Teacher::orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
@@ -87,11 +83,11 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
     }
 
 
-    public function findAllNotEnrollmentAssign(string $school_year, int $school_moment): PaginationDTO
+    public function findAllNotEnrollmentAssign(string $schoolYear, int $schoolMoment): PaginationDTO
     {
-        $teacherModels = Teacher::whereDoesntHave('enrollments', function ($query) use ($school_year, $school_moment) {
-            $query->where('school_year', $school_year)
-                ->where('school_moment', $school_moment);
+        $teacherModels = Teacher::whereDoesntHave('enrollments', function ($query) use ($schoolYear, $schoolMoment) {
+            $query->where('school_year', $schoolYear)
+                ->where('school_moment', $schoolMoment);
         })->orderBy('created_at', 'desc')->paginate(10)->withQueryString();;
 
         $paginationDTO = new PaginationDTO($teacherModels);
@@ -141,8 +137,8 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
             $teacherModel->surname = $teacher->surname;
             $teacherModel->phone = $teacher->phone;
 
-            if ($teacher->user_id) {
-                $user = User::find($teacher->user_id);
+            if ($teacher->userId) {
+                $user = User::find($teacher->userId);
                 if ($user) {
                     $teacherModel->user()->associate($user);
                 }
@@ -156,7 +152,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
 
 
 
-    public function delete($id): void
+    public function delete(int $id): void
     {
         try {
             $teacher = Teacher::find($id);
@@ -191,10 +187,5 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
             phone: $model->phone,
             user: null
         );
-    }
-
-    protected function transformToSearchDTO(Model $model): DTOSearch
-    {
-        // TODO
     }
 }

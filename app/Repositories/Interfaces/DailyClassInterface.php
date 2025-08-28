@@ -3,22 +3,22 @@
 
 namespace App\Repositories\Interfaces;
 
+use App\DTOs\Details\DailyClassDetailDTO;
 use App\DTOs\Summary\DailyClassDTO;
 
 interface DailyClassInterface
 {
     public function create(DailyClassDTO $dailyClass): DailyClassDTO;
 
-    public function find($id): DailyClassDTO;
+    public function find(int $id, ?string $fn = null): DailyClassDTO | DailyClassDetailDTO;
 
-    public function findAll(): array;
+    public function findAll(?string $fn = null): array;
 
-    public function findByLearningProject(int $project_id): array;
+    public function findByLearningProject(int $projectId, ?string $fn = null): array;
 
     public function search(DailyClassDTO $dailyClass): array;
 
-    public function update(DailyClassDTO $dailyClass): DailyClassDTO;
+    public function update(DailyClassDetailDTO $dailyClass): DailyClassDetailDTO;
 
-    public function delete($id): void;
+    public function delete(int $id): void;
 }
-?>

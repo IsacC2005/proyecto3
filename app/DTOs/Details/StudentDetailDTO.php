@@ -2,19 +2,21 @@
 
 namespace App\DTOs\Details;
 
+use App\DTOs\Summary\EvaluationItemsStudentDTO;
+
 class StudentDetailDTO implements DTODetail
 {
     private $enrollments = [];
     private $ticket = [];
-    private $evaluation_items_student = [];
+    private $evaluationItemStudent = [];
 
 
     public function __construct(
         public int $id,
-        public int $degree,
+        public int $grade,
         public string $name,
         public string $surname,
-        public RepresentativeDetailDTO $representative,
+        public ?RepresentativeDetailDTO $representative = null,
     ) {}
 
 
@@ -38,14 +40,13 @@ class StudentDetailDTO implements DTODetail
         return $this->ticket;
     }
 
-    public function addEvaluationItemStudent(EvaluationItemsStudentDetailDTO $item): void
+    public function addEvaluationItemStudent(EvaluationItemsStudentDTO $item): void
     {
-        $this->evaluation_items_student[] = $item;
+        $this->evaluationItemStudent[] = $item;
     }
 
     public function getEvaluationItemsStudent(): array
     {
-        return $this->evaluation_items_student;
+        return $this->evaluationItemStudent;
     }
 }
-?>

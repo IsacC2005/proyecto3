@@ -18,9 +18,9 @@
 
 
                 <div v-if="enrollment.learning_project">
-                    <a href="#">
-                        {{ enrollment.learning_project.title }}
-                    </a>
+                    <Link :href="`/learning-project/show/${enrollment.learning_project.id}`">
+                    {{ enrollment.learning_project.title }}
+                    </Link>
                 </div>
                 <div v-else>
                     <Link method="get" href="/learning-project/create/"

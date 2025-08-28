@@ -6,8 +6,7 @@ use App\DTOs\Summary\StudentDTO;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\DTOs\Summary\DTOSummary;
-use App\DTOs\Details\DTODetail;
+use App\DTOs\Details\StudentDetailDTO;
 
 class StudentFactory implements Factory
 {
@@ -15,10 +14,10 @@ class StudentFactory implements Factory
     public static function fromRequest(Request $request): StudentDTO
     {
         $validator = Validator::make($request->all(), [
-            'degree' => 'required|integer|min:0 |max:6',
+            'grade' => 'required|integer|min:0|max:6',
             'name' => 'required|string|max:100',
             'surname' => 'required|string|max:100',
-            'representative_id' => 'required|integer',
+            'representativeId' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -28,19 +27,19 @@ class StudentFactory implements Factory
         // Si la validación pasa, crea y retorna el DTO.
         return new StudentDTO(
             id: 0,
-            degree: $request->input('degree'),
+            grade: $request->input('grade'),
             name: $request->input('name'),
             surname: $request->input('surname'),
-            representative_id: $request->input('representative_id')
+            representativeId: $request->input('representativeId')
         );
     }
 
-    public static function fromRequestDetail(Request $request): DTODetail
+    public static function fromRequestDetail(Request $request): StudentDetailDTO
     {
         // Asumiendo que DTODetail espera los mismos campos que StudentDTO, ajusta según tu implementación real
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer',
-            'degree' => 'required|integer|min:0|max:6',
+            'grade' => 'required|integer|min:0|max:6',
             'name' => 'required|string|max:100',
             'surname' => 'required|string|max:100',
             'representative_id' => 'integer|nullable',
@@ -50,33 +49,33 @@ class StudentFactory implements Factory
             throw new ValidationException($validator->messages());
         }
 
-        return new DTODetail(
+        return new StudentDetailDTO(
             id: $request->input('id'),
-            degree: $request->input('degree'),
+            grade: $request->input('grade'),
             name: $request->input('name'),
             surname: $request->input('surname'),
             representative: null
         );
     }
 
-    public static function fromArray(array $data): DTOSummary
+    public static function fromArray(array $data): StudentDTO
     {
         // Asumiendo que DTOSummary espera los mismos campos que StudentDTO, ajusta según tu implementación real
-        return new DTOSummary(
+        return new StudentDTO(
             id: $data['id'] ?? 0,
-            degree: $data['degree'] ?? null,
+            grade: $data['grade'] ?? null,
             name: $data['name'] ?? '',
             surname: $data['surname'] ?? '',
-            representative_id: $data['representative_id'] ?? null
+            representativeId: $data['representativeId'] ?? null
         );
     }
 
-    public static function fromArrayDetail(array $data): DTODetail
+    public static function fromArrayDetail(array $data): StudentDetailDTO
     {
         // Asumiendo que DTODetail espera los mismos campos que StudentDTO, ajusta según tu implementación real
-        return new DTODetail(
+        return new StudentDetailDTO(
             id: $data['id'] ?? 0,
-            degree: $data['degree'] ?? null,
+            grade: $data['grade'] ?? null,
             name: $data['name'] ?? '',
             surname: $data['surname'] ?? '',
             representative: null

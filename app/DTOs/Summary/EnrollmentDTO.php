@@ -1,30 +1,30 @@
 <?php
+
 namespace App\DTOs\Summary;
 
 class EnrollmentDTO implements DTOSummary
 {
 
-    private $student_ids = [];
+    private $studentIds = [];
 
     public function __construct(
         public int $id,
-        public string $school_year,
-        public int $school_moment,
-        public int $degree,
+        public string $schoolYear,
+        public int $schoolMoment,
+        public int $grade,
         public string $section,
         public int $classroom,
-        public ?int $teacher_id = 0,
-        public ?int $learning_project = null,
+        public ?int $teacherId = 0,
+        public ?int $learningProjectId = null,
     ) {}
 
-    public function addStudent(int $student_id): void
+    public function addStudent(int $studentId): void
     {
-        $this->student_ids[] = $student_id;
+        $this->studentIds[] = $studentId;
     }
 
     public function getStudents(): array
     {
-        return $this->student_ids;
+        return $this->studentIds;
     }
 }
-?>

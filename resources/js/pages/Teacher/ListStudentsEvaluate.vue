@@ -6,27 +6,32 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div v-for="student in studentsWithGrades" :key="student.id"
                     class="bg-background rounded-lg shadow-md p-6 transform transition-transform duration-300 hover:scale-105"
-                    :class="{ 'bg-green-100': student.isGraded }">
+                    :class="{ 'bg-green-100': isFullyGraded(student) }">
 
                     <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-semibold text-gray-700 truncate">{{ student.name + " " +
-                            student.surname }}</h2>
-                        <span v-if="student.isGraded" class="text-sm font-medium text-green-700">Calificado</span>
+                        <h2 class="text-lg font-semibold text-gray-700 truncate">{{ student.name + " " + student.surname
+                            }}</h2>
+                        <!-- Reemplazamos el span por la barra de progreso -->
+                        <div class="w-24 bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300 ease-in-out"
+                                :style="{ width: studentProgress(student) + '%' }"></div>
+                        </div>
                     </div>
 
-                    <div class="w-full">
-                        <label :for="'grade-select-' + student.id" class="block text-sm font-medium text-gray-600 mb-1">
-                            Selecciona una calificación:
-                        </label>
-                        <select :id="'grade-select-' + student.id" v-model="student.degree"
-                            @change="updateStudentStatus(student)"
-                            class="mt-1 block text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                            <option value="" disabled>-- Selecciona --</option>
-                            <option v-for="gradeOption in gradeOptions" :key="gradeOption.value"
-                                :value="gradeOption.value">
-                                {{ gradeOption.label }}
-                            </option>
-                        </select>
+                    <div v-for="indicator in DailyClass.indicators" :key="indicator.id"
+                        class="w-full flex flex-row items-center px-2 gap-x-4 border rounded mb-2">
+                        <span class="text-base font-medium text-gray-600">{{ indicator.title }}</span>
+                        <div>
+                            <select :id="'grade-select-' + student.id + '-' + indicator.id"
+                                v-model="student.degree[indicator.id]" @change="saveGrade(student, indicator)"
+                                class="mt-1 block text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option value="" disabled>-- Selecciona --</option>
+                                <option v-for="gradeOption in gradeOptions" :key="gradeOption.value"
+                                    :value="gradeOption.value">
+                                    {{ gradeOption.label }}
+                                </option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -36,54 +41,112 @@
 
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, computed } from 'vue';
 import { defineProps } from 'vue';
 import { router } from '@inertiajs/vue3';
 
-// Definimos la lista de opciones de calificación
+// Definimos la lista de opciones de calificación con la nueva escala.
 const gradeOptions = [
-    { label: '🚀🎉 Plenamente Logrado', value: 5 },
-    { label: '😎 Logrado', value: 4 },
-    { label: '🛠️ En Proceso', value: 3 },
-    { label: '🔄 Por Mejorar', value: 2 },
-    { label: '❌ Sin Lograr', value: 1 }
+    { label: '🚀🎉 Plenamente Logrado', value: 'PL' },
+    { label: '😎 Logrado', value: 'L' },
+    { label: '🛠️ En Proceso', value: 'EP' },
+    { label: '🔄 Por Mejorar', value: 'PM' },
+    { label: '❌ Sin Lograr', value: 'NL' }
 ];
 
 const props = defineProps({
+    DailyClass: {
+        type: Object as () => {
+            indicators: { id: number; title: string }[];
+        },
+        required: true,
+    },
     students: {
         type: Array as () => {
             id: number;
             name: string;
             surname: string;
+            degree?: { [key: number]: string };
         }[],
-        required: true
+        required: true,
+    },
+    allNote: {
+        type: Array as () => {
+            item_evaluation_id: number;
+            student_id: number;
+            note: string;
+        }[],
+        default: () => [],
     }
 });
 
-// Usamos ref para crear un estado reactivo para los estudiantes
+// Usamos ref para crear un estado reactivo para los estudiantes.
 const studentsWithGrades = ref([]);
 
-// Cuando las props cambian, inicializamos el estado local
+// Usamos watchEffect para inicializar el estado local cuando las props cambian.
 watchEffect(() => {
-    studentsWithGrades.value = props.students.map(student => ({
-        ...student,
-        degree: null,
-        isGraded: false
-    }));
+    if (props.students.length > 0 && props.DailyClass?.indicators) {
+        // Primero, creamos una copia de los estudiantes con una estructura de grados inicial.
+        const students = props.students.map(student => {
+            const initialDegree = props.DailyClass.indicators.reduce((acc, indicator) => {
+                acc[indicator.id] = '';
+                return acc;
+            }, {});
+
+            return {
+                ...student,
+                degree: { ...initialDegree, ...(student.degree || {}) },
+            };
+        });
+
+        // Luego, si hay notas en la prop allNote, las aplicamos a los estudiantes.
+        if (props.allNote?.length > 0) {
+            props.allNote.forEach(note => {
+                const studentToUpdate = students.find(s => s.id === note.student_id);
+                if (studentToUpdate) {
+                    studentToUpdate.degree[note.item_evaluation_id] = note.note;
+                }
+            });
+        }
+
+        // Asignamos el resultado final al estado reactivo.
+        studentsWithGrades.value = students;
+    }
 });
 
-// Función para actualizar el estado del estudiante
-const updateStudentStatus = (student) => {
-    student.isGraded = student.grade !== null && student.grade !== '';
+// Propiedad computada para calcular el progreso de calificación de un estudiante.
+const studentProgress = computed(() => (student) => {
+    // Si el estudiante no tiene grados, el progreso es 0.
+    if (!student.degree) return 0;
+
+    const totalIndicators = props.DailyClass.indicators.length;
+    // Filtramos los grados que no son cadenas vacías para contar los calificados.
+    const gradedCount = Object.values(student.degree).filter(grade => grade !== '').length;
+
+    // Calculamos el porcentaje de progreso.
+    return totalIndicators > 0 ? (gradedCount / totalIndicators) * 100 : 0;
+});
+
+// Propiedad computada para determinar si un estudiante ha sido calificado completamente.
+const isFullyGraded = computed(() => (student) => {
+    // Compara el número de indicadores calificados con el total.
+    return studentProgress.value(student) === 100;
+});
+
+// Función para guardar la calificación de un indicador específico.
+const saveGrade = (student, indicator) => {
+    // Enviamos el post request con los datos correctos
 
     router.post('/teacher/evaluate/class/save', {
-        evaluation_id: -1,
         student_id: student.id,
-        note: 'PL',
+        evaluation_id: props.DailyClass.id,
+        indicator_id: indicator.id,
+        note: student.degree[indicator.id],
     }, {
         preserveState: true,
         replace: true,
-        only: ['students']
+        only: ['students', 'DailyClass', 'allNote']
     });
+
 };
 </script>
