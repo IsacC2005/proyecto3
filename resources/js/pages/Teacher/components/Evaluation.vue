@@ -1,51 +1,56 @@
 <template>
+    <Link :href="`/teacher/evaluate/class`" :data="{ classId: props.evaluation.id }"
+        class="card w-full sm:w-80 p-6 rounded-lg shadow-lg dark:bg-gray-800 transition-transform duration-300 hover:scale-105"
+        :class="getCardColor(props.evaluation.date.date)">
 
-    <!-- El componente de clase diaria con los nuevos estilos -->
-    <li class="list-none">
-        <Link :href="`/teacher/evaluate/class`" :data="{ class_id: props.id }" class="
-                flex items-center justify-center p-4 rounded-xl
-                text-white font-semibold text-lg text-center
-                shadow-lg transition-all duration-300 transform
-                bg-gradient-to-r from-blue-600 to-blue-800
-                hover:scale-105 hover:shadow-2xl hover:from-blue-700 hover:to-blue-900
-                dark:from-blue-700 dark:to-blue-900 dark:hover:from-blue-800 dark:hover:to-blue-950
-                w-full
-            " aria-current="page">
-        <!-- SVG de un icono de libro, reemplazando el icono de usuario -->
-        <svg class="w-5 h-5 me-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 6.253v13m0-13C10.832 5.468 9.231 5.068 7.5 5.253c-2.936.577-4.936 2.684-4.936 5.869 0 3.185 2 5.292 4.936 5.869C9.231 18.932 10.832 19.332 12 18.747m0-13C13.168 5.468 14.769 5.068 16.5 5.253c2.936.577 4.936 2.684 4.936 5.869 0 3.185-2 5.292-4.936 5.869C14.769 18.932 13.168 18.932 12 18.747m0-13V6.253" />
-        </svg>
-        {{ props.name }}
-        </Link>
-    </li>
+    <h3 class="font-bold text-xl mb-2">{{ props.evaluation.title }}</h3>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ formatDate(props.evaluation.date.date) }}</p>
+
+    <p v-if="props.evaluation.content" class="text-gray-700 dark:text-gray-300 mb-4">
+        {{ props.evaluation.content }}
+    </p>
+
+    <div v-if="props.evaluation.learningProject" class="learning-project">
+        <span class="font-semibold">Proyecto de aprendizaje:</span>
+        <p>{{ props.evaluation.learningProject.title }}</p>
+    </div>
+    </Link>
 </template>
 
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
+import { DailyClass } from '@/types/dtos';
 
-const props = defineProps({
-    id: {
-        type: Number,
-        required: true,
-        default: 0
-    },
-    name: {
-        type: String,
-        required: true,
-        default: ''
-    },
-    // Nota: La prop 'link' no es necesaria en este componente ya que Inertia usa la prop 'data' para pasar información.
-    // La ruta se construye con un template string.
-});
+const props = defineProps<{
+    evaluation: DailyClass
+}>();
 
-// Datos de ejemplo para el contenedor
-const classes = [
-    { id: 1, name: 'Clase de Matemáticas' },
-    { id: 2, name: 'Clase de Ciencias' },
-    { id: 3, name: 'Clase de Historia' },
-    { id: 4, name: 'Clase de Arte' },
-];
+const formatDate = (dateString: string) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('es-ES', options);
+};
+
+const getCardColor = (dateString: string) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const evaluationDate = new Date(dateString);
+    evaluationDate.setHours(0, 0, 0, 0);
+
+    if (evaluationDate > today) {
+        return 'bg-green-100 dark:bg-green-800 dark:text-gray-100'; // Futuro
+    } else if (evaluationDate.getTime() === today.getTime()) {
+        return 'bg-blue-100 dark:bg-blue-800 dark:text-gray-100'; // Hoy
+    } else {
+        return 'bg-gray-200 dark:bg-gray-700 dark:text-gray-300'; // Pasado
+    }
+};
 </script>
+
+<style scoped>
+.card {
+    min-width: 300px;
+    max-width: 400px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+</style>

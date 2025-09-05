@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Factories\DailyClassFactory;
+use App\Factories\LearningProjectFactory;
 use App\Services\DailyClassServices;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -32,6 +33,7 @@ class DailyClassController extends Controller
      */
     public function create()
     {
+        return $this->dailyClassServices->createDailyClassShowPage();
         // Debería mostrar el formulario para crear un nuevo elemento.
     }
 
@@ -43,7 +45,11 @@ class DailyClassController extends Controller
      */
     public function store(Request $request)
     {
-        // Debería guardar un nuevo elemento en la base de datos.
+        $data =  DailyClassFactory::fromRequestDetail($request);
+        $data->learningProject = LearningProjectFactory::fromArrayDetail(['id' => $request->input('projectId')]);
+        $this->dailyClassServices->createDailyClass($data);
+
+        return response()->json($data->toArray());
     }
 
     /**
@@ -67,7 +73,7 @@ class DailyClassController extends Controller
     {
         $data = $this->dailyClassServices->findById($id);
         return Inertia::render(
-            'LearningProject/DailyClass/EditDailyClass',
+            'DailyClass/EditDailyClass',
             [
                 'dailyClass' => $data->toArray()
             ]
@@ -85,6 +91,7 @@ class DailyClassController extends Controller
 
         $data = DailyClassFactory::fromRequestDetail($request);
 
+        //return response()->json($data->toArray());
         $this->dailyClassServices->updateClass($id, $data);
     }
     /**

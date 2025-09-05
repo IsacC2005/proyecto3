@@ -1,15 +1,19 @@
 <template>
     <AppLayout>
         <div class="p-6 md:p-12 bg-background min-h-screen">
-            <h1 class="text-3xl md:text-5xl font-extrabold text-center text-gray-800 mb-8 md:mb-12 drop-shadow-md">
-                Secciones de Matrícula</h1>
-            {{ enrollments }}
-            <div
-                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 justify-items-center">
-                <EnrollementAssignBlock :enrollments="enrollments">
-
-                </EnrollementAssignBlock>
-            </div>
+            <template v-if="props.enrollments.length > 0">
+                <Heading :title="`Secciones asignadas`" />
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 justify-items-center">
+                    <div class="p-2 sm:p-4 md:p-6">
+                        <GridSectionsAssing :sections="props.enrollments" />
+                    </div>
+                </div>
+            </template>
+            <template v-else>
+                <Heading :title="`Aun no tienes una seccion asignada`"
+                    :description="`Debes esperar a que el administrador te asigne una seccion`" />
+            </template>
         </div>
     </AppLayout>
 </template>
@@ -17,12 +21,11 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { defineProps } from 'vue';
-import EnrollementAssignBlock from './components/EnrollementAssignBlock.vue';
+import { Section } from '@/types/dtos';
+import Heading from '@/components/Heading.vue';
+import GridSectionsAssing from './components/GridSectionsAssing.vue';
 
-const props = defineProps({
-    enrollments: {
-        type: Array,
-        required: true
-    }
-});
+const props = defineProps<{
+    enrollments: Section[]
+}>()
 </script>

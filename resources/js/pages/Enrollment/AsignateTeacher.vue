@@ -22,27 +22,8 @@
             </div>
 
             <!---->
-            <DataTable :items="teachers.data" :headers="headers">
-                <template #body="{ item }">
-                    <td v-if="!isMobile" class="py-4 px-6 text-primary">{{ item.id }}</td>
-                    <td class="py-4 px-6 text-primary">{{ item.name }}</td>
-                    <td class="py-4 px-6 text-primary">{{ item.surname }}</td>
-                    <td v-if="!isMobile" class="py-4 px-6 text-primary">{{ item.phone }}</td>
-                    <td :key="item.id" class="py-4 px-6 text-primary">
-                        <button @click="assign(id_enrollment, item.id)"
-                            class="text-foreground border border-muted-foreground hover:text-background hover:bg-foreground font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2 flex items-center gap-2 transition-colors duration-150 group">
-                            <svg class="w-5 h-5 transition-colors duration-150 text-foreground group-hover:text-background"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                            Asignar
-                        </button>
-                    </td>
-                </template>
-            </DataTable>
 
+            <TableTeacher :sectionId="props.enrollmentId" :pagination="props.teachers" />
             <Paginator v-if="teachers.links && teachers.links.length > 3" :pages="teachers.links" />
         </div>
     </AppLayout>
@@ -51,44 +32,23 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import DataTable from '@/components/DataTablet.vue'
-import BotomGrup from '@/components/BotomGrup.vue';
 import Paginator from '@/components/Paginator.vue';
-import { router, useForm } from '@inertiajs/vue3';
-import { ref, computed, onMounted } from 'vue';
+import TableTeacher from './components/TableTeachers/TableTeacher.vue';
+import { Pagination, Teacher } from '@/types/dtos';
+import { BreadcrumbItem } from '@/types';
 
-const props = defineProps({
-    id_enrollment: {
-        type: Number,
-        required: true,
-    },
-    teachers: {
-        type: Array,
-        required: true,
-    },
-});
+const props = defineProps<{
+    teachers: Pagination<Teacher>,
+    enrollmentId: number
+}>();
 
-const assign = (id_enrollment: number, id_teacher: number) => {
-    router.post('/enrollment/assign-teacher', {
-        id_enrollment: id_enrollment,
-        id_teacher: id_teacher
-    });
-}
-
-const isMobile = ref(false);
-
-const checkMobile = () => {
-    isMobile.value = window.innerWidth <= 640;
-};
-
-onMounted(() => {
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-});
-
-const headers = computed(() => {
-    return isMobile.value
-        ? ['Nombre', 'Apellido', 'Acciones']
-        : ['ID', 'Nombre', 'Apellido', 'Teléfono', 'Acciones'];
-});
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Lista de Matriculas',
+        href: '/enrollment/index',
+    }, {
+        title: 'Asignar profesor a matricula',
+        href: '#',
+    }
+]
 </script>

@@ -42,4 +42,18 @@ class TeacherDTO implements UserableInterface, DTOSummary
     {
         return $this->enrollmentIds;
     }
+
+    public function toArray()
+    {
+
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'surname' => $this->surname,
+            'phone' => $this->phone,
+            'user' => $this->user ? $this->user : null, // Convierte el DTO de usuario
+            'learningProjects' => '',
+            'enrollments' => '',
+        ];
+    }
 }

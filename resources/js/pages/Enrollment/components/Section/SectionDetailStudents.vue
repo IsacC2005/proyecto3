@@ -6,7 +6,7 @@
             <span class="text-lg">🎓</span>
         </div>
         <p class="text-[0.63rem] text-gray-700 font-normal">
-            {{ props.students.length }} inscritos
+            {{ props.students?.length }} inscritos
         </p>
         <slot></slot>
     </div>
@@ -17,7 +17,7 @@ import { defineProps } from 'vue';
 import { Student } from '@/types/dtos';
 
 const props = defineProps<{
-    students: Student[]
+    students: Student[] | number[]
 }>();
 
 </script>

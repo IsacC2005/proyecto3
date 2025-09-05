@@ -74,7 +74,7 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
                 throw new TeacherNotExistException();
             }
 
-            $enrollment->teacherId = $teacherId;
+            $enrollment->teacher_id = $teacherId;
 
             return $enrollment->save();
         } catch (\Throwable $th) {
@@ -241,6 +241,17 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 
 
 
+
+    public function existEnrollmentSecctionAndSchoolYear(int $grade, string $section, int $moment, string $year): bool
+    {
+        return Enrollment::where('grade', $grade)
+            ->where('section', $section)
+            ->where('school_moment', $moment)
+            ->where('school_year', $year)->exists();
+    }
+
+
+
     public function search(EnrollmentDTO $enrollment): array
     {
         return [];
@@ -296,7 +307,7 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 
     protected function transformToDTO(Model $model): DTOSummary
     {
-        return new EnrollmentDTO(
+        $enrollment = new EnrollmentDTO(
             id: $model->id,
             schoolYear: $model->school_year,
             schoolMoment: $model->school_moment,
@@ -305,6 +316,13 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
             classroom: $model->classroom,
             teacherId: $model->teacher_id,
         );
+
+        if ($model->students) {
+            foreach ($model->students as $student) {
+                $enrollment->addStudent($student->id);
+            }
+        }
+        return $enrollment;
     }
 
     protected function transformToDetailDTO(Model $model): DTODetail

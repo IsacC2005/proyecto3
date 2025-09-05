@@ -8,10 +8,6 @@
 
     <InputDate v-model="dailyClass.date" :id="'daily_class_date_' + index">
     </InputDate>
-
-
-    <p class="text-xs text-gray-500 mt-1">Título: {{ dailyClass.title }}</p>
-    <p class="text-xs text-gray-500">Fecha: {{ dailyClass.date }}</p>
 </template>
 
 <script setup lang="ts">

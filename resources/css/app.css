@@ -51,6 +51,7 @@
     --color-chart-3: var(--chart-3);
     --color-chart-4: var(--chart-4);
     --color-chart-5: var(--chart-5);
+    --color-chart-6: var(--color-especial);
 
     --color-sidebar: var(--sidebar-background);
     --color-sidebar-foreground: var(--sidebar-foreground);
@@ -133,6 +134,7 @@
     - Primer plano: Gris oscuro
     - Acento: Azul suave
   */
+    --color-especial: #48e;
 
     --background: hsl(210 20% 98%);
     --foreground: hsl(220 13% 13%);

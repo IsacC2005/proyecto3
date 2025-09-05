@@ -57,6 +57,26 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
 
 
+    public function existProjectForTeacher(int $project_id, int $teacher_id): bool
+    {
+        $rs = $this->existProject($project_id);
+
+        if (!$rs) {
+            throw new LearningProjectNotExistException();
+        }
+
+        return LearningProject::where('id', $project_id)->where('teacher_id', $teacher_id)->exists();
+    }
+
+
+
+    public function existProject(int $id): bool
+    {
+        return LearningProject::where('id', $id)->exists();
+    }
+
+
+
     public function find(int $id, ?string $fn = TDTO::SUMMARY): LearningProjectDTO | LearningProjectDetailDTO
     {
         try {
@@ -124,6 +144,26 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
 
 
+    public function findOnDate(string $schoolYear, string $schoolMoment, ?string $fn = TDTO::DETAIL): LearningProjectDTO | LearningProjectDetailDTO | null
+    {
+        try {
+            //code...
+            $project = LearningProject::whereHas('enrollment', function ($query) use ($schoolYear, $schoolMoment) {
+                $query->where('school_year', $schoolYear)->where('school_moment', $schoolMoment);
+            })->first();
+
+            if (!$project) {
+                return null;
+            }
+
+            return $this->$fn($project);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+
+
     public function search(LearningProjectDTO $learningProject): array
     {
         return ['agrega', 'algo'];
@@ -142,21 +182,23 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
             $projectModel->title = $learningProject->title;
             $projectModel->content = $learningProject->content;
 
-            if ($learningProject->teacherId) {
+            if ($learningProject->teacherId & $learningProject->enrollmentId != 0) {
                 $teacher = Teacher::find($learningProject->teacherId);
                 if ($teacher) {
                     $projectModel->teacher()->associate($teacher);
                 }
             }
 
-            if ($learningProject->enrollmentId) {
+            if ($learningProject->enrollmentId & $learningProject->enrollmentId !== 0) {
                 $enrollment = Enrollment::find($learningProject->enrollmentId);
                 if ($enrollment) {
                     $projectModel->enrollment()->associate($enrollment);
                 }
             }
 
-            return $projectModel->save();
+            $projectModel->save();
+
+            return $this->transformToDTO($projectModel);
         } catch (\Throwable $th) {
             throw new LearningProjectNotUpdateException();
         }
@@ -178,7 +220,7 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
         }
     }
 
-    protected function transformToDTO(Model $model): DTOSummary
+    protected function transformToDTO(Model $model): LearningProjectDTO
     {
         $teacher = $model->teacher;
         $enrollment = $model->enrollment;

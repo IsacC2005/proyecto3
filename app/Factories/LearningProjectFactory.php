@@ -22,6 +22,7 @@ class LearningProjectFactory implements Factory
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
+            'content' => 'nullable|string'
         ]);
 
         if ($validator->fails()) {
@@ -31,8 +32,8 @@ class LearningProjectFactory implements Factory
         // Si la validación pasa, crea y retorna el DTO.
         return new LearningProjectDTO(
             id: 0,
-            title: $request->input('degree'),
-            content: $request->input('name')
+            title: $request->input('title'),
+            content: $request->input('content')
         );
     }
 
@@ -65,9 +66,9 @@ class LearningProjectFactory implements Factory
              * #
              * #
              */
-        } elseif ($request->input('teacher_id') !== null) {
+        } elseif ($request->input('teacherId') !== null) {
             $teacher = TeacherFactory::fromArrayDetail([
-                'id' => $request->input('teacher_id')
+                'id' => $request->input('teacherId')
             ]);
         }
 
@@ -82,9 +83,9 @@ class LearningProjectFactory implements Factory
              * #
              * #
              */
-        } elseif ($request->input('enrollment_id') !== null) {
+        } elseif ($request->input('enrollmentId') !== null) {
             $enrollment = EnrollmentFactory::fromArrayDetail([
-                'id' => $request->input('enrollment_id')
+                'id' => $request->input('enrollmentId')
             ]);
         }
 

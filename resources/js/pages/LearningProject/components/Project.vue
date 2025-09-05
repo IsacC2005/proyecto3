@@ -8,8 +8,8 @@
         </h2>
 
         <div class="border-b border-gray-200 mb-4 pb-2">
-            <p v-if="project.daily_classes && project.daily_classes.length > 0" class="text-sm text-gray-500">
-                <span class="font-semibold">Inicio:</span> {{ formatDate(project.daily_classes[0].date) }}
+            <p v-if="project.dailyClasses && project.dailyClasses.length > 0" class="text-sm text-gray-500">
+                <span class="font-semibold">Inicio:</span> {{ formatDate(project.dailyClasses[0].date) }}
             </p>
             <p v-else class="text-sm text-gray-500">
                 No hay clases programadas.
@@ -19,7 +19,7 @@
         <div class="mb-4">
             <h3 class="font-semibold text-gray-700 mb-2">Clases Principales:</h3>
             <ul class="space-y-2">
-                <li v-for="(dailyClass, index) in getFirstClasses(project.daily_classes)" :key="dailyClass.id"
+                <li v-for="(dailyClass, index) in getFirstClasses(project.dailyClasses)" :key="dailyClass.id"
                     class="flex items-start">
                     <span class="text-indigo-500 mr-2 mt-1">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -45,15 +45,12 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import { Enrollment } from '@/types';
+import { DailyClass, LearningProject } from '@/types/dtos';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const props = defineProps({
-    project: {
-        type: Array,
-        required: true
-    }
-});
+const props = defineProps<{
+    project: LearningProject
+}>()
 
 /**
  * Formatea una fecha a un formato legible.
@@ -77,7 +74,7 @@ const formatDate = (dateObject) => {
  * @param dailyClasses El array de clases diarias.
  * @param count El número de clases a mostrar.
  */
-const getFirstClasses = (dailyClasses, count = 3) => {
+const getFirstClasses = (dailyClasses: DailyClass[], count = 3) => {
     return dailyClasses ? dailyClasses.slice(0, count) : [];
 };
 </script>

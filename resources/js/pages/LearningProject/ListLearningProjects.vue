@@ -6,7 +6,7 @@
             </h1>
 
 
-            <div v-for="project in projects"
+            <div v-for="(project, index) in props.projects" :key="index"
                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 <Project :project="project"></Project>
             </div>
@@ -21,16 +21,20 @@
 
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Link } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
 import Project from './components/Project.vue';
+import { LearningProject } from '@/types/dtos';
 
-const props = defineProps({
-    projects: {
-        type: Array,
-        required: true
-    }
-});
+const props = defineProps<{
+    projects: LearningProject[]
+}>()
+
+// const props = defineProps({
+//     projects: {
+//         type: Array,
+//         required: true
+//     }
+// });
 
 
 

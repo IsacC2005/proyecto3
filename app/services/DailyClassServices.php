@@ -7,6 +7,7 @@ use App\DTOs\Summary\DailyClassDTO;
 use App\Exceptions\DailyClass\DailyClassNotCreateException;
 use App\Repositories\Interfaces\DailyClassInterface;
 use DateTime;
+use Inertia\Inertia;
 
 class DailyClassServices
 {
@@ -19,7 +20,11 @@ class DailyClassServices
 
 
 
-    public function createDailyClass(DailyClassDTO $data)
+    public function createDailyClassShowPage() {}
+
+
+
+    public function createDailyClass(DailyClassDTO | DailyClassDetailDTO $data)
     {
 
         $actual = new DateTime();
@@ -57,5 +62,7 @@ class DailyClassServices
     {
         $data->id = $id;
         $this->dailyClassRepository->update($data);
+
+        return Inertia::render('LearningProject/ListLearningProjects');
     }
 }

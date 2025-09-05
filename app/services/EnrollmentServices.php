@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Constants\TDTO;
 use App\DTOs\Summary\EnrollmentDTO;
+use App\Exceptions\Enrollment\EnrollmentNotCreatedException;
 use App\Exceptions\Enrollment\EnrollmentNotFindException;
 use App\Repositories\Interfaces\EnrollmentInterface;
 use App\Repositories\Interfaces\StudentInterface;
@@ -18,6 +19,7 @@ class EnrollmentServices
     public function __construct(
         private EnrollmentInterface $enrollmentRepository,
         private StudentInterface $studentRepository,
+        private DatesActual $dates
     ) {}
 
 
@@ -27,12 +29,24 @@ class EnrollmentServices
     {
         try {
             if ($enrollment->schoolYear === '') {
-                $enrollment->schoolYear = $this->getSchoolYearActual();
+                $enrollment->schoolYear = $this->dates->getSchoolYearActual();
             }
 
             if ($enrollment->schoolMoment === 0) {
-                $enrollment->schoolMoment = $this->getSchoolMomentActual();
+                $enrollment->schoolMoment = $this->dates->getSchoolMomentActual();
             }
+
+            $exist = $this->enrollmentRepository->existEnrollmentSecctionAndSchoolYear(
+                $enrollment->grade,
+                $enrollment->section,
+                $enrollment->schoolMoment,
+                $enrollment->schoolYear
+            );
+
+            if ($exist) {
+                throw new EnrollmentNotCreatedException('Esta seccion ya existe :))');
+            }
+
             $this->enrollmentRepository->create($enrollment);
         } catch (\Throwable $th) {
             throw $th;
@@ -67,11 +81,12 @@ class EnrollmentServices
 
     public function addStudentPage(int $enrollmentId)
     {
-        $enrollment = $this->enrollmentRepository->find($enrollmentId);
-        $data = $this->studentRepository->findStudentByDegree($enrollment->grade - 1);
+        $section = $this->enrollmentRepository->find($enrollmentId);
+        $data = $this->studentRepository->findStudentByGrade($section->grade - 1);
+
         return Inertia::render('Enrollment/AddStudent', [
-            'enrollment' => $enrollment,
-            'students' => $data
+            'section' => $section->toArray(),
+            'pagination' => $data
         ]);
     }
 
@@ -83,8 +98,8 @@ class EnrollmentServices
 
     public function findEnrollmentActiveByTeacher(int $teacherId, ?string $fn = null): EnrollmentDTO
     {
-        $schoolYear = $this->getSchoolYearActual();
-        $schoolMoment = $this->getSchoolMomentActual();
+        $schoolYear = $this->dates->getSchoolYearActual();
+        $schoolMoment = $this->dates->getSchoolMomentActual();
 
         return $enrollment = $this
             ->enrollmentRepository
@@ -136,53 +151,5 @@ class EnrollmentServices
         if ($rs) {
             return 'Se asignó el profesor correctamente.';
         }
-    }
-
-
-    /**
-     * TODO: funciones privadas
-     */
-
-    private function getSchoolYearActual(): string
-    {
-        /**
-         * ? Esta funcion devuelve el School Year actual
-         * ? teniendo en cuanta la fecha actual, si se esta en el mes 8 al 12 sera el year actual - year siguiente
-         * ? y si no es asi y se esta entre el mes 1 y el 7 sera year anterior - year actual
-         */
-        $currentYear = date('Y');
-        $currentMonth = date('n');
-
-
-        if ($currentMonth >= 8) {
-            $schoolYear = $currentYear . '-' . ($currentYear + 1);
-        } else {
-            $schoolYear = ($currentYear - 1) . '-' . $currentYear;
-        }
-        return $schoolYear;
-    }
-
-    private function getSchoolMomentActual(): int
-    {
-        $currentMonth = date('n');
-
-        $result = -1;
-        /**
-         * ?Aqui se va a calcular el momento academico indicado en relacion a la fecha actual,
-         * ? si la fecha esta entre el mes 8 y 12 el momento academico sera el 1,
-         * ? si la fecha esta entre el mes 1 y 3 el momento academico sera el 2,
-         * ? si la fecha esta entre el mes 4 y 7 el momento academico sera el 3
-         */
-
-        if ($currentMonth >= 8 & $currentMonth <= 12) {
-            $result = 1;
-        } elseif ($currentMonth >= 1 & $currentMonth <= 3) {
-            $result = 2;
-        } elseif ($currentMonth >= 4 & $currentMonth <= 7) {
-            $result = 3;
-        } else {
-            throw new Error("Error al intentar calcular el momento escolar actual");
-        }
-        return $result;
     }
 }

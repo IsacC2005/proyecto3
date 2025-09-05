@@ -17,30 +17,51 @@ use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
 use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\ItemEvaluationDetailDTO;
-use App\DTOs\Searches\DTOSearch;
-use App\Exceptions\EvaluationItem\EvaluationNotExistException;
 use App\Models\EvaluationItem;
 use DateTime;
+use Hamcrest\Text\IsEmptyString;
 
 class DailyClassRepository extends TransformDTOs implements DailyClassInterface
 {
 
-    public function create(DailyClassDTO $dailyClass): DailyClassDTO
+    public function create(DailyClassDTO | DailyClassDetailDTO $dailyClass): DailyClassDTO
     {
         try {
+            if ($dailyClass instanceof DailyClassDTO) {
+                $dailyClassModel = DailyClass::create([
+                    'date' => $dailyClass->date->format('Y-m-d'),
+                    'title' => $dailyClass->title,
+                    'content' => $dailyClass->content,
+                    'learning_project_id' => $dailyClass->learningProjectId
+                ]);
 
-            $dailyClassModel = DailyClass::create([
-                'date' => $dailyClass->date->format('Y-m-d'),
-                'title' => $dailyClass->title,
-                'content' => $dailyClass->content,
-                'learning_project_id' => $dailyClass->learningProjectId
-            ]);
+                if (!$dailyClassModel) {
+                    throw new DailyClassNotCreateException();
+                }
 
-            if (!$dailyClassModel) {
-                throw new DailyClassNotCreateException();
+                foreach ($dailyClass->getItemEvaluations() as $evaluation) {
+                    $dailyClassModel->evaluation_items()->create([
+                        'title' => $evaluation->title
+                    ]);
+                }
+
+                return $this->transformToDTO($dailyClassModel);
+            } else {
+                $dailyClassModel = DailyClass::create([
+                    'date' => $dailyClass->date->format('Y-m-d'),
+                    'title' => $dailyClass->title,
+                    'content' => $dailyClass->content,
+                    'learning_project_id' => $dailyClass->learningProject->id
+                ]);
+
+
+                if (!$dailyClassModel) {
+                    throw new DailyClassNotCreateException();
+                }
+
+
+                return $this->transformToDTO($dailyClassModel);
             }
-
-            return $this->transformToDTO($dailyClassModel);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -123,10 +144,13 @@ class DailyClassRepository extends TransformDTOs implements DailyClassInterface
 
             EvaluationItem::where('daily_class_id', $dailyClassModel->id)->delete();
             foreach ($dailyClass->getItemEvaluations() as $item) {
-                EvaluationItem::create([
-                    'title' => $item->title,
-                    'daily_class_id' => $dailyClassModel->id
-                ]);
+
+                if ($item->title !== '') {
+                    EvaluationItem::create([
+                        'title' => $item->title,
+                        'daily_class_id' => $dailyClassModel->id
+                    ]);
+                }
             }
 
 

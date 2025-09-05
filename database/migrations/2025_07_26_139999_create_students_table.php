@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->foreignId('representative_id')->constrained()->onDelete('restrict');
-            $table->integer('degree')->lengeth(1);
+            $table->integer('grade')->lengeth(1);
             $table->string('name')->length(100);
             $table->string('surname')->length(100);
             $table->timestamps();

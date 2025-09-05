@@ -109,14 +109,16 @@ class TeacherController extends Controller
     public function edit(Request $request)
     {
         $request->validate([
-            'teacher_id' => 'required|integer',
+            'teacherId' => 'required|integer',
         ]);
 
-        $id = $request->input('teacher_id');
+        $id = $request->input('teacherId');
 
-        $data = $this->teacherServices->findTeacher($id);
+        $k = 's';
+
+        $teacher = $this->teacherServices->findTeacher($id);
         return Inertia::render('Teacher/EditTeacher', [
-            'data' => $data
+            'teacher' => $teacher
         ]);
     }
 

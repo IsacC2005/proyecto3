@@ -1,150 +1,37 @@
 <template>
     <AppLayout>
-        <h1>Crear un Nuevo Proyecto de Aprendizaje</h1>
-        {{ learning_project }}
+        <template v-if="!exist">
+            <Heading title="Crear un nuevo Proyecto de Aprendizaje"
+                description="No es necesario que carges todas las clases diarias de tu proyecto de aprendizaje, puedes cargar tan solo el titulo 
+                y el contenido y despues ir agregando las demas clases cuando las necesites y agregarles los indicadores correspondientes" />
 
-        <div v-if="learning_project && learning_project.length != 0" class="m-8 p-4 border rounded bg-gray-100">
-            <h2 class="text-2xl font-bold">¡Ya estás inscrito en un proyecto!</h2>
-        </div>
-
-        <div v-else>
-            <form @submit.prevent="submit" class="m-1 sm:m-8">
-                <div class="mb-6">
-                    {{ teacher_id }}
-                    {{ enrollment_id }}
-                    <label for="project_title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                        Título del Proyecto
-                    </label>
-                    <input v-model="form.title" type="text" id="project_title"
-                        class="bg-input border border-muted-foreground text-foreground text-sm rounded-lg block w-full p-2.5"
-                        placeholder="Ej: Curso de TypeScript" required />
-                    <div v-if="form.errors.title" class="text-red-600 mt-2 text-sm">{{ form.errors.title }}</div>
-                </div>
-
-                <!---->
-
-                <textEditor :onContent="subContent"></textEditor>
-
-
-                <!---->
-                <div v-for="(clase, index) in form.dailyClasses" :key="index" class="mb-4">
-                    <DailyClass v-model="form.dailyClasses[index]" :index="index" :dailyClass="clase" />
-                </div>
-
-                <button type="button" @click="addClass"
-                    class="mb-6 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-800">
-                    Agregar otra clase
-                </button>
-
-                <button @click="test"> ho lla</button>
-
-                <button type="submit"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    :disabled="form.processing">
-                    Crear Proyecto
-                </button>
-            </form>
-        </div>
+            <FormCreateProject :enrollmentId="props.enrollmentId" :teacherId="props.teacherId" />
+        </template>
+        <template v-else>
+            <Heading title="¡Ya existe un proyecto de aprendizaje para esta secion!"
+                description="Esta seccion ya tiene un proyecto de aprendizaje creado, si necesitas modificarlo o agregar mas clases puedes hacerlo desde la pagina de modificacion de proyecto" />
+        </template>
     </AppLayout>
 </template>
 
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { defineProps, ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import textEditor from './components/text-editor.vue';
-import DailyClass from './components/DailyClass.vue';
-import Modal from './components/Modal.vue';
-
-
-const isModalOpen = ref(false);
-
-const openModal = () => {
-    isModalOpen.value = true;
-};
-
-const alert = () => {
-
-    return console.log('Holaa')
-}
+import { defineProps } from 'vue';
+import Heading from '@/components/Heading.vue';
+import FormCreateProject from './components/FormCreateProject/FormCreateProject.vue';
 
 const props = defineProps({
-    learning_project: {
-        type: Array,
-        required: true,
-        default: () => [],
+    exist: {
+        type: Boolean,
+        required: true
     },
-    teacher_id: {
+    teacherId: {
         type: Number,
         required: true,
     },
-    enrollment_id: {
+    enrollmentId: {
         type: Number,
         required: true,
     }
-
 });
-
-type LearningProject = {
-    title: string;
-    content: string;
-    teacher_id: number;
-    enrollment_id: number;
-    dailyClasses: DailyClasses[];
-};
-
-type DailyClasses = {
-    title: string,
-    content: string,
-    date: Date
-}
-
-const form = useForm<LearningProject>({
-    title: '',
-    content: '',
-    teacher_id: props.teacher_id,
-    enrollment_id: props.enrollment_id,
-    dailyClasses: [{
-        title: '',
-        content: '',
-        date: new Date()
-
-    }],
-});
-
-const showModal = () => {
-    // Show the modal
-}
-
-const onContent = ref({});
-
-const subContent = (content) => {
-    onContent.value = content;
-}
-
-const onDate = ref({});
-
-const subDate = (date) => {
-    onDate.value = date;
-}
-const test = () => {
-    console.log(form.dailyClasses[0])
-}
-
-const submit = () => {
-    form.content = onContent.value;
-    form.post(route('learning-project.create'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset();
-        }
-    });
-};
-
-const addClass = () => {
-    form.dailyClasses.push({
-        title: '',
-        content: ''
-    });
-};
 </script>

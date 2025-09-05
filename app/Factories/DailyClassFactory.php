@@ -59,7 +59,7 @@ class DailyClassFactory implements Factory
             foreach ($request->input('indicators') as $item) {
                 $data->addItemEvaluation(new ItemEvaluationDetailDTO(
                     id: $item['id'] ?? 0,
-                    title: $item['title']
+                    title: $item['title'] ?? ''
                 ));
             }
         }

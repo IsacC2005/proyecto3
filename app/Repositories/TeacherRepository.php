@@ -59,7 +59,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
                 throw new TeacherNotFindException();
             }
 
-            $userModel = $teacherModel->user;
+            // $userModel = $teacherModel->user;
 
             return $this->transformToDTO($teacherModel);
         } catch (\Throwable $th) {

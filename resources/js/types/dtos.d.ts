@@ -1,3 +1,11 @@
+export type Pagination<T> = {
+    data: T[],
+    links: string[],
+    total: number,
+    currentPage: number,
+    lastPage: number,
+}
+
 export type Grade = 1 | 2 | 3 | 4 | 5 | 6;
 
 export interface Representative {
@@ -22,7 +30,7 @@ export type SectionName = A | B | C | D | F | G | H | a | b | c | d | f | g | h;
 
 export interface Section {
     id: number,
-    students: Student[],
+    students: Student[] | number[],
     teacher: Teacher | null,
     learningProject: LearningProject,
     schoolYear: SchoolYear,
@@ -36,12 +44,27 @@ export interface LearningProject {
     id: number,
     title: string,
     content: string,
+    dailyClasses: DailyClass[]
+}
+
+export interface DailyClass {
+    id: number,
+    title: string,
+    content: string,
+    date: Date,
+    indicators: Indicator[]
+}
+
+export interface Indicator {
+    id: number,
+    title: string
 }
 
 export interface Teacher {
     id: number,
     name: string,
     surname: string,
+    phone: number,
     user: User,
 }
 
@@ -50,4 +73,5 @@ export interface User {
     name: string,
     email: string,
     password: string,
+    roles: string[]
 }

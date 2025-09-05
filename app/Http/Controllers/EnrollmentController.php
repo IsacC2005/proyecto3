@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\TDTO;
 use App\Factories\EnrollmentFactory;
 use App\Services\EnrollmentServices;
 use App\Services\TeacherServices;
@@ -25,12 +26,11 @@ class EnrollmentController extends Controller
      */
     public function index()
     {
-        $data = $this->enrollmentServices->findAllEnrollment('transformToDetailDTO');
+        $data = $this->enrollmentServices->findAllEnrollment(TDTO::DETAIL);
         return Inertia::render('Enrollment/ListSections', [
             'sections' => array_map(function ($item) {
                 return $item->toArray();
-            }, $data),
-            'message' => "Todas las matriculas"
+            }, $data)
         ]);
     }
 
@@ -138,7 +138,8 @@ class EnrollmentController extends Controller
      */
     public function edit(string $id)
     {
-        // Debería mostrar el formulario para editar un elemento existente.
+        return Inertia::render('Enrollment/EditEnrollment');
+        return response()->json($this->enrollmentServices->findEnrollment($id));
     }
 
     /**

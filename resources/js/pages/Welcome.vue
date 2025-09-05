@@ -39,6 +39,13 @@ onUnmounted(() => {
     <div
         class="flex min-h-screen flex-col items-center bg-gradient-to-br from-emerald-100 to-blue-100 p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
 
+        <div class="w-full flex justify-end">
+            <a target="_blank"
+                class="px-4 py-2 m-2 rounded-xl text-emerald-100 font-extrabold bg-gradient-to-l from-emerald-400 to-blue-300 shadow-emerald-950 shadow-2xl hover:scale-105 transition-all"
+                href="https://sigesin.japeco.com/">
+                japeco
+            </a>
+        </div>
         <div class="flex w-full items-center justify-center opacity-100 transition-opacity lg:grow starting:opacity-0">
             <main
                 class="relative flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg shadow-2xl lg:max-w-4xl lg:flex-row">

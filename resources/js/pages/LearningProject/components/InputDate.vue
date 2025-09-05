@@ -1,8 +1,8 @@
 <template>
-    <div class="date-input-container">
-        <label :for="props.id" class="date-label">Selecciona una fecha:</label>
-        <input type="date" @input="emit('update:modelValue', new Date($event.target.value))" ref="myDateInput"
-            :id="props.id"
+    <div class="mt-3 max-w-80 flex flex-col gap-0.5 font-sans-serif">
+        <Label :for="props.id">Selecciona una fecha:</Label>
+        <input type="date" @input="emit('update:modelValue', new Date($event.target?.value))" v-model="DateSelect"
+            ref="myDateInput" :id="props.id"
             class="bg-input border border-muted-foreground text-foreground text-sm rounded-lg block w-full p-2.5 mt-2"
             :min="today" required />
         <p v-if="error" class="text-[0.75rem] text-red-700">{{ error }}</p>
@@ -10,12 +10,11 @@
 </template>
 
 <script setup lang="ts">
+import Label from '@/components/ui/label/Label.vue';
 import { ref, onMounted, defineProps, defineEmits } from 'vue';
 
 const myDateInput = ref(null);
 const DateSelect = ref(null);
-
-//const data = ref(<string | null>(null));
 
 onMounted(() => {
 
@@ -24,18 +23,15 @@ onMounted(() => {
     if (myDateInput.value) {
         myDateInput.value.addEventListener('change', (event) => {
             const selectedDate = event.target.value;
-            console.log('Fecha seleccionada:', selectedDate);
 
-            // Aquí puedes agregar tu lógica de validación
-            // Ejemplo: si es un fin de semana
             const dateObject = new Date(selectedDate);
             const dayOfWeek = dateObject.getDay(); // 0 = Domingo, 6 = Sábado
 
-            console.log('Día de la semana:', dayOfWeek);
-
             if (dayOfWeek === 5 || dayOfWeek === 6) {
                 error.value = 'No se puede seleccionar un dia que sea fin de semana.';
-                //props.modelValue = null; // Borrar la selección
+                DateSelect.value = null;
+            } else {
+                error.value = null;
             }
         });
     }
@@ -80,15 +76,6 @@ const setToday = () => {
 </script>
 
 <style scoped>
-/* Estilos del componente, iguales al ejemplo anterior */
-.date-input-container {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-family: sans-serif;
-    max-width: 300px;
-}
-
 .date-label {
     font-weight: 600;
     color: #333;

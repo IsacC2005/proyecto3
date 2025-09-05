@@ -1,6 +1,7 @@
 <template>
     <div
         class="bg-gradient-to-br from-emerald-300 to-blue-100 relative rounded-2xl shadow-2xl overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer group">
+        <SectionButtonUpdate :enrollmentId="props.section.id"></SectionButtonUpdate>
         <div class="group absolute top-10 left-0 flex items-center justify-start p-6 md:p-2 opacity-10 md:opacity-15">
             <p
                 class="text-9xl md:text-8xl lg:text-9xl font-black text-chart-2 group-hover:rotate-4 transition-all duration-300 ease-in-out">
@@ -26,6 +27,7 @@ import { Section } from '@/types/dtos';
 import SectionGrade from './SectionGrade.vue';
 import SectionDetail from './SectionDetail.vue';
 import SectionLearningProject from './SectionLearningProject.vue';
+import SectionButtonUpdate from './SectionButtonUpdate.vue';
 
 const props = defineProps<{
     section: Section

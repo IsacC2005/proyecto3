@@ -2,12 +2,12 @@
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import SubNavMain from './SubNavMain.vue';
 
-defineProps < {
+defineProps<{
     items: NavItem[];
-} > ();
+}>();
 
 const page = usePage();
 

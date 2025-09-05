@@ -6,7 +6,7 @@
             {{ `${props.section.teacher.name} ${props.section.teacher.surname}` }}
         </p>
         <div v-else class="mt-1">
-            <Link href="/enrollment/assign-teacher" :data="{ enrollment_id: props.section.id }"
+            <Link href="/enrollment/assign-teacher" :data="{ enrollmentId: props.section.id }"
                 class="px-2 py-1 text-center bg-blue-700 text-white text-xs md:text-sm font-bold rounded-full hover:bg-blue-800 transition-colors duration-200">
             Asignar
             </Link>

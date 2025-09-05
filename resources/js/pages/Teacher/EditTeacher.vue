@@ -1,7 +1,7 @@
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
-        <h1>editar profesor</h1>
-        <p>{{ data }}</p>
+        <Heading :title="`Editar profesor`"
+            :description="`Edita los datos de este profesor, y guardalos para preservar los cambios`"></Heading>
         <form @submit.prevent="submit" class="m-1 sm:m-8">
             <div class="grid gap-6 mb-6 md:grid-cols-2">
                 <div>
@@ -62,32 +62,39 @@
     </AppLayout>
 </template>
 
-<script setup lang="js">
+<script setup lang="ts">
+import Heading from '@/components/Heading.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { BreadcrumbItem } from '@/types';
+import { Teacher } from '@/types/dtos';
 import { useForm } from '@inertiajs/vue3';
 import { defineProps, ref } from 'vue';
 
 
-const props = defineProps({
-    data: {
-        type: Array,
-        required: true
-    }
-})
-
-const name = ref(props.data.name);
+const props = defineProps<{
+    teacher: Teacher
+}>()
 
 const form = useForm({
-    name: ref(props.data.name),
-    surname: ref(props.data.surname),
-    phone: ref(props.data.phone),
-    email: ref(props.data.UserDTO.email),
-    password: ref(props.data.UserDTO.password)
+    name: props.teacher.name,
+    surname: props.teacher.surname,
+    phone: props.teacher.phone,
+    email: props.teacher.user.email,
+    password: props.teacher.user.password
 });
 
 const submit = () => {
-    form.get(route('teacher.update', { id: props.data.id }));
+    form.get(route('teacher.update', { id: props.teacher.id }));
 }
 
-
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Lista de profesores',
+        href: '/teacher/index'
+    },
+    {
+        title: 'Editar profesor',
+        href: `/teacher/edit?teacherId=${props.teacher.id}`
+    }
+]
 </script>

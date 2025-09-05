@@ -27,4 +27,19 @@ class EnrollmentDTO implements DTOSummary
     {
         return $this->studentIds;
     }
+
+    public function toArray()
+    {
+        return [
+            'id' => $this->id,
+            'schoolYear' => $this->schoolYear,
+            'schoolMoment' => $this->schoolMoment,
+            'grade' => $this->grade,
+            'section' => $this->section,
+            'classroom' => $this->classroom,
+            'teacherId' => $this->teacherId,
+            'learningProjectId' => $this->learningProjectId,
+            'students' => $this->getStudents(),
+        ];
+    }
 }

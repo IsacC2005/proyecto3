@@ -25,9 +25,9 @@ class EvaluationServices
 
         $allNote = $this->itemEvaluationRepository->getAllEvaluationByClass($classId);
 
-        return Inertia::render('Teacher/ListStudentsEvaluate', [
+        return Inertia::render('Evaluation/ListStudentsEvaluate', [
             'students' => $students,
-            'DailyClass' => $class->toArray(),
+            'dailyClass' => $class->toArray(),
             'allNote' => $allNote
         ]);
     }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Constants\TDTO;
 use App\DTOs\Details\LearningProjectDetailDTO;
+use App\DTOs\Summary\LearningProjectDTO;
 use App\Exceptions\LearningProject\LearningProjectNotCreatedException;
 use App\Exceptions\LearningProject\LearningProjectNotFindException;
 use App\Repositories\Interfaces\EnrollmentInterface;
@@ -17,6 +18,7 @@ class LearningProjectServices
         private LearningProjectInterface $projectRepository,
         private EnrollmentInterface $enrollmentRepository,
         private DailyClassServices $dailyClassServices,
+        private DatesActual $datesActual
     ) {}
 
 
@@ -27,9 +29,15 @@ class LearningProjectServices
             $project = $this->projectRepository->create($data);
 
             foreach ($data->getDailyClasses() as $class) {
-                $class->learning_project_id = $project->id;
+                $class->learningProjectId = $project->id;
                 $this->dailyClassServices->createDailyClass($class);
             }
+            return Inertia::render('LearningProject/CreateLearningProject')->with('flash', [
+                'modal' => [
+                    'title' => '¡Exito!',
+                    'message' => 'El proyecto de aprendizaje se creo correctamente :).',
+                ]
+            ]);
         } catch (\Throwable $th) {
             $this->projectRepository->delete($project->id);
             throw new LearningProjectNotCreatedException($th->getMessage());
@@ -39,7 +47,17 @@ class LearningProjectServices
 
     public function findById(int $id)
     {
-        return $this->projectRepository->find($id, TDTO::DETAIL);
+        $user = Auth::user();
+
+        $result = $this->projectRepository->existProjectForTeacher($id, $user->userable_id);
+
+        if (!$result) {
+            throw new LearningProjectNotFindException('Crack este no es tu proyecto XD no sea sapo');
+        }
+
+        $project = $this->projectRepository->find($id, TDTO::DETAIL);
+
+        return $project;
     }
 
     public function findByTeacher(): array
@@ -66,27 +84,42 @@ class LearningProjectServices
 
         $rs = $this->projectRepository->findByEnrollment($enrollmentId);
 
-        if ($rs) {
-            return Inertia::render('LearningProject/CreateLearningProject', [
-                'learningProject' => $rs,
-                'teacherId' => $teacherId
+        return Inertia::render('LearningProject/CreateLearningProject', [
+            'exist' => $rs ? true : false,
+            'teacherId' => $teacherId,
+            'enrollmentId' => $enrollmentId
+        ]);
+    }
 
-            ]);
-        } else {
-            return Inertia::render('LearningProject/CreateLearningProject', [
-                'learningProject' => [],
-                'enrollmentId' => $enrollmentId,
-                'teacherId' => $teacherId
+    public function findActived()
+    {
+        $year = $this->datesActual->getSchoolYearActual();
+        $moment = $this->datesActual->getSchoolMomentActual();
 
-            ]);
+        $project = $this->projectRepository->findOnDate($year, $moment, TDTO::DETAIL);
+
+        if (!$project) {
+            return Inertia::render('Dashboard');
         }
+
+        return Inertia::render(
+            'LearningProject/ShowLearninProject',
+
+            [
+                'project' => $project,
+                'newClass' => true
+            ]
+        );
     }
 
     public function getAllProjects() {}
 
     public function findProjectById(int $id) {}
 
-    public function updateProject(int $id, array $data) {}
+    public function updateProject(LearningProjectDTO $project)
+    {
+        $project = $this->projectRepository->update($project);
+    }
 
     public function deleteProject(int $id) {}
 }

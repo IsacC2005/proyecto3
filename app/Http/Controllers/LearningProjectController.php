@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\TDTO;
 use App\Exceptions\LearningProject\LearningProjectNotCreatedException;
 use App\Factories\LearningProjectFactory;
 use App\Services\LearningProjectServices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+
+use function PHPUnit\Framework\isNumeric;
 
 class LearningProjectController extends Controller
 {
@@ -47,6 +51,12 @@ class LearningProjectController extends Controller
         return $this->learningProjectServices->findByEnrollment($enrollmentId, $teacherId);
     }
 
+
+    public function createClass()
+    {
+        return $this->learningProjectServices->findActived();
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -57,8 +67,8 @@ class LearningProjectController extends Controller
     {
         $data =  LearningProjectFactory::fromRequestDetail($request);
 
-        $this->learningProjectServices->createProject($data);
-        return response()->json($data->getDailyClasses());
+        return $this->learningProjectServices->createProject($data);
+        ///return response()->json($data->getDailyClasses());
     }
 
     /**
@@ -83,7 +93,10 @@ class LearningProjectController extends Controller
      */
     public function edit(string $id)
     {
-        // Debería mostrar el formulario para editar un elemento existente.
+        if (is_numeric($id)) {
+            $data = $this->learningProjectServices->findById($id);
+            return Inertia::render('LearningProject/EditLearningProject', ['project' => $data->toArray()]);
+        }
     }
 
     /**
@@ -94,6 +107,33 @@ class LearningProjectController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (!isNumeric($id)) {
+            return;
+        }
+        $data = LearningProjectFactory::fromRequest($request);
+        $data->id = $id;
+
+        $this->learningProjectServices->updateProject($data);
+
+        $request->session()->flash('flash', [
+            'modal' => [
+                'title' => '¡Éxito!',
+                'message' => 'El proyecto de aprendizaje se actualizó con éxito.'
+            ]
+        ]);
+
+        // Redirecciona a una URL con método GET, por ejemplo, el dashboard
+        return Redirect::route('dashboard')->with(
+            'flash',
+            [
+                'modal' => [
+                    'title' => '¡Exito!',
+                    'message' => 'El proyecto de aprendizaje se actualizo :)).',
+                ]
+            ]
+        );
+
+        //return response()->json($data);
         // Debería actualizar un elemento existente en la base de datos.
     }
 

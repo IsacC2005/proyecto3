@@ -42,4 +42,9 @@ class TeacherDetailDTO implements UserableDetailInterface, DTODetail
     {
         return $this->enrollments;
     }
+
+    public function toArray()
+    {
+        return [];
+    }
 }

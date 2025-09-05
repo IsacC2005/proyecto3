@@ -11,6 +11,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
 use App\Models\User;
+use App\Repositories\AIRepositori;
 use App\services\UserServices;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -67,11 +68,13 @@ Route::get('/enrollment/list/moment/{moment}', [EnrollmentController::class, 'fi
 Route::get('/enrollment/create', [EnrollmentController::class, 'create']);
 Route::post('/enrollment/create', [EnrollmentController::class, 'store'])->name('enrollment.create');
 
+Route::get('/enrollment/edit/{id}', [EnrollmentController::class, 'edit']);
+
 Route::get('/enrollment/assign-teacher/', [EnrollmentController::class, 'assignTeacher']);
 Route::post('/enrollment/assign-teacher', [EnrollmentController::class, 'assignTeacherSave'])->name('enrollment.assign-teacher');
 
 Route::get('/enrollment/add-student/', [EnrollmentController::class, 'addStudent']);
-Route::post('/enrollment/add-student/', [EnrollmentController::class, 'addStudentSave'])->name('enrollment.addStudent');
+Route::post('/enrollment/add-student/', [EnrollmentController::class, 'addStudentSave'])->name('enrollment.add-student');
 
 /**
  * TODO: Rutas para LearningProject ;-)
@@ -84,13 +87,23 @@ Route::get('/learning-project/show/{id}', [LearningProjectController::class, 'sh
 Route::get('/learning-project/create', [LearningProjectController::class, 'create']);
 Route::post('/learning-project/create', [LearningProjectController::class, 'store'])->name('learning-project.create');
 
+Route::get('/learning-project/edit/{id}', [LearningProjectController::class, 'edit']);
+Route::put('/learning-project/update/{id}', [LearningProjectController::class, 'update'])->name('learning-project.update');
+
 
 /**
  * TODO: Rutas para DailyClass
  */
+Route::get('daily-class/create', [LearningProjectController::class, 'createClass']);
+Route::post('/daily-class/create', [DailyClassController::class, 'store'])->name('daily-class.create');
+
 Route::get('/daily-class/edit/{id}', [DailyClassController::class, 'edit'])->name('learning-project.daily-class.edit');
 
 Route::put('daily-class/update/{id}', [DailyClassController::class, 'update']);
+
+Route::get('/test', function () {
+    return AIRepositori::test();
+});
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

@@ -17,7 +17,7 @@ interface StudentInterface
 
     public function findStudentByEnrollment(int $enrollmentId): array;
 
-    public function findStudentByDegree(int $degree, ?bool $NotAddEnrollment = false): PaginationDTO;
+    public function findStudentByGrade(int $degree, ?bool $NotAddEnrollment = false): PaginationDTO;
 
     public function findStudentByLearningProject(int $learningProjectId): array;
 

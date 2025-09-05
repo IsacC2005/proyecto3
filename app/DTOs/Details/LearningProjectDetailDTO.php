@@ -50,7 +50,7 @@ class LearningProjectDetailDTO implements DTODetail
             'content' => $this->content,
             'teacher' => $this->teacher ?? null,
             'enrollment' => $this->enrollment ?? null,
-            'daily_classes' => $this->getDailyClasses()
+            'dailyClasses' => $this->getDailyClasses()
         ];
     }
 }

@@ -21,6 +21,7 @@ class TeacherServices
         private EnrollmentServices $enrollmentServices,
         private UserServices $userServices,
         private RoleServices $roleServices,
+        //repositories adicionales
         private LearningProjectInterface $projectRepository,
         private DailyClassInterface $dailyClassRepository
     ) {}
@@ -74,7 +75,9 @@ class TeacherServices
 
     public function evaluateShowPage()
     {
-        $id = Auth::user()->userable_id;
+        $user = Auth::user();
+
+        $id = $user->userable_id;
 
         $teacher = $this->teacherRepository->find($id);
 
@@ -85,7 +88,8 @@ class TeacherServices
         $dailyClasses = $this->dailyClassRepository->findByLearningProject($learningProject->id, TDTO::DETAIL);
 
         return Inertia::render('Teacher/EvaluateTeacher', [
-            'evaluations' => $dailyClasses
+            'evaluations' => $dailyClasses,
+            'project' => $learningProject
         ]);
     }
 
@@ -106,7 +110,7 @@ class TeacherServices
     {
         $user = $this->userServices->findByUserByUserable($id);
         $teacher = $this->teacherRepository->find($id);
-        $teacher->UserDTO = $user;
+        $teacher->user = $user;
 
         return $teacher;
     }

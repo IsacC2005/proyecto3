@@ -3,7 +3,7 @@
         <SectionDetailStudents :students="props.section.students">
             <Link
                 class="mt-1 px-2 py-1 text-center bg-emerald-700 text-white text-xs md:text-sm font-bold rounded-full hover:bg-emerald-800 transition-colors duration-200"
-                href="/enrollment/add-student/" :data="{ enrollment_id: props.section.id }">
+                href="/enrollment/add-student/" :data="{ enrollmentId: props.section.id }">
             Agregar
             </Link>
         </SectionDetailStudents>

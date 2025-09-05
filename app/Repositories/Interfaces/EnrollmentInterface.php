@@ -31,6 +31,8 @@ interface EnrollmentInterface
 
     public function findEnrollmentOnSchoolYearAndSchoolMomentByTeacher(int $teacherId, string $schoolYear, int $schoolMoment): EnrollmentDTO | null;
 
+    public function existEnrollmentSecctionAndSchoolYear(int $grade, string $section, int $moment, string $year): bool;
+
     public function search(EnrollmentDTO $enrollment): array;
 
     public function update(EnrollmentDTO $enrollment): EnrollmentDTO;
