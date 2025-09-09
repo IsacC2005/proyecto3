@@ -7,7 +7,7 @@
         <div v-if="showModal" class="fixed inset-0 z-50 overflow-y-auto bg-black/60 flex justify-center items-center">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-lg p-6 m-4">
                 <div class="flex justify-between items-center pb-3 border-b dark:border-gray-700">
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Crear Nueva Clase</h3>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Crear Referente Teórico</h3>
                     <button @click="closeModal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -18,14 +18,14 @@
 
                 <form @submit.prevent="submitForm" class="mt-4">
                     <div class="mb-4">
-                        <label for="title"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Título</label>
+                        <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre del
+                            Referente Teórico</label>
                         <input type="text" id="title" v-model="form.title" required
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
                     <div class="mb-4">
                         <label for="content"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Contenido</label>
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Desarrollo</label>
                         <textarea id="content" v-model="form.content" rows="4"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
                     </div>
@@ -65,7 +65,7 @@
                         </button>
                         <button type="submit"
                             class="px-4 py-2 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                            Crear Clase
+                            Crear Referente Teorico
                         </button>
                     </div>
                 </form>

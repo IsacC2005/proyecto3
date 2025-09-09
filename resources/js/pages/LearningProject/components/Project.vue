@@ -17,7 +17,7 @@
         </div>
 
         <div class="mb-4">
-            <h3 class="font-semibold text-gray-700 mb-2">Clases Principales:</h3>
+            <h3 class="font-semibold text-gray-700 mb-2">Referentes Teóricos Principales:</h3>
             <ul class="space-y-2">
                 <li v-for="(dailyClass, index) in getFirstClasses(project.dailyClasses)" :key="dailyClass.id"
                     class="flex items-start">

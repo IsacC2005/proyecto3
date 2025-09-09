@@ -9,7 +9,7 @@
                 </AddClass>
                 <button @click="ModalOpen = true"
                     class="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors duration-200">
-                    Crear Nueva Clase Diaria
+                    Crear Referentes Teóricos
                 </button>
                 <Link :href="`/learning-project/edit/${props.project.id}`"
                     class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors duration-200">

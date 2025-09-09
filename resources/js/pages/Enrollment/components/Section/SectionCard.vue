@@ -1,6 +1,6 @@
 <template>
     <div
-        class="bg-gradient-to-br from-emerald-300 to-blue-100 relative rounded-2xl shadow-2xl overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer group">
+        class="bg-gradient-to-br from-emerald-300 to-blue-100 dark:from-emerald-900 dark:to-emerald-700 relative rounded-2xl shadow-2xl overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer group">
         <SectionButtonUpdate :enrollmentId="props.section.id"></SectionButtonUpdate>
         <div class="group absolute top-10 left-0 flex items-center justify-start p-6 md:p-2 opacity-10 md:opacity-15">
             <p

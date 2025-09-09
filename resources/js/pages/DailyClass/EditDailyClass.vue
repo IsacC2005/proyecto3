@@ -1,7 +1,7 @@
 <template>
     <AppLayout>
-        <Heading title="Modificar clase diaria"
-            description="Las clases una ves evaluadas no pueden ser modificadas, debes registrar lo mejor posible tus clases diarias para no tener que modificarlas en el futuro">
+        <Heading title="Modificar Referente Teórico"
+            description="Los referentes teóricos una ves evaluados no pueden ser modificados">
         </Heading>
         <div class="p-4 sm:p-6 md:p-8 w-full max-w-4xl mx-auto">
             <FormDailyClass :daily-class="props.dailyClass">
@@ -12,7 +12,7 @@
                             class="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
                             <span v-if="processing">Guardando...</span>
                             <span v-else>
-                                Actualizar Clase</span>
+                                Actualizar Referente Teórico</span>
                         </button>
 
                         <button type="button" @click="cancel"

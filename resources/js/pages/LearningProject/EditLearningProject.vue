@@ -7,7 +7,7 @@
             <Input v-model="form.title" class="mt-4 mb-8" id="title" type="text"
                 placeholder="Nuestros Vecinos del Huerto: Un Viaje al Mundo de los Insectos" />
 
-            <Label>Contenido del proyecto de aprendizaje</Label>
+            <Label>Diagnóstico y Propósito</Label>
             <Editor class=" mt-4" v-model="model" />
 
             <div class="mt-4 mr-1.5 flex flex-row justify-end">

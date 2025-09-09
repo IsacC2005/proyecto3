@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { BookOpenText, ChartBarBig, ExternalLink, Folder, GraduationCap, LayoutGrid, LibrarySquare, List, MonitorCog, Notebook, School, User, UserPlus, UserRound, UserRoundPlus, Users, UsersRound } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { computed } from 'vue';
 
@@ -19,18 +19,17 @@ const mainNavItems: NavItem[] = [
         title: 'Administrar',
         href: '#',
         role: ['Administrador'],
-        icon: LayoutGrid,
+        icon: MonitorCog,
         children: [
-            { title: 'Usuarios', href: '#' },
-            { title: 'Proyectos de aprendizaje', href: '#' },
-            { title: 'Crear usuario', href: '#' },
-            { title: 'Crear usuario', href: '#' },
+            { title: 'Usuarios', href: '#', icon: UsersRound },
+            { title: 'Proyectos de aprendizaje', href: '#', icon: LibrarySquare },
+            { title: 'Crear usuario', href: '#', icon: UserRoundPlus },
         ]
     },
     {
-        title: 'Matriculas',
+        title: 'Sección',
         href: '#',
-        icon: Folder,
+        icon: School,
         children: [
             { title: 'Lista de matriculas', href: '/enrollment/index', role: ['Administrador'] },
             { title: 'Crear matricula', href: '/enrollment/create', role: ['Administrador'] },
@@ -41,18 +40,18 @@ const mainNavItems: NavItem[] = [
         title: 'Profesores',
         href: '#',
         role: ['Administrador'],
-        icon: Folder,
+        icon: Users,
         children: [
-            { title: 'Lista de profesores', href: '/teacher/index' },
-            { title: 'Crear profesor', href: '/teacher/create' },
+            { title: 'Lista de profesores', href: '/teacher/index', icon: List, },
+            { title: 'Crear profesor', href: '/teacher/create', icon: UserPlus },
         ]
     },
     {
         title: 'Estudiante',
         href: '#',
-        icon: Folder,
+        icon: GraduationCap,
         children: [
-            { title: 'Lista de Estudiantes', href: '/student/index', role: ['Administrador'] },
+            { title: 'Lista de Estudiantes', href: '/student/index', icon: List, role: ['Administrador'] },
             { title: 'Crear Estudiantes', href: '/student/create', role: ['Administrador'] },
             { title: 'Estadisticas', href: '#', role: ['Profesor'] }
         ]
@@ -61,27 +60,27 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Proyecto de aprendizaje',
         href: '#',
-        icon: Folder,
+        icon: BookOpenText,
         children: [
             { title: 'Proyectos', href: '/learning-project/index' },
-            { title: 'Agregar clase', href: '/daily-class/create' },
-            { title: 'Evaluar Clase', href: '/teacher/evaluate' }
+            { title: 'Agregar R.T', href: '/daily-class/create' },
+            { title: 'Evaluar R.T', href: '/teacher/evaluate' }
         ]
     },
     {
-        title: 'Clase',
+        title: 'Referentes Teoricos',
         href: '#',
-        icon: Folder,
+        icon: ChartBarBig,
         children: [
-            { title: 'Crear clase', href: '/daily-class/create' },
-            { title: 'Modificar clase', href: '#' },
-            { title: 'Evaluar Clase', href: '/teacher/evaluate' }
+            { title: 'Crear R.T', href: '/daily-class/create' },
+            { title: 'Modificar R.T', href: '#' },
+            { title: 'Evaluar R.T', href: '/teacher/evaluate' }
         ]
     },
     {
         title: 'Boletas',
         href: '#',
-        icon: Folder,
+        icon: Notebook,
         children: [
             { title: 'Crear boletas', href: '#' },
             { title: 'Buscar boleta', href: '#' },
@@ -91,6 +90,12 @@ const mainNavItems: NavItem[] = [
 ];
 
 const footerNavItems: NavItem[] = [
+    {
+        title: 'Japeco',
+        href: 'https://sigesin.japeco.com/',
+        icon: ExternalLink
+
+    }
 ];
 
 const page = usePage();

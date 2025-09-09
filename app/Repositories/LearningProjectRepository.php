@@ -144,18 +144,23 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
 
 
-    public function findOnDate(string $schoolYear, string $schoolMoment, ?string $fn = TDTO::DETAIL): LearningProjectDTO | LearningProjectDetailDTO | null
+    public function findOnDate(string $schoolYear, string $schoolMoment, ?int $teacher_id = null, ?string $fn = TDTO::DETAIL): LearningProjectDTO | LearningProjectDetailDTO | null
     {
         try {
-            //code...
-            $project = LearningProject::whereHas('enrollment', function ($query) use ($schoolYear, $schoolMoment) {
-                $query->where('school_year', $schoolYear)->where('school_moment', $schoolMoment);
-            })->first();
+            if ($teacher_id) {
 
+                $project = LearningProject::whereHas('enrollment', function ($query) use ($schoolYear, $schoolMoment, $teacher_id) {
+                    $query->where('school_year', $schoolYear)->where('school_moment', $schoolMoment)->where('teacher_id', $teacher_id);
+                })->first();
+            } else {
+
+                $project = LearningProject::whereHas('enrollment', function ($query) use ($schoolYear, $schoolMoment) {
+                    $query->where('school_year', $schoolYear)->where('school_moment', $schoolMoment);
+                })->first();
+            }
             if (!$project) {
                 return null;
             }
-
             return $this->$fn($project);
         } catch (\Throwable $th) {
             throw $th;

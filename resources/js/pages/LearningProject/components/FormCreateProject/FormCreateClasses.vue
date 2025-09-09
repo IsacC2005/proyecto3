@@ -1,7 +1,7 @@
 <template>
     <div>
         <template v-for="(dailyClass, index) in props.dailyClasses" :key="index">
-            <CreateClass :index="2" :dailyClass="dailyClass"></CreateClass>
+            <CreateClass :index="index" :dailyClass="dailyClass"></CreateClass>
         </template>
     </div>
 </template>

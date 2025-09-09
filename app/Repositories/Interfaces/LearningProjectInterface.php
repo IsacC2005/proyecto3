@@ -22,7 +22,7 @@ interface LearningProjectInterface
 
     public function findByTeacher(int $teacherId, ?string $fn = null): array;
 
-    public function findOnDate(string $schoolYear, string $schoolMoment, ?string $fn = TDTO::SUMMARY): LearningProjectDTO | LearningProjectDetailDTO | null;
+    public function findOnDate(string $schoolYear, string $schoolMoment, ?int $teacher_id, ?string $fn = TDTO::SUMMARY): LearningProjectDTO | LearningProjectDetailDTO | null;
 
     public function search(LearningProjectDTO $learningProject): array;
 

@@ -93,10 +93,18 @@ class LearningProjectServices
 
     public function findActived()
     {
+        $teacher_id = Auth::user()->userable->id;
+
+
+
+        if (!$teacher_id) {
+            $teacher_id = -1;
+        }
+
         $year = $this->datesActual->getSchoolYearActual();
         $moment = $this->datesActual->getSchoolMomentActual();
 
-        $project = $this->projectRepository->findOnDate($year, $moment, TDTO::DETAIL);
+        $project = $this->projectRepository->findOnDate($year, $moment, $teacher_id, TDTO::DETAIL);
 
         if (!$project) {
             return Inertia::render('Dashboard');

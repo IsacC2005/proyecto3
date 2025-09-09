@@ -5,15 +5,14 @@
             placeholder="Nuestros Vecinos del Huerto: Un Viaje al Mundo de los Insectos" />
 
         <Label>
-            Contenido del proyecto de aprendizaje </Label>
+            Diagnóstico y Propósito </Label>
         <Editor class=" mt-4" v-model="model" />
 
         <div class="flex flex-col my-4">
             <FormCreateClasses :dailyClasses="form.dailyClasses"></FormCreateClasses>
             <button @click="addClass"
                 class="mt-4 font-medium text-sm w-full sm:w-fit px-5 py-2.5 text-center text-foreground bg-blue-500 hover:bg-blue-600 rounded-lg">Agregar
-                otra
-                clase</button>
+                Referente Teorico</button>
         </div>
 
         <button type="submit"

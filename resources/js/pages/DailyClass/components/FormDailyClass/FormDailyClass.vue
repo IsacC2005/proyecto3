@@ -2,7 +2,7 @@
     <form @submit.prevent="submit" class="bg-white rounded-lg shadow-md px-6 sm:px-6">
         <div class="mb-6">
             <label for="title" class="block text-gray-700 text-sm font-bold mb-2">
-                Título de la Clase:
+                Nombre del Referente Teórico:
             </label>
             <input id="title" type="text" v-model="form.title"
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -14,7 +14,7 @@
 
         <div class="mb-6">
             <label for="content" class="block text-gray-700 text-sm font-bold mb-2">
-                Contenido:
+                Desarrollo:
             </label>
             <Editor v-model="form.content"></Editor>
             <div v-if="form.errors.content" class="text-red-500 text-xs mt-1">

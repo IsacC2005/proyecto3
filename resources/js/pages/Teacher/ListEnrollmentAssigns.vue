@@ -12,7 +12,7 @@
             </template>
             <template v-else>
                 <Heading :title="`Aun no tienes una seccion asignada`"
-                    :description="`Debes esperar a que el administrador te asigne una seccion`" />
+                    :description="`Debes esperar a que el administrador te asigne una sección`" />
             </template>
         </div>
     </AppLayout>
