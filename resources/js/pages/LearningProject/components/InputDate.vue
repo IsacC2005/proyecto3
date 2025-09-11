@@ -12,6 +12,18 @@
 <script setup lang="ts">
 import Label from '@/components/ui/label/Label.vue';
 import { ref, onMounted, defineProps, defineEmits } from 'vue';
+import { useAlertData } from '@/store/ModalStore';
+import { Alert } from '@/types';
+
+const alert = useAlertData();
+const { showAlert } = alert;
+
+const alertDataMessage: Alert = {
+    title: '🚫¡Error!',
+    description: 'La fecha que has seleccionado es fin de semana',
+    message: 'No puedes seleccionar un dia que sea fin de semana, selecciona otra fecha',
+    code: 0
+}
 
 const myDateInput = ref(null);
 const DateSelect = ref(null);
@@ -28,6 +40,7 @@ onMounted(() => {
             const dayOfWeek = dateObject.getDay(); // 0 = Domingo, 6 = Sábado
 
             if (dayOfWeek === 5 || dayOfWeek === 6) {
+                showAlert(alertDataMessage);
                 error.value = 'No se puede seleccionar un dia que sea fin de semana.';
                 DateSelect.value = null;
             } else {

@@ -1,38 +1,10 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { ref, computed, onMounted, onUnmounted } from 'vue';
-const isDarkMode = ref(false); // Variable reactiva para el estado del tema
-
-const esTemaOscuro = computed(() => isDarkMode.value);
-
-let mediaQueryList;
-
-onMounted(() => {
-    if (window.matchMedia) {
-        mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
-
-        // Establece el estado inicial
-        isDarkMode.value = mediaQueryList.matches;
-
-        // Escucha los cambios
-        mediaQueryList.addEventListener('change', (e) => {
-            isDarkMode.value = e.matches;
-        });
-    }
-});
-
-onUnmounted(() => {
-    if (mediaQueryList) {
-        mediaQueryList.removeEventListener('change', (e) => {
-            isDarkMode.value = e.matches;
-        });
-    }
-});
 </script>
 
 <template>
 
-    <Head title="Welcome">
+    <Head title="Bienvenido">
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>

@@ -1,92 +1,89 @@
 <template>
-    <div v-if="isOpen" class="modal-backdrop">
-        <div class="flex fixed z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <div class="relative p-4 w-full max-w-md max-h-full">
-                <div class="bg-white rounded-lg shadow-sm dark:bg-gray-700">
-                    <button type="button"
-                        class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                        data-modal-hide="popup-modal">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                        </svg>
-                        <span class="sr-only" @click="closeModal">Close modal</span>
-                    </button>
-                    <div class="p-4 md:p-5 text-center">
-                        <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">{{ title }}</h3>
-                        <p>{{ message }}</p>
-                        <button data-modal-hide="popup-modal" type="button"
-                            class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
-                            Yes, I'm sure
+    <!-- Wrap your dialog in a `TransitionRoot`. -->
+    <TransitionRoot :show="isOpen" as="template" class="relative z-50">
+        <Dialog @close="closeAlert">
+            <!-- Wrap your backdrop in a `TransitionChild`. -->
+            <TransitionChild enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
+                leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
+                <div class="fixed inset-0 bg-black/30" />
+            </TransitionChild>
+
+            <!-- Wrap your panel in a `TransitionChild`. -->
+            <TransitionChild enter="duration-300 ease-out" enter-from="opacity-0 scale-95"
+                enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
+                leave-to="opacity-0 scale-95" class="fixed inset-0 flex items-center justify-center p-4">
+                <DialogPanel class="w-full max-w-sm rounded bg-white p-6">
+
+                    <DialogTitle class="text-xl font-semibold font-[Montserrat]">{{ title }}</DialogTitle>
+                    <DialogDescription class="mt-2 text-sm text-gray-500 font-[Montserrat]">
+                        {{ description }}
+                    </DialogDescription>
+
+                    <p class="mt-4 text-sm text-gray-700 font-medium font-[Montserrat]">
+                        {{ message }}
+                    </p>
+
+                    <div class="mt-4 flex justify-end">
+                        <button @click="closeAlert"
+                            class="py-1 px-5 bg-emerald-500/30 text-emerald-900 font-black hover:bg-emerald-500/50 rounded focus:outline-none">
+                            Okey
                         </button>
-                        <button data-modal-hide="popup-modal" type="button"
-                            class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No,
-                            cancel</button>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                </DialogPanel>
+            </TransitionChild>
+        </Dialog>
+    </TransitionRoot>
 </template>
 
 <script setup lang="ts">
-import { computed, watch, ref } from 'vue';
+import { computed, onMounted } from 'vue'
+import {
+    TransitionRoot,
+    TransitionChild,
+    Dialog,
+    DialogPanel,
+    DialogDescription,
+    DialogTitle,
+} from '@headlessui/vue'
+import { useAlertData } from '@/store/ModalStore';
+import { storeToRefs } from 'pinia';
+import { watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
-
-const modal = ref({
-    isOpen: false,
-    title: '',
-    message: ''
-});
+import { Alert } from '@/types';
 
 const page = usePage();
 
-const modalData = computed(() => page.props.flash?.modal || {});
+const data = useAlertData();
+const { isOpen, title, description, message, code } = storeToRefs(data);
+const { showAlert, closeAlert } = data;
 
-const isOpen = computed(() => !!modalData.value.message);
 
-const closeModal = () => {
-    page.props.flash.modal = null;
-};
+const alertFlash = computed(() => page.props.flash?.alert);
 
-const title = computed(() => modalData.value.title);
-const message = computed(() => modalData.value.message);
+onMounted(() => {
+    openAlert();
+})
 
-watch(() => page.props.flash, (newFlash) => {
-    if (newFlash && newFlash.modal) {
-        modal.value.title = newFlash.modal.title;
-        modal.value.message = newFlash.modal.message;
-        modal.value.isOpen = true;
+watch(alertFlash, () => {
+    console.log('que pasa crak')
+    openAlert();
+});
+
+const openAlert = () => {
+    const data = page.props.flash.alert;
+    if (data) {
+        const dataAlert: Alert = {
+            isOpen: false,
+            title: data.title,
+            description: data.description,
+            message: data.message,
+            code: data.code
+        }
+        showAlert(dataAlert)
     }
-}, { immediate: true });
+}
 </script>
 
 <style scoped>
-/* Estilos para el modal */
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-container {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 500px;
-    width: 90%;
-}
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 </style>

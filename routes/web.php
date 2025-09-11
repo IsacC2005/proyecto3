@@ -80,7 +80,7 @@ Route::post('/enrollment/add-student/', [EnrollmentController::class, 'addStuden
  * TODO: Rutas para LearningProject ;-)
  */
 
-Route::get('/learning-project/index', [LearningProjectController::class, 'index']);
+Route::get('/learning-project/index', [LearningProjectController::class, 'index'])->name('learning-project.index');
 
 Route::get('/learning-project/show/{id}', [LearningProjectController::class, 'show']);
 
@@ -102,7 +102,34 @@ Route::get('/daily-class/edit/{id}', [DailyClassController::class, 'edit'])->nam
 Route::put('daily-class/update/{id}', [DailyClassController::class, 'update']);
 
 Route::get('/test', function () {
-    return AIRepositori::test();
+    return Inertia::render('Dashboard')->with('flash', [
+        'alert' => [
+            'title' => 'Prueba desde el back',
+            'message' => 'Esta es una prueba bien perrona jaja xd',
+            'code' => '200'
+        ]
+    ]);
+    //return AIRepositori::test();
+});
+
+Route::post('/test', function () {
+
+    // return redirect()->route('dashboard')->with('flash', [
+    //     'alert' => [
+    //         'title' => 'Prueba desde el back',
+    //         'message' => 'Esta es una prueba de una acción exitosa.',
+    //         'code' => '200'
+    //     ]
+    // ]);
+
+    return redirect()->route('learning-project.index')->with('flash', [
+        'alert' => [
+            'title' => '¡Exito!',
+            'message' => 'El proyecto de aprendizaje se creo correctamente :)',
+            'code' => '200'
+        ]
+    ]);
+    //return AIRepositori::test();
 });
 
 require __DIR__ . '/settings.php';

@@ -28,4 +28,12 @@ export type AppPageProps<T extends Record<string, unknown> = Record<string, unkn
     sidebarOpen: boolean;
 };
 
+export interface Alert {
+    isOpen: boolean,
+    title: strign,
+    description: string,
+    message: string,
+    code: number
+}
+
 export type BreadcrumbItemType = BreadcrumbItem;

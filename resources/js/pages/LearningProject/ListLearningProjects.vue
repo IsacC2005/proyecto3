@@ -1,5 +1,6 @@
 <template>
     <AppLayout>
+        {{ page.props.flash }}
         <div v-if="projects.length !== 0" class="p-4 sm:p-6 md:p-8">
             <Heading title="Proyectos de Aprendizaje" />
             <div v-for="(project, index) in props.projects" :key="index"
@@ -25,6 +26,9 @@ import Project from './components/Project.vue';
 import { LearningProject } from '@/types/dtos';
 import Heading from '@/components/Heading.vue';
 import { Link } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
+
+const page = usePage();
 
 const props = defineProps<{
     projects: LearningProject[]

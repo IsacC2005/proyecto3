@@ -2,57 +2,76 @@
 
 namespace App\Services;
 
+use App\Constants\TDTO;
 use App\Models\Teacher;
 use App\Models\LearningProject;
 use App\Models\DailyClass;
 use App\Models\Enrollment;
+use App\Models\EvaluationItem;
+use App\Repositories\Interfaces\LearningProjectInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+
 
 
 
 class DeshboardServices
 {
 
+    public function __construct(
+        private DatesActual $date,
+        private LearningProjectInterface $project
+    ) {}
+
     public function welcome()
     {
-        // Se asume que el usuario autenticado es un profesor
         $teacher = Auth::user()->userable;
 
-        // Se encuentra el proyecto de aprendizaje activo
-        $activeLearningProject = $teacher->learning_projects()->first();
+        $teacher_id = $teacher->id;
 
-        // Si no hay un proyecto activo, devolvemos un array vacío
+        $moment = $this->date->getSchoolMomentActual();
+        $year = $this->date->getSchoolYearActual();
+
+
+        $activeLearningProject = $this->project->findOnDate($year, $moment, $teacher_id, TDTO::DETAIL);
+
         if (!$activeLearningProject) {
             return [
-                'learning_project' => null,
-                'class_data' => [],
-                'student_performance_summary' => [],
+                'project' => null,
             ];
         }
 
+        $classes = DailyClass::with('evaluation_items')->where('learning_project_id', $activeLearningProject->id)->get();
+
+        $classEvaluates = 0;
+
+        // foreach ($activeLearningProject->getDailyClasses() as $class){
+
+        // $classEvaluates = EvaluationItem::where('daily_class_id',$class->id )
+        // }
+
         // 1. Datos para el gráfico de clases
-        $classesData = $activeLearningProject->daily_classes()
-            ->select('title', DB::raw('COUNT(id) as total_classes'))
-            ->groupBy('title')
-            ->get();
+        // $classesData = $activeLearningProject->daily_classes()
+        //     ->select('title', DB::raw('COUNT(id) as total_classes'))
+        //     ->groupBy('title')
+        //     ->get();
 
         // Contamos las clases evaluadas por proyecto
         // $evaluatedClassesCount = studentEvaluationItems::whereHas('evaluationItem.dailyClass', function ($query) use ($activeLearningProject) {
         //     $query->where('learning_project_id', $activeLearningProject->id);
         // })->count();
 
-        $classGraphData = [
-            'project_name' => $activeLearningProject->title,
-            'total_classes' => $classesData->sum('total_classes'),
-            'evaluated_classes' => 8,
-            'class_details' => $classesData->map(function ($item) {
-                return [
-                    'title' => $item->title,
-                    'count' => $item->total_classes,
-                ];
-            }),
-        ];
+        // $classGraphData = [
+        //     'project_name' => $activeLearningProject->title,
+        //     'total_classes' => $classesData->sum('total_classes'),
+        //     'evaluated_classes' => 8,
+        //     'class_details' => $classesData->map(function ($item) {
+        //         return [
+        //             'title' => $item->title,
+        //             'count' => $item->total_classes,
+        //         ];
+        //     }),
+        // ];
 
         // 2. Datos para el resumen de rendimiento de estudiantes
         // $studentPerformanceSummary = Enrollment::whereHas('learningProject', function ($query) use ($activeLearningProject) {
@@ -89,12 +108,8 @@ class DeshboardServices
 
         // Se crea el array final con todos los datos
         $welcomeData = [
-            'learning_project' => [
-                'id' => $activeLearningProject->id,
-                'title' => $activeLearningProject->title,
-            ],
-            'class_data' => $classGraphData,
-            'student_performance_summary' => [],
+            'project' => $activeLearningProject->toArray(),
+            'evaluateClasses' => $classEvaluates
         ];
 
         return $welcomeData;

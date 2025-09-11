@@ -32,10 +32,12 @@ class LearningProjectServices
                 $class->learningProjectId = $project->id;
                 $this->dailyClassServices->createDailyClass($class);
             }
-            return Inertia::render('LearningProject/CreateLearningProject')->with('flash', [
-                'modal' => [
+            return redirect()->route('learning-project.index')->with('flash', [
+                'alert' => [
                     'title' => '¡Exito!',
-                    'message' => 'El proyecto de aprendizaje se creo correctamente :).',
+                    'description' => 'El proyecto ya se a creado ahora puedes agregar Referentes teoricos y evaluarlos',
+                    'message' => 'El proyecto de aprendizaje se creo correctamente :)',
+                    'code' => '200'
                 ]
             ]);
         } catch (\Throwable $th) {
