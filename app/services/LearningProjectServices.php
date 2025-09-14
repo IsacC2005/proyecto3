@@ -126,6 +126,27 @@ class LearningProjectServices
 
     public function findProjectById(int $id) {}
 
+
+    public function Notes(?int $projectId = null)
+    {
+        if (!$projectId) {
+        }
+
+        $teacher_id = Auth::user()->userable->id;
+
+        if (!$teacher_id) {
+            $teacher_id = -1;
+        }
+
+        $year = $this->datesActual->getSchoolYearActual();
+        $moment = $this->datesActual->getSchoolMomentActual();
+
+        $project = $this->projectRepository->findOnDate($year, $moment, $teacher_id);
+
+
+        return $this->projectRepository->getAllEvaluationByProject($project->id);
+    }
+
     public function updateProject(LearningProjectDTO $project)
     {
         $project = $this->projectRepository->update($project);

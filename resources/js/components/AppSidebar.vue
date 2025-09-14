@@ -53,7 +53,7 @@ const mainNavItems: NavItem[] = [
         children: [
             { title: 'Lista de Estudiantes', href: '/student/index', icon: List, role: ['Administrador'] },
             { title: 'Crear Estudiantes', href: '/student/create', role: ['Administrador'] },
-            { title: 'Estadisticas', href: '#', role: ['Profesor'] }
+            { title: 'Estadisticas', href: '/learning-project/notes/', role: ['Profesor'] }
         ]
 
     },

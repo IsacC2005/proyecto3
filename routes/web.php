@@ -21,96 +21,89 @@ Route::get('/', WelcomeController::class)->name('home');
 Route::get('dashboard', DashboardController::class)
     ->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('create-user', [UserController::class, 'show'])->name('user.show');
+Route::get('create-user', [UserController::class, 'show'])->middleware(['auth', 'verified'])->name('user.show');
 
-Route::post('create-user', [UserController::class, 'create'])->name('user.create');
+Route::post('create-user', [UserController::class, 'create'])->middleware(['auth', 'verified'])->name('user.create');
 
 /**
  * TODO: Rutas para Teachers
  */
 
-Route::get('/teacher/index', [TeacherController::class, 'index']);
+Route::get('/teacher/index', [TeacherController::class, 'index'])->middleware(['auth', 'verified']);
 
-Route::get('/teacher/create', [TeacherController::class, 'create']);
-Route::post('/teacher/create', [TeacherController::class, 'store'])->name('teacher.create');
+Route::get('/teacher/create', [TeacherController::class, 'create'])->middleware(['auth', 'verified']);
+Route::post('/teacher/create', [TeacherController::class, 'store'])->middleware(['auth', 'verified'])->name('teacher.create');
 
-Route::get('/teacher/edit', [TeacherController::class, 'edit']);
-Route::get('/teacher/update/{id}', [TeacherController::class, 'update'])->name('teacher.update');
+Route::get('/teacher/edit', [TeacherController::class, 'edit'])->middleware(['auth', 'verified']);
+Route::get('/teacher/update/{id}', [TeacherController::class, 'update'])->middleware(['auth', 'verified'])->name('teacher.update');
 
-Route::get('teacher/enrollments-assigns', [TeacherController::class, 'enrollmentsAssigns']);
+Route::get('teacher/enrollments-assigns', [TeacherController::class, 'enrollmentsAssigns'])->middleware(['auth', 'verified']);
 
-Route::get('/teacher/evaluate', [TeacherController::class, 'evaluate']);
-Route::get('/teacher/evaluate/class', [TeacherController::class, 'listStudentsEvaluate']);
-Route::post('/teacher/evaluate/class/save', [TeacherController::class, 'evaluateStudent'])->name('teacher.evaluateStudent');
+Route::get('/teacher/evaluate', [TeacherController::class, 'evaluate'])->middleware(['auth', 'verified'])->name('teacher.evaluate');
+Route::get('/teacher/evaluate/class', [TeacherController::class, 'listStudentsEvaluate'])->middleware(['auth', 'verified']);
+Route::post('/teacher/evaluate/class/save', [TeacherController::class, 'evaluateStudent'])->middleware(['auth', 'verified'])->name('teacher.evaluateStudent');
 /**
  * TODO: Rutas para Students
  */
 
-Route::get('/student/index', [StudentController::class, 'index']);
+Route::get('/student/index', [StudentController::class, 'index'])->middleware(['auth', 'verified']);
 
-Route::get('/student/create', [StudentController::class, 'create']);
-Route::post('/student/create', [StudentController::class, 'store'])->name('student.create');
+Route::get('/student/create', [StudentController::class, 'create'])->middleware(['auth', 'verified']);
+Route::post('/student/create', [StudentController::class, 'store'])->middleware(['auth', 'verified'])->name('student.create');
 
 /**
  * TODO: Rutas para Representative ;)
  */
 
-Route::get('/representative/show/idcard/{id}', [RepresentativeController::class, 'findByIdcard'])->name('representative.show');
+Route::get('/representative/show/idcard/{id}', [RepresentativeController::class, 'findByIdcard'])->middleware(['auth', 'verified'])->name('representative.show');
 
 
 /**
  * TODO: Rutas para Enrollment
  */
 
-Route::get('/enrollment/index', [EnrollmentController::class, 'index']);
-Route::get('/enrollment/list/moment/{moment}', [EnrollmentController::class, 'findEnrollmentByYearSchool']);
+Route::get('/enrollment/index', [EnrollmentController::class, 'index'])->middleware(['auth', 'verified']);
+Route::get('/enrollment/list/moment/{moment}', [EnrollmentController::class, 'findEnrollmentByYearSchool'])->middleware(['auth', 'verified']);
 
-Route::get('/enrollment/create', [EnrollmentController::class, 'create']);
-Route::post('/enrollment/create', [EnrollmentController::class, 'store'])->name('enrollment.create');
+Route::get('/enrollment/create', [EnrollmentController::class, 'create'])->middleware(['auth', 'verified']);
+Route::post('/enrollment/create', [EnrollmentController::class, 'store'])->middleware(['auth', 'verified'])->name('enrollment.create');
 
-Route::get('/enrollment/edit/{id}', [EnrollmentController::class, 'edit']);
+Route::get('/enrollment/edit/{id}', [EnrollmentController::class, 'edit'])->middleware(['auth', 'verified']);
 
-Route::get('/enrollment/assign-teacher/', [EnrollmentController::class, 'assignTeacher']);
-Route::post('/enrollment/assign-teacher', [EnrollmentController::class, 'assignTeacherSave'])->name('enrollment.assign-teacher');
+Route::get('/enrollment/assign-teacher/', [EnrollmentController::class, 'assignTeacher'])->middleware(['auth', 'verified']);
+Route::post('/enrollment/assign-teacher', [EnrollmentController::class, 'assignTeacherSave'])->middleware(['auth', 'verified'])->name('enrollment.assign-teacher');
 
-Route::get('/enrollment/add-student/', [EnrollmentController::class, 'addStudent']);
-Route::post('/enrollment/add-student/', [EnrollmentController::class, 'addStudentSave'])->name('enrollment.add-student');
+Route::get('/enrollment/add-student/', [EnrollmentController::class, 'addStudent'])->middleware(['auth', 'verified']);
+Route::post('/enrollment/add-student/', [EnrollmentController::class, 'addStudentSave'])->middleware(['auth', 'verified'])->name('enrollment.add-student');
 
 /**
  * TODO: Rutas para LearningProject ;-)
  */
 
-Route::get('/learning-project/index', [LearningProjectController::class, 'index'])->name('learning-project.index');
+Route::get('/learning-project/index', [LearningProjectController::class, 'index'])->middleware(['auth', 'verified'])->name('learning-project.index');
 
-Route::get('/learning-project/show/{id}', [LearningProjectController::class, 'show']);
+Route::get('/learning-project/show/{id}', [LearningProjectController::class, 'show'])->middleware(['auth', 'verified']);
 
-Route::get('/learning-project/create', [LearningProjectController::class, 'create']);
-Route::post('/learning-project/create', [LearningProjectController::class, 'store'])->name('learning-project.create');
+Route::get('/learning-project/create', [LearningProjectController::class, 'create'])->middleware(['auth', 'verified']);
+Route::post('/learning-project/create', [LearningProjectController::class, 'store'])->middleware(['auth', 'verified'])->name('learning-project.create');
 
-Route::get('/learning-project/edit/{id}', [LearningProjectController::class, 'edit']);
-Route::put('/learning-project/update/{id}', [LearningProjectController::class, 'update'])->name('learning-project.update');
+Route::get('/learning-project/notes/{id?}', [LearningProjectController::class, 'notes'])->name('learning-project.notes');
+
+Route::get('/learning-project/edit/{id}', [LearningProjectController::class, 'edit'])->middleware(['auth', 'verified']);
+Route::put('/learning-project/update/{id}', [LearningProjectController::class, 'update'])->middleware(['auth', 'verified'])->name('learning-project.update');
 
 
 /**
  * TODO: Rutas para DailyClass
  */
-Route::get('daily-class/create', [LearningProjectController::class, 'createClass']);
-Route::post('/daily-class/create', [DailyClassController::class, 'store'])->name('daily-class.create');
+Route::get('daily-class/create', [DailyClassController::class, 'create'])->middleware(['auth', 'verified']);
+Route::post('/daily-class/create', [DailyClassController::class, 'store'])->middleware(['auth', 'verified'])->name('daily-class.create');
 
-Route::get('/daily-class/edit/{id}', [DailyClassController::class, 'edit'])->name('learning-project.daily-class.edit');
+Route::get('/daily-class/edit/{id}', [DailyClassController::class, 'edit'])->middleware(['auth', 'verified'])->name('learning-project.daily-class.edit');
 
-Route::put('daily-class/update/{id}', [DailyClassController::class, 'update']);
+Route::put('daily-class/update/{id}', [DailyClassController::class, 'update'])->middleware(['auth', 'verified']);
 
-Route::get('/test', function () {
-    return Inertia::render('Dashboard')->with('flash', [
-        'alert' => [
-            'title' => 'Prueba desde el back',
-            'message' => 'Esta es una prueba bien perrona jaja xd',
-            'code' => '200'
-        ]
-    ]);
-    //return AIRepositori::test();
-});
+Route::get('/test', [TeacherController::class, 'statisticsNote']);
 
 Route::post('/test', function () {
 

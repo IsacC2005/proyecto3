@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Factories\TeacherFactory;
-use App\Models\Teacher;
-use App\Repositories\Interfaces\TeacherInterface;
 use App\Services\TeacherServices;
-use App\Repositories\TeacherRepository;
 use App\Services\EvaluationServices;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,7 +12,7 @@ class TeacherController extends Controller
 {
     public function __construct(
         private TeacherServices $teacherServices,
-        private EvaluationServices $evaluationServices
+        private EvaluationServices $evaluationServices,
     ) {}
     /**
      * Display a listing of the resource.
@@ -105,6 +102,8 @@ class TeacherController extends Controller
         //return "El estudiante id = $student_id tiene una nota de $note en la evaluation $evaluation_id";
         $this->evaluationServices->evaluateStudent($evaluationId, $studentId, $note);
     }
+
+
 
     public function edit(Request $request)
     {

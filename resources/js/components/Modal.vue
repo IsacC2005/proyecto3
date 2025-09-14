@@ -1,6 +1,6 @@
 <template>
     <!-- Wrap your dialog in a `TransitionRoot`. -->
-    <TransitionRoot :show="isOpen" as="template" class="relative z-50">
+    <TransitionRoot :show="isOpen" as="template" class="relative z-9999">
         <Dialog @close="closeAlert">
             <!-- Wrap your backdrop in a `TransitionChild`. -->
             <TransitionChild enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
@@ -51,6 +51,7 @@ import { watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { Alert } from '@/types';
 
+
 const page = usePage();
 
 const data = useAlertData();
@@ -79,7 +80,7 @@ const openAlert = () => {
             message: data.message,
             code: data.code
         }
-        showAlert(dataAlert)
+        showAlert(dataAlert);
     }
 }
 </script>

@@ -5,8 +5,6 @@
             <h2 class="text-xl sm:text-2xl font-semibold text-indigo-600 mb-6">{{ props.project.title }}</h2>
 
             <div class="flex flex-col sm:flex-row items-center gap-4 mb-8">
-                <AddClass :open="ModalOpen" @closeModal="ModalOpen = false" :projectId="props.project.id">
-                </AddClass>
                 <button @click="ModalOpen = true"
                     class="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors duration-200">
                     Crear Referentes Teóricos
@@ -52,7 +50,6 @@ import { defineProps, onMounted, ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { LearningProject } from '@/types/dtos';
 import Heading from '@/components/Heading.vue';
-import AddClass from './components/AddClass/AddClass.vue';
 
 const props = defineProps<{
     project: LearningProject,

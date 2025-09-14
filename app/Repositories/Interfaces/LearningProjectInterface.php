@@ -24,6 +24,8 @@ interface LearningProjectInterface
 
     public function findOnDate(string $schoolYear, string $schoolMoment, ?int $teacher_id, ?string $fn = TDTO::SUMMARY): LearningProjectDTO | LearningProjectDetailDTO | null;
 
+    public function getAllEvaluationByProject(int $projectId): array;
+
     public function search(LearningProjectDTO $learningProject): array;
 
     public function update(LearningProjectDTO $learningProject): LearningProjectDTO;

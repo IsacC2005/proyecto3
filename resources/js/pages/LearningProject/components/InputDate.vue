@@ -19,6 +19,7 @@ const alert = useAlertData();
 const { showAlert } = alert;
 
 const alertDataMessage: Alert = {
+    isOpen: true,
     title: '🚫¡Error!',
     description: 'La fecha que has seleccionado es fin de semana',
     message: 'No puedes seleccionar un dia que sea fin de semana, selecciona otra fecha',
@@ -44,6 +45,7 @@ onMounted(() => {
                 error.value = 'No se puede seleccionar un dia que sea fin de semana.';
                 DateSelect.value = null;
             } else {
+                emit('update:modelValue', DateSelect);
                 error.value = null;
             }
         });
@@ -59,16 +61,7 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    isWorkdayOnly: {
-        type: Boolean,
-        default: false,
-    },
-
 });
-
-const sendDate = () => {
-    props.onDate(DateSelect);
-}
 
 // Definición de los eventos emitidos por el componente
 const emit = defineEmits(['update:modelValue']);

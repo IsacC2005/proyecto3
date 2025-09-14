@@ -6,6 +6,7 @@ use App\Constants\TDTO;
 use App\Exceptions\LearningProject\LearningProjectNotCreatedException;
 use App\Factories\LearningProjectFactory;
 use App\Services\LearningProjectServices;
+use App\Services\ResultNoteServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -16,7 +17,7 @@ class LearningProjectController extends Controller
 {
 
     public function __construct(
-        private LearningProjectServices $learningProjectServices
+        private LearningProjectServices $learningProjectServices,
     ) {}
     /**
      * Display a listing of the resource.
@@ -136,6 +137,17 @@ class LearningProjectController extends Controller
         //return response()->json($data);
         // Debería actualizar un elemento existente en la base de datos.
     }
+
+
+    public function notes(?string $id = null)
+    {
+        $data = $this->learningProjectServices->Notes($id);
+        //return response()->json($data);
+        return Inertia::render('Notes/ListNotes', [
+            'data' => $data
+        ]);
+    }
+
 
     /**
      * Remove the specified resource from storage.

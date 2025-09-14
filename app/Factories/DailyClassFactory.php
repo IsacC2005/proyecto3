@@ -11,9 +11,11 @@ use App\DTOs\Summary\DailyClassDTO;
 use DateTime;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Support\Facades\Validator;
+use Closure;
 
 class DailyClassFactory implements Factory
 {
+
     public static function fromRequest(Request $request): DailyClassDTO
     {
         $validator = Validator::make($request->all(), [
@@ -39,7 +41,15 @@ class DailyClassFactory implements Factory
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'content' => 'string|nullable',
-            'indicators' => 'array|nullable',
+            'indicators' => ['array', 'nullable', function (string $attribute, mixed $value, Closure $fail) {
+                if (count($value) === 0) {
+                    return;
+                }
+                if (count($value) % 2 === 1) {
+                    return;
+                }
+                $fail("El numeor de indicadores debe de ser impar");
+            }],
             'indicators*title' => 'string|nullable|max:255'
         ]);
 

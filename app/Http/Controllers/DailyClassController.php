@@ -49,7 +49,14 @@ class DailyClassController extends Controller
         $data->learningProject = LearningProjectFactory::fromArrayDetail(['id' => $request->input('projectId')]);
         $this->dailyClassServices->createDailyClass($data);
 
-        return response()->json($data->toArray());
+        return redirect()->route('teacher.evaluate')->with('flash', [
+            'alert' => [
+                'title' => '✔️¡Exito!',
+                'description' => 'Referente teórico creado',
+                'message' => 'Ya se a creado el referente teórico, ahora puedes evaluar con el',
+                'code' => '200'
+            ]
+        ]);
     }
 
     /**

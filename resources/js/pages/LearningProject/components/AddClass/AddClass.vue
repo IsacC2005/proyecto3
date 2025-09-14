@@ -113,15 +113,6 @@ const closeModal = () => {
     form.content = '';
     form.indicators = [];
     emits('closeModal');
-    addModalParamToUrl();
-};
-
-const addModalParamToUrl = () => {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('modal');
-
-    // Reemplazamos la URL actual sin añadir una nueva entrada al historial
-    history.replaceState({}, '', url.toString());
 };
 
 const submitForm = () => {
@@ -133,10 +124,7 @@ const submitForm = () => {
     form.post(route('daily-class.create'), {
         onSuccess: () => {
             closeModal();
-            // Emitimos un evento al componente padre para que sepa que la clase fue creada.
             emits('classCreated');
-            // Opcional: Inertia refresca la página automáticamente al completar la petición,
-            // pero si necesitas una acción específica, puedes emitir el evento.
         },
         onError: (errors) => {
             console.error('Error al crear la clase:', errors);

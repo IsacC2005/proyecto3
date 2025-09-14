@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\LearningProjectDetailDTO;
+use App\DTOs\Details\NotesDetailDTO;
 use App\DTOs\Searches\DTOSearch;
 use App\Factories\DailyClassFactory;
 
@@ -165,6 +166,63 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+
+
+    public function getAllEvaluationByProject(int $projectId): array
+    {
+        $project = LearningProject::with([
+            'daily_classes.evaluation_items.students' => function ($query) {
+                $query->withPivot('note');
+            }
+        ])->find($projectId);
+
+        if (!$project) {
+            return [];
+        }
+
+        $classes = [];
+        $students = [];
+
+        foreach ($project->daily_classes as $dailyClass) {
+            foreach ($dailyClass->evaluation_items as $evaluationItem) {
+                foreach ($evaluationItem->students as $student) {
+                    if (!isset($students[$student->id])) {
+                        $students[$student->id] = [
+                            'id' => $student->id,
+                            'name' => $student->name,
+                            'notesByReferent' => []
+                        ];
+                    }
+
+                    $students[$student->id]['notesByReferent'][$dailyClass->id][$evaluationItem->id] = $student->pivot->note;
+                }
+            }
+        }
+
+        foreach ($project->daily_classes as $dailyClass) {
+            $indicators = $dailyClass->evaluation_items->map(function ($evaluationItem) {
+                return [
+                    'id' => $evaluationItem->id,
+                    'name' => $evaluationItem->title
+                ];
+            })->toArray();
+
+            $classes[] = [
+                'id' => $dailyClass->id,
+                'title' => $dailyClass->title,
+                'indicators' => $indicators
+            ];
+        }
+
+        $data = [
+            'projectId' => $project->id,
+            'classes' => $classes,
+            'students' => array_values($students)
+        ];
+
+        return $data;
     }
 
 
