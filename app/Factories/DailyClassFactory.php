@@ -40,6 +40,7 @@ class DailyClassFactory implements Factory
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
+            'date' => 'required|date',
             'content' => 'string|nullable',
             'indicators' => ['array', 'nullable', function (string $attribute, mixed $value, Closure $fail) {
                 if (count($value) === 0) {
@@ -59,7 +60,7 @@ class DailyClassFactory implements Factory
 
         $data = new DailyClassDetailDTO(
             id: 0,
-            date: new DateTime(),
+            date: $request->input('date') ? new DateTime($request->input('date')) : new DateTime(),
             title: $request->input('title'),
             content: $request->input('content') ? $request->input('content') : '',
             learningProject: null,

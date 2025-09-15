@@ -41,6 +41,15 @@ class TeacherServices
         $teacherDTO->userId = $userModel->id;
 
         $this->teacherRepository->createTeacher($teacherDTO);
+
+        return redirect()->route('teacher.index')->with('flash', [
+            'alert' => [
+                'title' => '¡Exito!',
+                'description' => 'Profesor Creado',
+                'message' => 'El profesor se a creado correctamente ahora puede acceder con los datos creados',
+                'code' => '200'
+            ]
+        ]);
     }
 
 

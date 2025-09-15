@@ -52,9 +52,7 @@ class TeacherController extends Controller
     {
         $teacher = TeacherFactory::fromRequest($request);
 
-        $this->teacherServices->createTeacher($teacher);
-
-        return "Profesor creado correctamente Crack :))";
+        return $this->teacherServices->createTeacher($teacher);
     }
 
     /**
@@ -112,8 +110,6 @@ class TeacherController extends Controller
         ]);
 
         $id = $request->input('teacherId');
-
-        $k = 's';
 
         $teacher = $this->teacherServices->findTeacher($id);
         return Inertia::render('Teacher/EditTeacher', [

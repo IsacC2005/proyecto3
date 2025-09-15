@@ -26,8 +26,19 @@ const alertDataMessage: Alert = {
     code: 0
 }
 
+const props = defineProps({
+    modelValue: {
+        type: Object as () => Date,
+        required: true,
+    },
+    id: {
+        type: String,
+        required: true,
+    },
+});
+
 const myDateInput = ref(null);
-const DateSelect = ref(null);
+const DateSelect = ref(props.modelValue);
 
 onMounted(() => {
 
@@ -45,29 +56,20 @@ onMounted(() => {
                 error.value = 'No se puede seleccionar un dia que sea fin de semana.';
                 DateSelect.value = null;
             } else {
-                emit('update:modelValue', DateSelect);
+                //emit('update:modelValue', "Hola crack");
                 error.value = null;
             }
         });
     }
 });
 
-const props = defineProps({
-    modelValue: {
-        type: Object as () => Date,
-        required: true,
-    },
-    id: {
-        type: String,
-        required: true,
-    },
-});
 
 // Definición de los eventos emitidos por el componente
 const emit = defineEmits(['update:modelValue']);
 
 const error = ref<string | null>(null);
 const today = ref<string>('');
+
 
 // Lógica para obtener la fecha de hoy
 const setToday = () => {
@@ -77,8 +79,6 @@ const setToday = () => {
     const day = String(date.getDate()).padStart(2, '0');
     today.value = `${year}-${month}-${day}`;
 };
-
-// Hook del ciclo de vida para inicializar el componente
 </script>
 
 <style scoped>
