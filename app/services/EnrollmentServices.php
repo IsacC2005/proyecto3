@@ -7,6 +7,7 @@ use App\Constants\TDTO;
 use App\DTOs\Summary\EnrollmentDTO;
 use App\Exceptions\Enrollment\EnrollmentNotCreatedException;
 use App\Exceptions\Enrollment\EnrollmentNotFindException;
+use App\Factories\EnrollmentFactory;
 use App\Repositories\Interfaces\EnrollmentInterface;
 use App\Repositories\Interfaces\StudentInterface;
 use App\Repositories\interfaces\TeacherInterface;
@@ -50,6 +51,31 @@ class EnrollmentServices
             $this->enrollmentRepository->create($enrollment);
         } catch (\Throwable $th) {
             throw $th;
+        }
+    }
+
+
+
+
+    public function createLot(array $lot)
+    {
+        $schooleYear = $this->dates->getSchoolYearActual();
+        $schoolMoment = $this->dates->getSchoolMomentActual();
+
+        foreach ($lot as $item) {
+            $data = EnrollmentFactory::fromArray($item);
+
+            $data->schoolYear = $schooleYear;
+            $data->schoolMoment = $schoolMoment;
+
+            if (!$this->enrollmentRepository->existEnrollmentSecctionAndSchoolYear(
+                $data->grade,
+                $data->section,
+                $data->schoolMoment,
+                $data->schoolYear
+            )) {
+                $this->createEnrollment($data);
+            }
         }
     }
 

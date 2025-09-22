@@ -16,13 +16,13 @@ const { form } = data;
             <Label for="name-id">
                 <p>Nombre</p>
             </Label>
-            <Input id="name-id" type="text" v-model="form.name" class="mt-2" placeholder="Doe" />
+            <Input id="name-id" type="text" v-model="form.name" class="mt-2" placeholder="Doe" required />
         </div>
         <div>
             <Label for="surname-id">
                 <p>Apellido</p>
             </Label>
-            <Input id="surname-id" type="text" v-model="form.surname" class="mt-2" placeholder="Doe" />
+            <Input id="surname-id" type="text" v-model="form.surname" class="mt-2" placeholder="Doe" required />
         </div>
         <div>
             <Label for="phone-id" class="flex flex-col items-start">

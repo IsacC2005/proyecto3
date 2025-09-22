@@ -9,9 +9,14 @@ import { createApp, h } from 'vue';
 import { ZiggyVue } from 'ziggy-js';
 import { initializeTheme } from './composables/useAppearance';
 
+
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
+
+import { loadFull } from "tsparticles";
+import Particles from "@tsparticles/vue3";
+
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -25,6 +30,13 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(pinia)
+            .use(Particles, {
+                // 2. Aquí se configura el plugin
+                // El método loadFull carga todos los efectos
+                init: async (engine) => {
+                    await loadFull(engine);
+                },
+            })
             .mount(el);
     },
     progress: {

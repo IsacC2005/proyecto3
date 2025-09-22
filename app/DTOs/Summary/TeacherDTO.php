@@ -19,7 +19,7 @@ class TeacherDTO implements UserableInterface, DTOSummary
         public int $id,
         public string $name,
         public string $surname,
-        public string $phone,
+        public string | null $phone,
         public ?int $userId = 0
     ) {}
 

@@ -19,7 +19,7 @@ class TeacherFactory implements Factory
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
             'surname' => 'required|string|max:100',
-            'phone' => 'required|string|max:11',
+            'phone' => 'nullable|string|max:11',
             'email' => 'required|string|unique:users',
             'password' => 'required|string|min:8',
         ]);
@@ -32,7 +32,7 @@ class TeacherFactory implements Factory
             id: 0,
             name: $request->input('name'),
             surname: $request->input('surname'),
-            phone: $request->input('phone')
+            phone: $request->input('phone') ?? null
         );
 
         $user = new UserDTO(

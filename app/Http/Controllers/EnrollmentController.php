@@ -58,6 +58,18 @@ class EnrollmentController extends Controller
     }
 
 
+    public function storeLot(Request $request)
+    {
+        $validate = $request->validate([
+            'lot' => 'required|array',
+            'lot*grade' => 'required|number|max:1',
+            'lot*section' => 'required|string|max:1',
+        ]);
+        $data = $request->input('lot');
+
+        return $this->enrollmentServices->createLot($data);
+    }
+
 
     public function assignTeacher(Request $request)
     {

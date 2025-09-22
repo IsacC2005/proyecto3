@@ -51,7 +51,7 @@ class TeacherController extends Controller
     public function store(Request $request)
     {
         $teacher = TeacherFactory::fromRequest($request);
-
+        //return response()->json($teacher);
         return $this->teacherServices->createTeacher($teacher);
     }
 

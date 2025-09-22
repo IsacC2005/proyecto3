@@ -10,7 +10,7 @@
                 </tr>
             </thead>
             <tbody>
-                <TableRow v-for="item in props.items" :key="item">
+                <TableRow v-for="(item, index) in props.items" :key="index">
                     <slot name="body" :item="item"></slot>
                 </TableRow>
             </tbody>
@@ -18,19 +18,16 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { defineProps } from 'vue';
+<script setup lang="ts" generic="T">
+import { ref, onMounted } from 'vue';
 import TableRow from './TableRow.vue';
 
 type HeaderTable = string[];
 
 const props = defineProps<{
     headers: HeaderTable,
-    items: Array<object>
+    items: T[]
 }>();
-
-
-import { ref, computed, onMounted } from 'vue';
 
 const isMobile = ref(false);
 

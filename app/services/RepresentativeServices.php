@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTOs\PaginationDTO;
 use App\DTOs\Summary\RepresentativeDTO;
 use App\Repositories\Interfaces\RepresentativeInterface;
 
@@ -21,6 +22,12 @@ class RepresentativeServices
     public function findRepresentativeById(int $id): RepresentativeDTO
     {
         return $this->representativeRepository->findRepresentativeById($id);
+    }
+
+
+    public function findAll(): PaginationDTO
+    {
+        return $this->representativeRepository->findAll();
     }
 
 

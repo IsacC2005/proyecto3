@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import Table from '@/components/Table/Table.vue';
-import TableDate from '@/components/Table/TableDate.vue';
+import TableDate from '@/components/Table/TableData.vue';
 import { Pagination, Teacher } from '@/types/dtos';
 import { computed, onMounted, ref } from 'vue';
 import TableTeacherButton from './TableTeacherButton.vue';

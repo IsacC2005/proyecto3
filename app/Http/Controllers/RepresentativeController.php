@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Services\RepresentativeServices;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class RepresentativeController extends Controller
 {
 
     public function __construct(
         private RepresentativeServices $representativeServices
-    ){}
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -20,6 +21,13 @@ class RepresentativeController extends Controller
      */
     public function index()
     {
+        $data = $this->representativeServices->findAll();
+        return Inertia::render(
+            'Representative/ListRepresentative',
+            [
+                'representatives' => $data
+            ]
+        );
         // Debería devolver una vista con todos los elementos.
     }
 

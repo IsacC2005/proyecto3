@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\TeacherDetailDTO;
 use App\DTOs\Searches\DTOSearch;
+use App\Exceptions\User\UserNotFindException;
 
 class TeacherRepository extends TransformDTOs implements TeacherInterface
 {

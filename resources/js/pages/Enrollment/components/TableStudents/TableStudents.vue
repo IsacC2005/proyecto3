@@ -1,14 +1,14 @@
 <template>
     <Table :items="props.pagination.data" :headers="headers">
         <template #body="{ item }">
-            <TableDate>{{ grade[0][item.grade] }}</TableDate>
-            <TableDate>{{ item.name }}</TableDate>
-            <TableDate>{{ item.surname }}</TableDate>
-            <TableDate>
+            <TableData>{{ grade[0][item.grade] }}</TableData>
+            <TableData>{{ item.name }}</TableData>
+            <TableData>{{ item.surname }}</TableData>
+            <TableData>
                 <TableStudentsButton :studentId="item.id" :enrollmentId="props.section.id"
                     :addSection="props.section.students.includes(item.id)">
                 </TableStudentsButton>
-            </TableDate>
+            </TableData>
         </template>
     </Table>
 
@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import Table from '@/components/Table/Table.vue';
 import Paginator from '@/components/Paginator.vue';
-import TableDate from '@/components/Table/TableDate.vue';
+import TableData from '@/components/Table/TableData.vue';
 import { Pagination, Section, Student } from '@/types/dtos';
 import TableStudentsButton from './TableStudentsButton.vue';
 
@@ -47,8 +47,4 @@ const grade = [
         6: 'Sexto Grado'
     }
 ];
-
-function isNumberArray(arr: any): arr is number[] {
-    return Array.isArray(arr) && (arr.length === 0 || typeof arr[0] === 'number');
-}
 </script>

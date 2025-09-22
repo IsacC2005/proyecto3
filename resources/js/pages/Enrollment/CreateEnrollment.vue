@@ -2,6 +2,12 @@
     <AppLayout :breadcrumbs="breadcrumbs">
         <Heading :title="`Crear matricula`"
             :description="`Seleccion un grado y una seccion para crear una nueva matricula`" />
+
+
+
+        <CreateLot />
+
+        <hr>
         <form @submit.prevent="submit" class="m-1 sm:m-8">
             <div class="grid gap-6 mb-6 md:grid-cols-2">
                 <div>
@@ -39,6 +45,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { BreadcrumbItem } from '@/types';
 import { useForm } from '@inertiajs/vue3';
 import Heading from '@/components/Heading.vue';
+import CreateLot from './components/Form/CreateLot/CreateLot.vue';
 
 const form = useForm({
     grade: '',
@@ -48,6 +55,7 @@ const form = useForm({
 const submit = () => {
     form.post(route('enrollment.create'));
 }
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Crear Matriculas',

@@ -13,6 +13,8 @@ export interface Representative {
     idcard: number,
     phone: number,
     name: string,
+    surname: string,
+    direction: string
 }
 
 export interface Student {

@@ -51,8 +51,9 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         $data = StudentFactory::fromRequest($request);
+
         $this->studentServices->createStudent($data);
-        return 'Estudiante creado crack';
+        return response()->json($data);
     }
 
     /**

@@ -2,7 +2,7 @@
     <Table :headers="headers" :items="props.pagination.data">
         <template #body="{ item }">
             <TableDate v-if="!isMobile">{{ item.id }}</TableDate>
-            <TableDate>{{ item.name }} ss</TableDate>
+            <TableDate>{{ item.name }}</TableDate>
             <TableDate>{{ item.surname }}</TableDate>
             <TableDate v-if="!isMobile">{{ item.phone }}</TableDate>
             <TableDate>
@@ -20,7 +20,7 @@ import { Pagination, Teacher } from '@/types/dtos';
 import { computed, onMounted, ref } from 'vue';
 import { defineProps } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import TableDate from '@/components/Table/TableDate.vue';
+import TableDate from '@/components/Table/TableData.vue';
 import TableButton from '@/components/Table/TableButton.vue';
 
 const props = defineProps<{

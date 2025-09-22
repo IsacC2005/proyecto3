@@ -47,6 +47,17 @@ const mainNavItems: NavItem[] = [
         ]
     },
     {
+        title: 'Representante',
+        href: '#',
+        icon: GraduationCap,
+        role: ['Administrador'],
+        children: [
+            { title: 'Lista de Representates', href: '/representative/index', icon: List, role: ['Administrador'] },
+            { title: 'Crear Representante', href: '/representante/create', role: ['Administrador'] },
+        ]
+
+    },
+    {
         title: 'Estudiante',
         href: '#',
         icon: GraduationCap,

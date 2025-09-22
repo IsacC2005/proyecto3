@@ -16,6 +16,8 @@ use App\Models\Student;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use App\DTOs\Details\DTODetail;
+use App\DTOs\Details\RepresentativeDetailDTO;
+use App\DTOs\PaginationDTO;
 use App\DTOs\Searches\DTOSearch;
 
 class RepresentativeRepository extends TransformDTOs implements RepresentativeInterface
@@ -60,12 +62,25 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
 
 
 
-    public function findRepresentativeByIdcard(int $idcard): RepresentativeDTO
+    public function findAll(): PaginationDTO
+    {
+        $data = Representative::paginate(10)->withQueryString();
+        $pagination = new PaginationDTO($data);
+
+        $dataDTO = $this->transformListDTO($data->getCollection());
+
+        $pagination->data = $dataDTO;
+        return $pagination;
+    }
+
+
+
+    public function findRepresentativeByIdcard(int $idcard): RepresentativeDTO | null
     {
         $representativeModel = Representative::where('idcard', $idcard)->first();
 
         if (!$representativeModel) {
-            throw new RepresentativeNotFindException('No se encontro ningun representante con esa cedula', 404);
+            return null;
         }
 
         return $this->transformToDTO($representativeModel);
@@ -190,6 +205,13 @@ class RepresentativeRepository extends TransformDTOs implements RepresentativeIn
 
     protected function transformToDetailDTO(Model $model): DTODetail
     {
-        // TODO
+        return new RepresentativeDetailDTO(
+            id: -1,
+            idcard: -1,
+            phone: -1,
+            name: 'TDTOD no implementado',
+            surname: 'TDTOD no implementado',
+            direction: 'TDTOD no implementaod'
+        );
     }
 }

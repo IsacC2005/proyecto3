@@ -4,14 +4,16 @@ namespace App\Services;
 
 use App\DTOs\PaginationDTO;
 use App\DTOs\Summary\StudentDTO;
+use App\Repositories\Interfaces\RepresentativeInterface;
 use App\Repositories\Interfaces\StudentInterface;
+use App\Utilities\FlashMessage;
 use Inertia\Inertia;
 
 class StudentServices
 {
     public function __construct(
         private StudentInterface $studentRepository,
-        private RepresentativeServices $representativeServices
+        private RepresentativeInterface $representative
     ) {}
 
 
@@ -21,7 +23,16 @@ class StudentServices
             return Inertia::render('Student/CreateStudent');
         }
 
-        $data = $this->representativeServices->findRepresentativeByIdcard($idcard);
+        $data = $this->representative->findRepresentativeByIdcard($idcard);
+        if (!$data) {
+            return Inertia::render(
+                'Student/CreateStudent'
+            )->with('flash', FlashMessage::success(
+                '¡Error!',
+                'Representante no entoncontrado',
+                'No se encontro ningun representante con ese numero de cedula'
+            ));
+        }
         return Inertia::render('Student/CreateStudent', [
             'representative' => $data
         ]);

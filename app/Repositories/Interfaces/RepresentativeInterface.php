@@ -3,6 +3,7 @@
 
 namespace App\Repositories\Interfaces;
 
+use App\DTOs\PaginationDTO;
 use App\DTOs\Summary\RepresentativeDTO;
 
 interface RepresentativeInterface
@@ -12,7 +13,9 @@ interface RepresentativeInterface
 
     public function findRepresentativeById(int $id): RepresentativeDTO;
 
-    public function findRepresentativeByIdcard(int $idcard): RepresentativeDTO;
+    public function findAll(): PaginationDTO;
+
+    public function findRepresentativeByIdcard(int $idcard): RepresentativeDTO | null;
 
     public function findAllRepresentative(): array;
 

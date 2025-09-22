@@ -10,6 +10,7 @@ use App\Exceptions\Enrollment\EnrollmentNotFindException;
 use App\Repositories\Interfaces\DailyClassInterface;
 use App\Repositories\Interfaces\LearningProjectInterface;
 use App\Repositories\Interfaces\TeacherInterface;
+use App\Utilities\FlashMessage;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -112,7 +113,11 @@ class TeacherServices
         if (!$result) {
             return 'ALgo a fallado';
         }
-        return 'update ok';
+        return redirect()->route('teacher.index')->with('flash', 
+        FlashMessage::success(
+            '¡Exito!', 
+            'Profesor actualizado', 
+            'El profesor se actualizo sin problemas'));
     }
 
     public function findTeacher(int $id): TeacherDTO

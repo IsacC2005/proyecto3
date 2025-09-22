@@ -48,12 +48,13 @@ Route::post('/teacher/evaluate/class/save', [TeacherController::class, 'evaluate
 
 Route::get('/student/index', [StudentController::class, 'index'])->middleware(['auth', 'verified']);
 
-Route::get('/student/create', [StudentController::class, 'create'])->middleware(['auth', 'verified']);
-Route::post('/student/create', [StudentController::class, 'store'])->middleware(['auth', 'verified'])->name('student.create');
+Route::get('/student/create', [StudentController::class, 'create'])->middleware(['auth', 'verified'])->name('student.create');
+Route::post('/student/store', [StudentController::class, 'store'])->middleware(['auth', 'verified'])->name('student.store');
 
 /**
  * TODO: Rutas para Representative ;)
  */
+Route::get('/representative/index', [RepresentativeController::class, 'index'])->name('representative.index');
 
 Route::get('/representative/show/idcard/{id}', [RepresentativeController::class, 'findByIdcard'])->middleware(['auth', 'verified'])->name('representative.show');
 
@@ -67,6 +68,8 @@ Route::get('/enrollment/list/moment/{moment}', [EnrollmentController::class, 'fi
 
 Route::get('/enrollment/create', [EnrollmentController::class, 'create'])->middleware(['auth', 'verified']);
 Route::post('/enrollment/create', [EnrollmentController::class, 'store'])->middleware(['auth', 'verified'])->name('enrollment.create');
+Route::post('/enrollment/createLot', [EnrollmentController::class, 'storeLot'])->middleware(['auth', 'verified'])->name('enrollment.createLot');
+
 
 Route::get('/enrollment/edit/{id}', [EnrollmentController::class, 'edit'])->middleware(['auth', 'verified']);
 
@@ -103,7 +106,9 @@ Route::get('/daily-class/edit/{id}', [DailyClassController::class, 'edit'])->mid
 
 Route::put('daily-class/update/{id}', [DailyClassController::class, 'update'])->middleware(['auth', 'verified']);
 
-Route::get('/test', [TeacherController::class, 'statisticsNote']);
+Route::get('/test', function () {
+    // return Inertia::render('Animation');
+});
 
 Route::post('/test', function () {
 
