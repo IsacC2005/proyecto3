@@ -53,6 +53,7 @@ const form = useForm({
 });
 
 const submit = () => {
+    console.log(form.studentId);
     form.post(route('enrollment.add-student'), {
         preserveScroll: true,
         preserveState: true

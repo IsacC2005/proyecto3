@@ -123,7 +123,7 @@ class EnrollmentController extends Controller
             throw new ValidationException($validate->messages());
         }
 
-        return $this->enrollmentServices->addStudentSave($request->input('enrollmentId'), $request->input('studentId'));
+        $this->enrollmentServices->addStudentSave($request->input('enrollmentId'), $request->input('studentId'));
     }
     /**
      * Display the specified resource.

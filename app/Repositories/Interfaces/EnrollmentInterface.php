@@ -15,6 +15,10 @@ interface EnrollmentInterface
 
     public function addStudent(int $enrollmentId, int $studentId): bool;
 
+    public function studentItsAdd(int $enrollmentId, int $studentId): bool;
+
+    public function studentItsAddInGrade(int $grade, int $studentId): bool;
+
     public function find(int $id, ?string $fn = null): EnrollmentDTO;
 
     public function findAll(?String $f = null): array;

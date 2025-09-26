@@ -115,6 +115,23 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 
 
 
+    public function studentItsAdd(int $enrollmentId, int $studentId): bool
+    {
+        return true;
+    }
+
+
+
+    public function studentItsAddInGrade(int $grade, int $studentId): bool
+    {
+        $exists = Enrollment::where('grade', $grade)->whereHas('students', function ($query) use ($studentId) {
+            $query->where('student_id', $studentId);
+        })->exists();
+
+        return $exists;
+    }
+
+
     public function find(int $id, ?string $fn = null): EnrollmentDTO
     {
         try {

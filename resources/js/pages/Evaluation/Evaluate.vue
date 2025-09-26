@@ -1,6 +1,6 @@
 <template>
     <AppLayout>
-        {{ props.DailyClass }}
+        <h1>Conffeti</h1>
         <div v-if="!props.DailyClass.indicators.length > 0">
             Esta clase no tiene indicadores de evaluacion,
         </div>

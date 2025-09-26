@@ -122,11 +122,20 @@ class StudentRepository extends TransformDTOs implements StudentInterface
 
 
 
-    public function findStudentByGrade(int $grade, ?bool $NotAddEnrollment = false): PaginationDTO
+    public function findStudentByGrade(int $grade, ?bool $NotAddEnrollment = false, ?int $enrollmentId = null): PaginationDTO
     {
         try {
-            $studentModels = Student::where('grade', $grade)->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-
+            if ($NotAddEnrollment) {
+                $studentModels = Student::where('grade', $grade)
+                    ->whereDoesntHave('enrollments', function ($query) use ($grade, $enrollmentId) {
+                        $query->where('grade', $grade + 1)->whereNot('id', $enrollmentId);
+                    })
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(10)
+                    ->withQueryString();
+            } else {
+                $studentModels = Student::where('grade', $grade)->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+            }
             if (!$studentModels) {
                 throw new StudentNotFindException();
             }

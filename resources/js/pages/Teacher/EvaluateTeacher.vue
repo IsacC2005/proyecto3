@@ -4,6 +4,7 @@
             :description="`Estos son los referentes teoricos definidos para el proyecto de aprendizaje ${props.project.title}`">
         </Heading>
         <div class="p-4 sm:p-6 md:p-8 flex flex-wrap gap-6 justify-center">
+            <Conffeti /> confetti <h1>confetti</h1>
             <Evaluation v-for="(evaluation, index) in props.evaluations" :key="index" :evaluation="evaluation" />
         </div>
     </AppLayout>
@@ -16,6 +17,7 @@ import { defineProps } from 'vue';
 import { DailyClass } from '@/types/dtos';
 import Heading from '@/components/Heading.vue';
 import { LearningProject } from '@/types/dtos';
+import Conffeti from '../Animations/Conffeti.vue';
 
 const props = defineProps<{
     evaluations: DailyClass[],

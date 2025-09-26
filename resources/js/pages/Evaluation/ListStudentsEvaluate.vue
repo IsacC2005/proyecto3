@@ -1,6 +1,6 @@
 <template>
     <AppLayout>
-        {{ props.students }}
+        <Conffeti></Conffeti>
         <div v-if="!props.dailyClass?.indicators.length > 0">
             <Heading title="Esta Clase no tiene indicadores"
                 description="primero tienes que agregar los indicadores de esta clase para poder evaluarla"></Heading>
@@ -23,7 +23,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg font-semibold text-gray-700 truncate">{{ student.name + " " +
                                 student.surname
-                            }}</h2>
+                                }}</h2>
                             <!-- Reemplazamos el span por la barra de progreso -->
                             <div class="w-24 bg-gray-200 rounded-full h-2.5">
                                 <div class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300 ease-in-out"
@@ -62,6 +62,7 @@ import Heading from '@/components/Heading.vue';
 import { Link } from '@inertiajs/vue3';
 import { DailyClass } from '@/types/dtos';
 import { Student } from '@/types/dtos';
+import Conffeti from '../Animations/Conffeti.vue';
 
 type StudentQualify = {
     student: Student;

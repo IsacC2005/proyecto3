@@ -108,7 +108,7 @@ class EnrollmentServices
     public function addStudentPage(int $enrollmentId)
     {
         $section = $this->enrollmentRepository->find($enrollmentId);
-        $data = $this->studentRepository->findStudentByGrade($section->grade - 1);
+        $data = $this->studentRepository->findStudentByGrade($section->grade - 1, true, $enrollmentId);
 
         return Inertia::render('Enrollment/AddStudent', [
             'section' => $section->toArray(),
@@ -119,6 +119,11 @@ class EnrollmentServices
 
     public function addStudentSave(int $enrollmentId, int $studentId): void
     {
+        $enrollment = $this->enrollmentRepository->find($enrollmentId);
+        $exist = $this->enrollmentRepository->studentItsAddInGrade($enrollment->grade, $studentId);
+        if ($exist) {
+            throw new EnrollmentNotCreatedException('El estudiante ya esta en una matricula', 422);
+        }
         $this->enrollmentRepository->addStudent($enrollmentId, $studentId);
     }
 

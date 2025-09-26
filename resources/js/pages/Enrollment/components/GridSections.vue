@@ -1,6 +1,6 @@
 <template>
-    <div class="flex flex-wrap gap-6">
-        <SectionCard v-for="section in props.sections" :key="section.id" :section="section"
+    <div v-if="props.sections?.length > 0" class="flex flex-wrap gap-6">
+        <SectionCard v-for="(section, index) in props.sections" :key="index" :section="section"
             class="min-h-60 min-w-75 grow-120 box-content">
         </SectionCard>
     </div>
