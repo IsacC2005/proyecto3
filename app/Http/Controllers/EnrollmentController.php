@@ -6,6 +6,7 @@ use App\Constants\TDTO;
 use App\Factories\EnrollmentFactory;
 use App\Services\EnrollmentServices;
 use App\Services\TeacherServices;
+use App\Utilities\FlashMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -54,7 +55,15 @@ class EnrollmentController extends Controller
     public function store(Request $request)
     {
         $data = EnrollmentFactory::fromRequest($request);
-        return $this->enrollmentServices->createEnrollment($data);
+        $this->enrollmentServices->createEnrollment($data);
+        return Inertia::render('Enrollment/CreateEnrollment')->with(
+            'flash',
+            FlashMessage::success(
+                '¡Exito!',
+                'Seccion Creada',
+                'La seccion se a creado correctamente ahora puede agregarle estudiantes para llenar la matricula',
+            )
+        );
     }
 
 
@@ -67,7 +76,16 @@ class EnrollmentController extends Controller
         ]);
         $data = $request->input('lot');
 
-        return $this->enrollmentServices->createLot($data);
+        $this->enrollmentServices->createLot($data);
+
+        return Inertia::render('Enrollment/CreateEnrollment')->with(
+            'flash',
+            FlashMessage::success(
+                '¡Exito!',
+                'El lote de seccion Creados',
+                'El lote de secciones se a creado correctamente ahora puede agregarle estudiantes a cada seccion para llenar las matriculas',
+            )
+        );
     }
 
 

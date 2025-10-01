@@ -1,7 +1,6 @@
 <template>
     <AppLayout>
-        <Conffeti></Conffeti>
-        <div v-if="!props.dailyClass?.indicators.length > 0">
+        <div v-if="!props.dailyClass?.indicators.length">
             <Heading title="Esta Clase no tiene indicadores"
                 description="primero tienes que agregar los indicadores de esta clase para poder evaluarla"></Heading>
             <Link :href="`/daily-class/edit/${props.dailyClass.id}`"
@@ -62,12 +61,6 @@ import Heading from '@/components/Heading.vue';
 import { Link } from '@inertiajs/vue3';
 import { DailyClass } from '@/types/dtos';
 import { Student } from '@/types/dtos';
-import Conffeti from '../Animations/Conffeti.vue';
-
-type StudentQualify = {
-    student: Student;
-    Qualify: [key: number]
-}
 
 const props = defineProps<{
     dailyClass: DailyClass;
@@ -87,31 +80,6 @@ const gradeOptions = [
     { label: '❌ Sin Lograr', value: 'NL' }
 ];
 
-// const props = defineProps({
-//     DailyClass: {
-//         type: Object as () => {
-//             indicators: { id: number; title: string }[];
-//         },
-//         required: true,
-//     },
-//     students: {
-//         type: Array as () => {
-//             id: number;
-//             name: string;
-//             surname: string;
-//             grade?: { [key: number]: string };
-//         }[],
-//         required: true,
-//     },
-//     allNote: {
-//         type: Array as () => {
-//             itemIvaluationId: number;
-//             studentId: number;
-//             note: string;
-//         }[],
-//         default: () => [],
-//     }
-// });
 
 // Usamos ref para crear un estado reactivo para los estudiantes.
 const studentsWithGrades = ref({});
