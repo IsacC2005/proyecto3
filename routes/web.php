@@ -6,12 +6,15 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\LearningProjectController;
 use App\Http\Controllers\RepresentativeController;
+use App\Http\Controllers\SettingIAController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
 use App\Models\User;
 use App\Repositories\AIRepositori;
+use App\Repositories\LearningProjectRepository;
 use App\services\UserServices;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -106,29 +109,23 @@ Route::get('/daily-class/edit/{id}', [DailyClassController::class, 'edit'])->mid
 
 Route::put('daily-class/update/{id}', [DailyClassController::class, 'update'])->middleware(['auth', 'verified']);
 
-Route::get('/test', function () {
-    // return Inertia::render('Animation');
-});
+/**
+ * TODO: Rutas para las boletas
+ */
+Route::get('/tickets', [TicketController::class, 'index'])->middleware(['auth', 'verified']);
 
-Route::post('/test', function () {
+Route::get('/tickets/create', [TicketController::class, 'create'])->middleware(['auth', 'verified']);
+Route::post('/tickets/storeLot/{id}', [TicketController::class, 'storeLot'])->middleware(['auth', 'verified']);
 
-    // return redirect()->route('dashboard')->with('flash', [
-    //     'alert' => [
-    //         'title' => 'Prueba desde el back',
-    //         'message' => 'Esta es una prueba de una acción exitosa.',
-    //         'code' => '200'
-    //     ]
-    // ]);
+/**
+ * TODO: Rutas para la configuracion de la IA
+ */
+Route::get('/setting-ia', [SettingIAController::class, 'index']);
+Route::post('/setting-ia', [SettingIAController::class, 'store']);
 
-    return redirect()->route('learning-project.index')->with('flash', [
-        'alert' => [
-            'title' => '¡Exito!',
-            'message' => 'El proyecto de aprendizaje se creo correctamente :)',
-            'code' => '200'
-        ]
-    ]);
-    //return AIRepositori::test();
-});
+
+
+Route::get('test', [TicketController::class, 'store']);
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

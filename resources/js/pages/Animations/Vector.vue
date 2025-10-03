@@ -1,7 +1,7 @@
 <template>
     <div id="app">
 
-        <vue-particles id="tsparticles" @particles-loaded="particlesLoaded" :options="{
+        <vue-particles id="tsparticles" :options="{
 
             fpsLimit: 120,
             interactivity: {
@@ -42,13 +42,6 @@
 </template>
 
 <script setup lang="ts">
-
-import Particles from '@tsparticles/vue3';
-
-
-const particlesLoaded = async container => {
-    console.log("Particles container loaded", container);
-};
 </script>
 
 <style scoped>

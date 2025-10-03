@@ -145,7 +145,7 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
 
 
-    public function findOnDate(string $schoolYear, string $schoolMoment, ?int $teacher_id = null, ?string $fn = TDTO::DETAIL): LearningProjectDTO | LearningProjectDetailDTO | null
+    public function findOnDate(string $schoolYear, string $schoolMoment, ?int $teacher_id = null, ?string $fn = TDTO::SUMMARY): LearningProjectDTO | LearningProjectDetailDTO | null
     {
         try {
             if ($teacher_id) {
@@ -224,6 +224,45 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
         return $data;
     }
+
+
+
+
+    public function getAllNoteStudent(int $projectId, int $studentId): array
+    {
+        $project = LearningProject::find($projectId);
+
+        $classes = $project->daily_classes;
+
+        $AllNote = [];
+
+        foreach ($classes as $class) {
+            $evaluation_items = $class->evaluation_items()
+                ->whereHas('students', function ($query) use ($studentId) {
+                    $query->where('students.id', $studentId);
+                })
+                ->with(['students' => function ($query) use ($studentId) {
+                    $query->where('students.id', $studentId)->withPivot('note');
+                }])
+                ->get();
+
+            $notes = [];
+            foreach ($evaluation_items as $item) {
+                $student = $item->students->first();
+                if ($student) {
+                    $notes[$item->title] = $student->pivot->note;
+                }
+            }
+
+            $AllNote[] = [
+                'classTitle' => $class->title,
+                'notes' => $notes
+            ];
+        }
+        return $AllNote;
+    }
+
+
 
 
 

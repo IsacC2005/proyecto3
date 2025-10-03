@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Ticket extends Model
 {
     protected $fillable = [
+        'student_id',
+        'learning_project_id',
         'average',
+        'personality',
         'content',
         'suggestions'
     ];

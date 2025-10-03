@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('student_id')->constrained()->onDelete('restrict');
             $table->foreignId('learning_project_id')->constrained()->onDelete('restrict');
             $table->string('average')->length(2);
-            $table->text('personaliti');
+            $table->text('personality');
             $table->text('content');
             $table->text('suggestions')->nullable();
             $table->timestamps();

@@ -23,6 +23,7 @@
         "prettier-plugin-tailwindcss": "^0.6.11",
         "tailwindcss": "^4.1.12",
         "typescript-eslint": "^8.23.0",
+        "vite-plugin-pwa": "^1.0.3",
         "vue-tsc": "^2.2.4"
     },
     "dependencies": {
@@ -30,7 +31,7 @@
         "@inertiajs/vue3": "^2.0.0",
         "@tailwindcss/vite": "^4.1.1",
         "@tsparticles/vue3": "^3.0.1",
-        "@vitejs/plugin-vue": "^5.2.1",
+        "@vitejs/plugin-vue": "^5.2.4",
         "@vueup/vue-quill": "^1.0.0-alpha.40",
         "@vueuse/core": "^12.8.2",
         "class-variance-authority": "^0.7.1",
@@ -40,6 +41,7 @@
         "laravel-vite-plugin": "^1.0",
         "lucide-vue-next": "^0.468.0",
         "pinia": "^3.0.3",
+        "print-js": "^1.6.0",
         "quill": "^2.0.3",
         "reka-ui": "^2.2.0",
         "tailwind-merge": "^3.2.0",

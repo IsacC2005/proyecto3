@@ -114,7 +114,7 @@ class StudentRepository extends TransformDTOs implements StudentInterface
                 $query->where('id', $enrollmentId);
             })->get();
 
-            return $this->transformListDTO($students->toArray());
+            return $this->transformListDTO($students);
         } catch (\Throwable $th) {
             throw new StudentNotFindInTheEnrollmentException();
         }

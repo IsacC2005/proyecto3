@@ -24,6 +24,8 @@ class TicketRepository extends TransformDTOs implements TicketInterface
     {
         try {
             $ticketModel = Ticket::create([
+                'learning_project_id' => $ticket->learningProjectId,
+                'student_id' => $ticket->studentId,
                 'average' => $ticket->average,
                 'content' => $ticket->content,
                 'suggestions' => $ticket->suggestions
@@ -95,7 +97,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface
     public function findByLearningProject(int $projectId): array
     {
         try {
-            $ticketModel = Ticket::where('learning_project_id', $projectId);
+            $ticketModel = Ticket::where('learning_project_id', $projectId)->get();
 
             if (!$ticketModel) {
                 throw new TicketNotFindException();
@@ -103,7 +105,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface
 
             return $this->transformListDTO($ticketModel);
         } catch (\Throwable $th) {
-            throw new TicketNotFindException();
+            throw new TicketNotFindException($th->getMessage());
         }
     }
 

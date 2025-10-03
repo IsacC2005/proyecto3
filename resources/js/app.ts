@@ -22,6 +22,18 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 const pinia = createPinia();
 
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/build/sw.js') // El archivo que genera el plugin de Vite
+            .then(registration => {
+                console.log('SW registrado:', registration);
+            })
+            .catch(error => {
+                console.log('Fallo registro de SW:', error);
+            });
+    });
+}
+
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     resolve: (name) => resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),

@@ -336,3 +336,50 @@
         @apply bg-background text-foreground;
     }
 }
+/* ========================================================= */
+/* REGLAS CSS PARA AISLAR LA IMPRESIÓN DEL BOLETÍN */
+/* Aplica solo cuando se activa el modo de impresión (Ctrl+P o window.print()) */
+/* ========================================================= */
+@media print {
+    /* PASO 1: Ocultar TODO en el <body> */
+    /* Esto es lo que aísla el contenido de la página */
+    body * {
+        visibility: hidden;
+        /* Aseguramos que elementos como el AppLayout sean invisibles */
+    }
+
+    /* PASO 2: Hacer visible SOLO el contenedor del boletín */
+    /* Apuntamos al ID que pusimos alrededor del BoletinTemplate */
+    #boletin-print-target {
+        visibility: visible;
+        /* Hacemos visible el contenedor y su contenido */
+    }
+
+    /* PASO 3: Posicionar el boletín en la esquina superior izquierda */
+    #boletin-print-target {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%; /* Ocupa el ancho completo de la página de impresión */
+    }
+
+    /* PASO 4: Opcional, pero recomendado: Eliminar márgenes y bordes */
+    /* Puedes apuntar a la clase específica de tu componente para más control */
+    .boletin-container {
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Regla para ocultar el botón de impresión dentro del contenedor */
+    .print-controls {
+        display: none !important;
+    }
+
+    /* Regla para garantizar que los colores y fondos se impriman */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}

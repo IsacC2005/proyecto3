@@ -21,6 +21,7 @@ const mainNavItems: NavItem[] = [
         role: ['Administrador'],
         icon: MonitorCog,
         children: [
+            { title: 'Configuracion IA', href: '/setting-ia', icon: UsersRound },
             { title: 'Usuarios', href: '#', icon: UsersRound },
             { title: 'Proyectos de aprendizaje', href: '#', icon: LibrarySquare },
             { title: 'Crear usuario', href: '#', icon: UserRoundPlus },
@@ -93,8 +94,8 @@ const mainNavItems: NavItem[] = [
         href: '#',
         icon: Notebook,
         children: [
-            { title: 'Crear boletas', href: '#' },
-            { title: 'Buscar boleta', href: '#' },
+            { title: 'Crear boletas', href: '/tickets/create' },
+            { title: 'Buscar boleta', href: '/tickets' },
             { title: 'Evaluar Clase', href: '#' }
         ]
     }

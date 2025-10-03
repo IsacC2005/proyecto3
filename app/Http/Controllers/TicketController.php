@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\TicketServices;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TicketController extends Controller
 {
+
+    public function __construct(
+        private TicketServices $ticket
+    ) {}
     /**
      * Display a listing of the resource.
      * 
@@ -14,7 +20,10 @@ class TicketController extends Controller
      */
     public function index()
     {
-        // Debería devolver una vista con todos los elementos.
+        $data = $this->ticket->getAllTicketToProject(1);
+        return Inertia::render('Ticket/ListTicket', [
+            'tickets' => $data
+        ]);
     }
 
     /**
@@ -25,7 +34,14 @@ class TicketController extends Controller
      */
     public function create()
     {
-        // Debería mostrar el formulario para crear un nuevo elemento.
+
+        $data = $this->ticket->createShowPage();
+
+        // return $data;
+        return Inertia::render('Ticket/Create', [
+            'project' => $data["project"],
+            'students' => $data["students"]
+        ]);
     }
 
     /**
@@ -36,7 +52,16 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
+
+        return $this->ticket->create(1, 1);
         // Debería guardar un nuevo elemento en la base de datos.
+    }
+
+
+
+    public function storeLot(int $id)
+    {
+        $this->ticket->createLot($id);
     }
 
     /**

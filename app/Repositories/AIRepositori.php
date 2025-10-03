@@ -2,8 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\DailyClass;
-use App\Models\EvaluationItem;
 use App\Models\LearningProject;
 use App\Models\Student;
 use App\Repositories\Interfaces\AI;
@@ -28,12 +26,9 @@ class AIRepositori
 
             $evaluation_items = $class->evaluation_items()
                 ->whereHas('students', function ($query) use ($student_id) {
-                    // Usa whereHas para asegurar que el item tenga una relación con el estudiante
                     $query->where('students.id', $student_id);
                 })
                 ->with(['students' => function ($query) use ($student_id) {
-                    // Carga la relación students, pero filtra solo al estudiante que necesitas.
-                    // También carga la nota del pivot.
                     $query->where('students.id', $student_id)->withPivot('note');
                 }])
                 ->get();

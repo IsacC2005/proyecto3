@@ -26,6 +26,8 @@ interface LearningProjectInterface
 
     public function getAllEvaluationByProject(int $projectId): array;
 
+    public function getAllNoteStudent(int $projectId, int $studentId): array;
+
     public function search(LearningProjectDTO $learningProject): array;
 
     public function update(LearningProjectDTO $learningProject): LearningProjectDTO;
