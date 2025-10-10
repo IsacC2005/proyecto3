@@ -51,6 +51,7 @@ function groupNotes(notesArray: NoteDisorder[]) {
 
 <template>
     <AppLayout>
+        {{ props.allNote }}asfd
         <div v-if="!props.dailyClass?.indicators.length">
             <Heading title="Esta Clase no tiene indicadores"
                 description="primero tienes que agregar los indicadores de esta clase para poder evaluarla"></Heading>
@@ -62,7 +63,6 @@ function groupNotes(notesArray: NoteDisorder[]) {
         </div>
         <div v-else>
             <Heading title="Lista de estudiantes para evaluar"></Heading>
-            {{ props.allNote }}
             <div class="p-4 sm:p-6 md:p-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <ListStudentEvaluate>

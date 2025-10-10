@@ -14,11 +14,15 @@ interface LearningProjectInterface
 
     public function existProjectForTeacher(int $project_id, int $teacher_id): bool;
 
+    public function existProjectByTeacheByYearByMoment(int $teacherId, int $enrollmentId, int $schoolMoment): bool;
+
     public function find(int $id, ?string $fn = null): LearningProjectDTO | LearningProjectDetailDTO;
 
     public function findAll(?string $fn = null): array;
 
-    public function findByEnrollment(int $enrollmentId): LearningProjectDTO | null;
+    public function findByEnrollment(int $enrollmentId): array;
+
+    public function findByEnrollmentAndMoment(int $enrollmentId, int $moment): LearningProjectDTO | null;
 
     public function findByTeacher(int $teacherId, ?string $fn = null): array;
 
@@ -27,6 +31,8 @@ interface LearningProjectInterface
     public function getAllEvaluationByProject(int $projectId): array;
 
     public function getAllNoteStudent(int $projectId, int $studentId): array;
+
+    public function countStudents(int $projectId): int;
 
     public function search(LearningProjectDTO $learningProject): array;
 

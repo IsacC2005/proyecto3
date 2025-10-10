@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('representatives', function (Blueprint $table) {
-            $table->id();
-            $table->integer('idcard');
-            $table->string('phone')->length(11)->nullable();
-            $table->string('name')->length(100);
-            $table->string('surname')->length(100);
-            $table->string('direction');
-            $table->timestamps();
-        });
+        // Schema::create('representatives', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->integer('idcard');
+        //     $table->string('phone')->length(11)->nullable();
+        //     $table->string('name')->length(100);
+        //     $table->string('surname')->length(100);
+        //     $table->string('direction');
+        //     $table->timestamps();
+        // });
     }
 
     /**

@@ -9,6 +9,8 @@ interface TeacherInterface
 {
     public function createTeacher(TeacherDTO $teacher): TeacherDTO;
 
+    public function existTeacher(int $id): bool;
+
     public function find(int $id): TeacherDTO;
 
     public function findByEmail(string $email): TeacherDTO;

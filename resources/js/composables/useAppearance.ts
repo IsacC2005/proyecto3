@@ -1,6 +1,6 @@
 import { onMounted, ref } from 'vue';
 
-type Appearance = 'light' | 'light2' | 'dark' | 'dark2' | 'pastel-light' | 'pastel-dark' |'system';
+type Appearance = 'light' | 'light2' | 'dark' | 'dark2' | 'pastel-light' | 'pastel-dark' | 'system';
 
 export function updateTheme(value: Appearance) {
     if (typeof window === 'undefined') {
@@ -15,6 +15,10 @@ export function updateTheme(value: Appearance) {
     } else {
         document.documentElement.className = value;
     }
+    //quitar esta linea despues
+    //TODO: Despues debo quitar esta linea para poder cambiar de temas, por ahora se va a quedar asi
+    //TODO: para poder enfocarme en otras cosas mas importantes
+    document.documentElement.className = 'light'
 }
 
 const setCookie = (name: string, value: string, days = 365) => {
@@ -56,6 +60,9 @@ export function initializeTheme() {
 
     // Initialize theme from saved preference or default to system...
     const savedAppearance = getStoredAppearance();
+    //quitar esta linea para que funcione bien
+    //TODO: De momento se que da asi para enfocarme en otras cosas
+    updateTheme('light')
     updateTheme(savedAppearance || 'system');
 
     // Set up system theme change listener...

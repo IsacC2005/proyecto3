@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\RoleConstants;
 use App\Constants\TDTO;
 use App\DTOs\Details\DailyClassDetailDTO;
 use App\DTOs\Summary\DailyClassDTO;
@@ -9,6 +10,8 @@ use App\Exceptions\DailyClass\DailyClassNotCreateException;
 use App\Exceptions\LearningProject\LearningProjectNotFindException;
 use App\Repositories\Interfaces\DailyClassInterface;
 use App\Repositories\Interfaces\LearningProjectInterface;
+use App\Repositories\Interfaces\TeacherInterface;
+use App\Utilities\FlashMessage;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -21,6 +24,7 @@ class DailyClassServices
     public function __construct(
         private DailyClassInterface $dailyClassRepository,
         private LearningProjectInterface $projectRepository,
+        private TeacherInterface $teacher,
         private DatesActual $datesActual
     ) {}
 
@@ -28,12 +32,31 @@ class DailyClassServices
 
     public function createDailyClassShowPage()
     {
-        $teacher_id = Auth::user()->userable->id;
+        $user = Auth::user();
+        $teacher_id = $user->userable_id;
 
+        if (!$user->hasRole(RoleConstants::PROFESOR)) {
+            return redirect()->route('dashboard')->with(
+                'flash',
+                FlashMessage::error(
+                    'Acceso restringido.',
+                    'Acceso restringido',
+                    'Solo los usuarios con rol de profesor tienen acceso a este modulo.'
+                )
+            );
+        }
 
+        $exist = $this->teacher->existTeacher($teacher_id ?? -1);
 
-        if (!$teacher_id) {
-            $teacher_id = -1;
+        if (!$exist) {
+            return redirect()->route('dashboard')->with(
+                'flash',
+                FlashMessage::success(
+                    'No se puede crear el Referente Teorico.',
+                    'Acceso restringido',
+                    'El profesor relacionado con este usuario no se encuentra.'
+                )
+            );
         }
 
         $year = $this->datesActual->getSchoolYearActual();
@@ -42,7 +65,14 @@ class DailyClassServices
         $project = $this->projectRepository->findOnDate($year, $moment, $teacher_id);
 
         if (!$project) {
-            return Inertia::render('Dashboard');
+            return redirect()->route('dashboard')->with(
+                'flash',
+                FlashMessage::error(
+                    'No se puede crear el Referente Teorico.',
+                    'Proyecto de Aprendizaje no encontrado',
+                    'No tienes un proyecto de aprendizaje actual para crear referentes teóricos.'
+                )
+            );
         }
 
         return Inertia::render(

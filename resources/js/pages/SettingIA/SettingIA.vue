@@ -30,7 +30,7 @@ onMounted(() => {
     form.temperature = props.initialConfig.temperature;
 })
 
-const availableModels = ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-nano'];
+const availableModels = ['gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-nano'];
 
 // Función para guardar y emitir el estado actual
 const save = () => {

@@ -19,6 +19,6 @@ class UserSeeder extends Seeder
             'email' => 'isacc@gmail.com',
             'password' => bcrypt('isacc123')
         ]);
-        $user->assignRole(RoleConstants::ADMINISTRADOR);
+        $user->assignRole(RoleConstants::ADMINISTRADOR, RoleConstants::PROFESOR);
     }
 }

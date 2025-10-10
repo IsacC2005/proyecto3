@@ -37,9 +37,9 @@ class TeacherController extends Controller
      * This method should return a view containing a form
      * to create a new resource.
      */
-    public function create()
+    public function create(int $id)
     {
-        return Inertia::render('Teacher/CreateTeacher');
+        return Inertia::render('Teacher/CreateTeacher', ['id' => $id]);
     }
 
     /**
@@ -48,7 +48,7 @@ class TeacherController extends Controller
      * This method should validate the request data and store
      * a new resource in the database.
      */
-    public function store(Request $request)
+    public function storeUser(Request $request)
     {
         $teacher = TeacherFactory::fromRequest($request);
         //return response()->json($teacher);

@@ -47,7 +47,7 @@ const printBoletin = () => {
 <template>
     <AppLayout>
         <h1>
-            Lista de boletas ({{ props.tickets.length }})
+            Lista de boletas ({{ props.tickets.length }})XDDD
         </h1>
         <div class="print-controls">
             <button @click="printBoletin" class="print-button">

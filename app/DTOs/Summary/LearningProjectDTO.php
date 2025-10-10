@@ -12,6 +12,7 @@ class LearningProjectDTO implements DTOSummary
         public int $id,
         public string $title,
         public string $content,
+        public int $schoolMoment,
         public ?int $teacherId = 0,
         public ?int $enrollmentId = 0,
         //        public ?DailyClassDTO $daily_class = null,

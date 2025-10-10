@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\CreateLotTicketJob;
 use App\Services\TicketServices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class TicketController extends Controller
@@ -61,7 +63,34 @@ class TicketController extends Controller
 
     public function storeLot(int $id)
     {
+
+        $cacheKey = 'document_progress_' . $id;
+
+        Cache::forget($cacheKey);
+
+        Cache::put($cacheKey, [
+            'percentage' => 0,
+            'message' => 'Preparando la tarea de creación masiva...',
+            'finished' => false
+        ], now()->addHours(1));
+
+        //CreateLotTicketJob::dispatch($id);
         $this->ticket->createLot($id);
+        return response([], 202);
+    }
+
+    public function progressStoreLot(int $jobId)
+    {
+        $cacheKey = 'document_progress_' . $jobId;
+
+        $status = Cache::get($cacheKey, [
+            'percentage' => 0,
+            'message' => 'Proceso no encontrado o en cola.',
+            'finished' => true,
+        ]);
+
+        // Devuelve una respuesta JSON simple
+        return response()->json($status);
     }
 
     /**

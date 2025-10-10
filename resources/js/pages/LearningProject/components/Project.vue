@@ -1,5 +1,4 @@
 <template>
-
     <div
         class="bg-white rounded-lg shadow-md p-6 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
 
@@ -7,6 +6,16 @@
             {{ project.title }}
         </h2>
 
+        <div class="mb-4 border-b border-gray-200 pb-2">
+            <h3 class="font-semibold text-gray-700 mb-2">Información de la Sección:</h3>
+            <p class="text-sm text-gray-600">
+                <span class="font-semibold">Sección:</span> {{ project.enrollment?.grade }}° "{{
+                    project.enrollment?.section }}"
+            </p>
+            <p class="text-sm text-gray-600">
+                <span class="font-semibold">Momento Escolar:</span> {{ formatSchoolMoment(project.schoolMoment) }}
+            </p>
+        </div>
         <div class="border-b border-gray-200 mb-4 pb-2">
             <p v-if="project.dailyClasses && project.dailyClasses.length > 0" class="text-sm text-gray-500">
                 <span class="font-semibold">Inicio:</span> {{ formatDate(project.dailyClasses[0].date) }}
@@ -70,6 +79,23 @@ const formatDate = (dateObject) => {
 };
 
 /**
+ * Convierte el código numérico del momento escolar a una etiqueta legible.
+ * @param momentCode El código del momento escolar (ej. 1, 2, 3).
+ */
+const formatSchoolMoment = (momentCode: number) => {
+    switch (momentCode) {
+        case 1:
+            return 'Primer Momento';
+        case 2:
+            return 'Segundo Momento';
+        case 3:
+            return 'Tercer Momento';
+        default:
+            return 'Momento Desconocido';
+    }
+};
+
+/**
  * Retorna las primeras N clases de un proyecto.
  * @param dailyClasses El array de clases diarias.
  * @param count El número de clases a mostrar.
@@ -80,20 +106,5 @@ const getFirstClasses = (dailyClasses: DailyClass[], count = 3) => {
 </script>
 
 <style>
-/* Aquí puedes agregar estilos personalizados si es necesario,
-   pero Tailwind maneja la mayoría de los casos */
-.group:hover .text-primary-400 {
-    color: #1600e0;
-    /* Color personalizado para el hover de la letra grande */
-}
-
-.group:hover .text-primary-600 {
-    color: #059669;
-    /* Color personalizado para el hover del grado */
-}
-
-.group:hover .text-secondary-500 {
-    color: #000000;
-    /* Color personalizado para el hover del profesor */
-}
+/* ... (Estilos Tailwind) ... */
 </style>

@@ -18,7 +18,7 @@ export default defineConfig({
             includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'images/icons/*.png'],
 
             manifest: {
-                name: 'Evaluacion Asistida aaa',
+                name: 'Evaluacion Asistida',
                 short_name: 'EVA',
                 description: 'Herramienta de gestión de boletines educativos.',
                 theme_color: '#42b983', // Color de la barra de estado del teléfono
@@ -48,14 +48,14 @@ export default defineConfig({
                 ],
                 screenshots: [
                     {
-                        "src": "/build/screenshots/desktop-main.png",
+                        "src": "/images/screenshots/desktop-main.png",
                         "sizes": "1280x720",
                         "type": "image/png",
                         "form_factor": "wide",
                         "label": "Vista principal de la aplicación"
                     },
                     {
-                        "src": "/build/screenshots/mobile-main.png",
+                        "src": "/images/screenshots/mobile-main.png",
                         "sizes": "720x1280",
                         "type": "image/png",
                         "form_factor": "narrow",
@@ -64,7 +64,7 @@ export default defineConfig({
                 ]
 
             }, workbox: {
-                dest: 'public/build'
+
             },
         }),
         tailwindcss(),

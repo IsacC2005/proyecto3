@@ -24,7 +24,9 @@ class TeacherServices
         private RoleServices $roleServices,
         //repositories adicionales
         private LearningProjectInterface $projectRepository,
-        private DailyClassInterface $dailyClassRepository
+        private DailyClassInterface $dailyClassRepository,
+        //
+        private DatesActual $datesActual
     ) {}
 
 
@@ -39,9 +41,9 @@ class TeacherServices
 
         $userModel = $this->userServices->createUser($userDTO);
 
-        $teacherDTO->userId = $userModel->id;
+        // $teacherDTO->userId = $userModel->id;
 
-        $this->teacherRepository->createTeacher($teacherDTO);
+        // $this->teacherRepository->createTeacher($teacherDTO);
 
         return redirect()->route('teacher.index')->with('flash', [
             'alert' => [
@@ -93,7 +95,20 @@ class TeacherServices
 
         $enrollment = $this->enrollmentServices->findEnrollmentActiveByTeacher($id);
 
-        $learningProject = $this->projectRepository->findByEnrollment($enrollment->id);
+        $moment = $this->datesActual->getSchoolMomentActual();
+
+        $learningProject = $this->projectRepository->findByEnrollmentAndMoment($enrollment->id, $moment);
+
+        if (!$learningProject) {
+            return redirect()->route('dashboard')->with(
+                'flash',
+                FlashMessage::success(
+                    'Sin proyecto de aprendizaje',
+                    'No existe un proyecto de aprendizaje actual para evaluar.',
+                    'Por favor, cree un proyecto de aprendizaje antes de continuar con la evaluación.',
+                )
+            );
+        }
 
         $dailyClasses = $this->dailyClassRepository->findByLearningProject($learningProject->id, TDTO::DETAIL);
 
@@ -113,11 +128,14 @@ class TeacherServices
         if (!$result) {
             return 'ALgo a fallado';
         }
-        return redirect()->route('teacher.index')->with('flash', 
-        FlashMessage::success(
-            '¡Exito!', 
-            'Profesor actualizado', 
-            'El profesor se actualizo sin problemas'));
+        return redirect()->route('teacher.index')->with(
+            'flash',
+            FlashMessage::success(
+                '¡Exito!',
+                'Profesor actualizado',
+                'El profesor se actualizo sin problemas'
+            )
+        );
     }
 
     public function findTeacher(int $id): TeacherDTO

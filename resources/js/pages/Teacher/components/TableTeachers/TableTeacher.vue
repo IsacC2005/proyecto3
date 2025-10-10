@@ -6,8 +6,7 @@
             <TableDate>{{ item.surname }}</TableDate>
             <TableDate v-if="!isMobile">{{ item.phone }}</TableDate>
             <TableDate>
-                <TableButton :data="{ teacherId: item.id }" :name="`Modificar`" :route="`/teacher/edit`">
-
+                <TableButton :name="`Crear Usuario`" :route="`/teacher/create-user/${item.id}`">
                 </TableButton>
             </TableDate>
         </template>
@@ -19,7 +18,6 @@ import Table from '@/components/Table/Table.vue';
 import { Pagination, Teacher } from '@/types/dtos';
 import { computed, onMounted, ref } from 'vue';
 import { defineProps } from 'vue';
-import { Link } from '@inertiajs/vue3';
 import TableDate from '@/components/Table/TableData.vue';
 import TableButton from '@/components/Table/TableButton.vue';
 

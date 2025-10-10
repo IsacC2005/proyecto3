@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\RoleConstants;
 use App\Constants\TDTO;
 use App\DTOs\Details\LearningProjectDetailDTO;
 use App\DTOs\Summary\LearningProjectDTO;
@@ -9,7 +10,9 @@ use App\Exceptions\LearningProject\LearningProjectNotCreatedException;
 use App\Exceptions\LearningProject\LearningProjectNotFindException;
 use App\Repositories\Interfaces\EnrollmentInterface;
 use App\Repositories\Interfaces\LearningProjectInterface;
+use App\Utilities\FlashMessage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class LearningProjectServices
@@ -23,15 +26,32 @@ class LearningProjectServices
 
 
 
-    public function createProject(LearningProjectDetailDTO $data)
+    public function storeProject(LearningProjectDetailDTO $data)
     {
         try {
-            $project = $this->projectRepository->create($data);
-
-            foreach ($data->getDailyClasses() as $class) {
-                $class->learningProjectId = $project->id;
-                $this->dailyClassServices->createDailyClass($class);
+            $exist = $this->projectRepository->existProjectByTeacheByYearByMoment(
+                $data->teacher->id,
+                $data->enrollment->id,
+                $data->schoolMoment
+            );
+            if ($exist) {
+                return redirect()->route('dashboard')->with('flash', [
+                    'alert' => [
+                        'title' => 'Error!',
+                        'description' => 'El proyecto ya existe',
+                        'message' => "Ya existe un proyecto de aprendizaje para esta seccion en el momento {$data->schoolMoment}",
+                        'code' => '200'
+                    ]
+                ]);
             }
+            DB::transaction(function () use ($data) {
+                $project = $this->projectRepository->create($data);
+
+                foreach ($data->getDailyClasses() as $class) {
+                    $class->learningProjectId = $project->id;
+                    $this->dailyClassServices->createDailyClass($class);
+                }
+            });
             return redirect()->route('learning-project.index')->with('flash', [
                 'alert' => [
                     'title' => '¡Exito!',
@@ -41,7 +61,6 @@ class LearningProjectServices
                 ]
             ]);
         } catch (\Throwable $th) {
-            $this->projectRepository->delete($project->id);
             throw new LearningProjectNotCreatedException($th->getMessage());
         }
     }
@@ -62,32 +81,45 @@ class LearningProjectServices
         return $project;
     }
 
-    public function findByTeacher(): array
+    public function findByTeacher()
     {
         $user = Auth::user();
-        if ($user->userable_type === 'App\Models\Teacher') {
-            $teacher = $user->userable;
-        } else {
-            return [];
+
+        if (!$user->hasRole(RoleConstants::PROFESOR)) {
+            return redirect()->route('dashboard')->with(
+                'flash',
+                FlashMessage::error(
+                    'No se pueden mostrar proyectos porque su usuario no es de tipo profesor.',
+                    'Acceso restringido',
+                    'Solo los usuarios con rol de profesor pueden ver los proyectos de aprendizaje.'
+                )
+            );
         }
 
-        return $this->projectRepository->findByTeacher($teacher->id ? $teacher->id : 0, TDTO::DETAIL);
+        $teacher_id = $user->userable_id;
+
+        $data = $this->projectRepository->findByTeacher($teacher_id ? $teacher_id : 0, TDTO::DETAIL);
+
+        return Inertia::render('LearningProject/ListLearningProjects', [
+            'projects' => array_map(function ($aux) {
+                return $aux->toArray();
+            }, $data)
+        ]);
     }
 
 
     public function findByEnrollment(int $enrollmentId, int $teacherId)
     {
-
         $assingEnrollmentTeacher = $this->enrollmentRepository->teacherItsAssing($enrollmentId, $teacherId);
 
         if (!$assingEnrollmentTeacher) {
             throw new LearningProjectNotFindException("Este Profesor no tiene asignado esta matricula", 422);
         }
 
-        $rs = $this->projectRepository->findByEnrollment($enrollmentId);
+        $projects = $this->projectRepository->findByEnrollment($enrollmentId);
 
         return Inertia::render('LearningProject/CreateLearningProject', [
-            'exist' => $rs ? true : false,
+            'projects' =>  $projects,
             'teacherId' => $teacherId,
             'enrollmentId' => $enrollmentId
         ]);
@@ -131,8 +163,13 @@ class LearningProjectServices
     {
         if (!$projectId) {
         }
+        $user =  Auth::user();
 
-        $teacher_id = Auth::user()->userable->id;
+        if (!$user->hasRole(RoleConstants::PROFESOR)) {
+            throw new \ErrorException("Este usuario no es un profesor");
+        }
+
+        $teacher_id = $user->userable_id;
 
         if (!$teacher_id) {
             $teacher_id = -1;

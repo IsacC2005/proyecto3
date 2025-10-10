@@ -11,6 +11,7 @@ use App\DTOs\Summary\DTOSummary;
 use App\DTOs\Details\DTODetail;
 use App\DTOs\Summary\EvaluationItemsStudentDTO;
 use App\Exceptions\EvaluationItem\EvaluationNotExistException;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ItemEvaluationRepository extends TransformDTOs implements ItemEvaluationInterface
@@ -33,18 +34,27 @@ class ItemEvaluationRepository extends TransformDTOs implements ItemEvaluationIn
 
     public function getAllEvaluationByClass(int $classId): array
     {
-        $data = EvaluationItem::with('students')->where('daily_class_id', $classId)->get();
 
-        $result = [];
-        foreach ($data as $item) {
-            foreach ($item->students as $student) {
-                $result[] = new EvaluationItemsStudentDTO(
-                    itemEvaluationId: $student->pivot->evaluation_item_id,
-                    studentId: $student->id,
-                    note: $student->pivot->note
-                );
-            }
+        $evaluationItemIds = EvaluationItem::where('daily_class_id', $classId)
+            ->pluck('id');
+
+        // Si no hay ítems, devolver array vacío inmediatamente.
+        if ($evaluationItemIds->isEmpty()) {
+            return [];
         }
+
+        $rawNotes = DB::table('evaluation_item_student')
+            ->select('evaluation_item_id', 'student_id', 'note')
+            ->whereIn('evaluation_item_id', $evaluationItemIds)
+            ->get();
+
+        $result = $rawNotes->map(function ($note) {
+            return new EvaluationItemsStudentDTO(
+                itemEvaluationId: $note->evaluation_item_id,
+                studentId: $note->student_id,
+                note: $note->note
+            );
+        })->toArray();
 
         return $result;
     }
@@ -59,7 +69,7 @@ class ItemEvaluationRepository extends TransformDTOs implements ItemEvaluationIn
                 throw new EvaluationNotExistException('este Evaluacion no existe');
             }
 
-            $evaluation->students()->syncWithoutDetaching([$studentId => ['note' => $note]]);
+            $evaluation->notesPivot()->syncWithoutDetaching([$studentId => ['note' => $note]]);
         });
     }
 

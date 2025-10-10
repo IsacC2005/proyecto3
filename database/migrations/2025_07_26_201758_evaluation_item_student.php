@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('evaluation_item_student', function (Blueprint $table) {
             $table->foreignId('evaluation_item_id')->constrained('evaluation_items')->onDelete('restrict');
-            $table->foreignId('student_id')->constrained('students')->onDelete('restrict');
+            $table->unsignedBigInteger('student_id');
             $table->string('note')->length(2);
             $table->timestamps();
         });

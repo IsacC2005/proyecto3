@@ -46,6 +46,8 @@ export interface LearningProject {
     id: number,
     title: string,
     content: string,
+    schoolMoment: 1 | 2 | 3,
+    enrollment: Section | null,
     dailyClasses: DailyClass[]
 }
 

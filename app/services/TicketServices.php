@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\DTOs\Summary\TicketDTO;
+use App\Jobs\CreateTicketJob;
 use App\Repositories\Interfaces\LearningProjectInterface;
 use App\Repositories\Interfaces\StudentInterface;
 use App\Repositories\Interfaces\TicketInterface;
 use GrahamCampbell\ResultType\Error;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Mockery\Expectation;
 
 class TicketServices
@@ -24,7 +26,7 @@ class TicketServices
 
     public function createShowPage()
     {
-        $teacher_id = Auth::user()->userable->id;
+        $teacher_id = Auth::user()->userable_id;
 
 
 
@@ -95,10 +97,72 @@ class TicketServices
         $project = $this->project->find($projectId);
 
         $students = $this->student->findStudentByEnrollment($project->enrollmentId);
+        $totalStudents = count($students);
 
-        foreach ($students as $student) {
-            $this->create($projectId, $student->id);
+        $cacheKey = 'document_progress_' . $projectId;
+
+
+
+
+        Cache::forget($cacheKey); // Limpia el estado anterior
+
+        // Inicializa el estado para la barra de progreso
+        Cache::put($cacheKey, [
+            'percentage' => 0,
+            'message' => 'Lote iniciado. Despachando tareas individuales...',
+            'finished' => false
+        ], now()->addHours(1));
+
+        // Inicializa el contador de documentos completados.
+        Cache::put($cacheKey . '_completed', 0, now()->addHours(1));
+
+        foreach ($students as $i => $student) {
+            CreateTicketJob::dispatch(
+                $projectId,
+                $student->id,
+                $totalStudents,
+                $cacheKey,
+            );
         }
+
+
+        Cache::put($cacheKey . '_status', [
+            'percentage' => 0,
+            'message' => "{$totalStudents} tareas de creación despachadas.",
+            'finished' => false
+        ], now()->addHours(1));
+
+
+        // Cache::forget($cacheKey);
+
+        // Cache::put($cacheKey, [
+        //     'percentage' => 0,
+        //     'message' => 'Preparando la tarea de creación masiva...',
+        //     'finished' => false
+        // ], now()->addHours(1));
+
+
+        // $count = 0;
+
+        // foreach ($students as $student) {
+        //     $count++;
+
+        //     $this->create($projectId, $student->id);
+
+        //     $statusDescription = "$count documentos de $totalStudents";
+        //     $progressPercent = round(($count / $totalStudents) * 100);
+
+        //     Cache::put($cacheKey, [
+        //         'percentage' => $progressPercent,
+        //         'message' => $statusDescription,
+        //         'finished' => false
+        //     ], now()->addHours(1));
+        // }
+        // Cache::put($cacheKey, [
+        //     'percentage' => 100,
+        //     'message' => '¡Lote de documentos completado!',
+        //     'finished' => true
+        // ], now()->addHours(1));
     }
 
 

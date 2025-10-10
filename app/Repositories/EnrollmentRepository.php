@@ -21,7 +21,6 @@ use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
 use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\EnrollmentDetailDTO;
-use App\DTOs\Searches\DTOSearch;
 use App\Exceptions\Teacher\TeacherNotExistException;
 use App\Factories\TeacherFactory;
 use App\Factories\LearningProjectFactory;

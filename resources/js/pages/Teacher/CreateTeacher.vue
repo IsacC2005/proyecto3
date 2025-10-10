@@ -23,6 +23,7 @@ import { useTeacherStore } from '@/store/TeacherStore';
 import { useAlertData } from '@/store/ModalStore';
 import { Alert } from '@/types';
 import ButtonSubmit from '@/components/ui/button/ButtonSubmit.vue';
+import { onMounted } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [{
     title: 'Crear Profesor',
@@ -43,6 +44,17 @@ const data = useTeacherStore();
 
 const { form, resetForm, somePassword, cleanPassword } = data;
 
+const props = defineProps({
+    id: {
+        type: Number,
+        required: true
+    }
+});
+
+onMounted(() => {
+    form.id = props.id
+})
+
 const submit = () => {
     if (!somePassword()) {
         alert.showAlert(alertPasswordNotSome);
@@ -50,7 +62,7 @@ const submit = () => {
         return;
     }
 
-    form.post(route('teacher.create'), {
+    form.post(route('teacher.create-user'), {
         onSuccess() {
             resetForm();
         }

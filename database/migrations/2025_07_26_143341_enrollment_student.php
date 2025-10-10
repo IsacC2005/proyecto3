@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('enrollment_student', function (Blueprint $table) {
-            $table->foreignId('enrollment_id')->constrained()->onDelete('restrict');
-            $table->foreignId('student_id')->constrained()->onDelete('restrict');
-            $table->timestamps();
-        });
+        // Schema::create('enrollment_student', function (Blueprint $table) {
+        //     $table->foreignId('enrollment_id')->constrained()->onDelete('restrict');
+        //     $table->foreignId('student_id')->constrained()->onDelete('restrict');
+        //     $table->timestamps();
+        // });
     }
 
     /**

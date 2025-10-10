@@ -43,6 +43,7 @@ const form = useForm({
     id: props.project.id,
     title: props.project.title,
     content: props.project.content,
+    schoolMoment: props.project.schoolMoment
 });
 
 const submit = () => {

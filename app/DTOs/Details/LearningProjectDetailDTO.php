@@ -16,10 +16,9 @@ class LearningProjectDetailDTO implements DTODetail
         public int $id,
         public string $title,
         public string $content,
+        public int $schoolMoment,
         public ?TeacherDetailDTO $teacher = null,
         public ?EnrollmentDetailDTO $enrollment = null,
-        //        public ?DailyClassDTO $daily_class = null,
-        //        public ?EnrollmentDTO $enrollment = null,
     ) {}
 
     public function addTicket(TicketDetailDTO $ticket): void
@@ -48,6 +47,7 @@ class LearningProjectDetailDTO implements DTODetail
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
+            'schoolMoment' => $this->schoolMoment,
             'teacher' => $this->teacher ?? null,
             'enrollment' => $this->enrollment ?? null,
             'dailyClasses' => $this->getDailyClasses()

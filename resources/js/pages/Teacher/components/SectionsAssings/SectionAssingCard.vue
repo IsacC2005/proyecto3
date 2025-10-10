@@ -10,8 +10,13 @@
 
         <div
             class="absolute top-0 right-0 w-4/5 h-full flex flex-col items-end justify-between p-4 md:p-2 text-right z-10">
-            <SectionGrade :grade="props.section.grade"></SectionGrade>
-            asdf
+            <div class="flex items-center space-x-4">
+                <p class="text-sm font-semibold text-gray-700 mb-0 ">
+                    {{ props.section.schoolYear }}
+                </p>
+                <SectionGrade :grade="props.section.grade"></SectionGrade>
+            </div>
+
             <SectionAssingLearningProject :learningProject="props.section.learningProject"
                 :enrollment-id="props.section.id" :teacher-id="props.section.teacher?.id">
             </SectionAssingLearningProject>

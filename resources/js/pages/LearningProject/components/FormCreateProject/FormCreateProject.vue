@@ -1,5 +1,8 @@
 <template>
-    <form @submit.prevent="submit" class="m-1 sm:m-8">
+    <form @submit.prevent="submit" class="m-1 sm:m-8 sm:mt-2">
+        <h3 class="text-xl sm:text-2xl font-semibold text-foreground mb-6 mt-0 text-center sm:text-left">
+            {{ moments[props.schoolMoment] }}
+        </h3>
         <Label for="title">Titulo del proyecto</Label>
         <Input v-model="form.title" class="mt-4 mb-8" id="title" type="text"
             placeholder="Nuestros Vecinos del Huerto: Un Viaje al Mundo de los Insectos" />
@@ -35,16 +38,11 @@ import FormCreateClasses from './FormCreateClasses.vue';
 
 const model = ref("");
 
-const props = defineProps({
-    teacherId: {
-        type: Number,
-        required: true
-    },
-    enrollmentId: {
-        type: Number,
-        required: true
-    }
-});
+const props = defineProps<{
+    teacherId: number
+    schoolMoment: 1 | 2 | 3
+    enrollmentId: number
+}>()
 
 
 
@@ -53,6 +51,7 @@ const form = useForm<LearningProject>({
     content: '',
     teacherId: props.teacherId,
     enrollmentId: props.enrollmentId,
+    schoolMoment: props.schoolMoment,
     dailyClasses: [{
         title: '',
         content: '',
@@ -79,11 +78,19 @@ const addClass = () => {
     });
 }
 
+const moments = {
+    1: "Momento I",
+    2: "Momento II",
+    3: "Momento III"
+};
+
+
 type LearningProject = {
     title: string;
     content: string;
     teacherId: number;
     enrollmentId: number;
+    schoolMoment: 1 | 2 | 3;
     dailyClasses: DailyClasses[];
 };
 

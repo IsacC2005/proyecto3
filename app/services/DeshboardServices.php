@@ -25,13 +25,10 @@ class DeshboardServices
 
     public function welcome()
     {
-        $teacher = Auth::user()->userable;
-
-        $teacher_id = $teacher->id;
+        $teacher_id = Auth::user()->userable_id;
 
         $moment = $this->date->getSchoolMomentActual();
         $year = $this->date->getSchoolYearActual();
-
 
         $activeLearningProject = $this->project->findOnDate($year, $moment, $teacher_id, TDTO::DETAIL);
 

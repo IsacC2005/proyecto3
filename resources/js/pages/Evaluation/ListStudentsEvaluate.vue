@@ -22,7 +22,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg font-semibold text-gray-700 truncate">{{ student.name + " " +
                                 student.surname
-                                }}</h2>
+                            }}</h2>
                             <!-- Reemplazamos el span por la barra de progreso -->
                             <div class="w-24 bg-gray-200 rounded-full h-2.5">
                                 <div class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300 ease-in-out"

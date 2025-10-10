@@ -24,6 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'userable_id'
     ];
 
     /**
@@ -47,10 +48,5 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function userable(): MorphTo
-    {
-        return $this->morphTo();
     }
 }

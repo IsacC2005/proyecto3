@@ -22,7 +22,8 @@ class LearningProjectFactory implements Factory
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'content' => 'nullable|string'
+            'content' => 'nullable|string',
+            'schoolMoment' => 'required|integer|in:1,2,3'
         ]);
 
         if ($validator->fails()) {
@@ -33,7 +34,8 @@ class LearningProjectFactory implements Factory
         return new LearningProjectDTO(
             id: 0,
             title: $request->input('title'),
-            content: $request->input('content')
+            content: $request->input('content'),
+            schoolMoment: $request->input('schoolMoment')
         );
     }
 
@@ -45,6 +47,7 @@ class LearningProjectFactory implements Factory
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',
+            'schoolMoment' => 'required|integer|in:1,2,3',
             'dailyClasses' => 'required|array',
             'dailyClasses.*.title' => 'required|string|max:255',
             'dailyClasses.*.content' => 'nullable|string',
@@ -93,6 +96,7 @@ class LearningProjectFactory implements Factory
             id: 0,
             title: $request->input('title'),
             content: $request->input('content') ? $request->input('content') : '',
+            schoolMoment: $request->input('schoolMoment'),
             teacher: $teacher ?? null,
             enrollment: $enrollment ?? null
         );
@@ -116,7 +120,8 @@ class LearningProjectFactory implements Factory
         return new LearningProjectDTO(
             id: $data['id'] ?? 0,
             title: $data['title'] ?? '',
-            content: $data['content'] ?? ''
+            content: $data['content'] ?? '',
+            schoolMoment: $data['schoolMoment'] ?? -1
         );
     }
 
@@ -126,6 +131,7 @@ class LearningProjectFactory implements Factory
             id: $data['id'] ?? 0,
             title: $data['title'] ?? '',
             content: $data['content'] ?? '',
+            schoolMoment: $data['schoolMoment'] ?? -1,
             teacher: isset($data['teacher']) ? TeacherFactory::fromArray($data['teacher']) : null,
             enrollment: isset($data['enrollment']) ? EnrollmentFactory::fromArray($data['enrollment']) : null
         );

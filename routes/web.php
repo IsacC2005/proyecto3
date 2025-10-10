@@ -12,10 +12,12 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
+use App\Jobs\testJob;
 use App\Models\User;
 use App\Repositories\AIRepositori;
 use App\Repositories\LearningProjectRepository;
 use App\services\UserServices;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -34,8 +36,8 @@ Route::post('create-user', [UserController::class, 'create'])->middleware(['auth
 
 Route::get('/teacher/index', [TeacherController::class, 'index'])->middleware(['auth', 'verified'])->name('teacher.index');
 
-Route::get('/teacher/create', [TeacherController::class, 'create'])->middleware(['auth', 'verified']);
-Route::post('/teacher/create', [TeacherController::class, 'store'])->middleware(['auth', 'verified'])->name('teacher.create');
+Route::get('/teacher/create-user/{id}', [TeacherController::class, 'create'])->middleware(['auth', 'verified']);
+Route::post('/teacher/create-user', [TeacherController::class, 'storeUser'])->middleware(['auth', 'verified'])->name('teacher.create-user');
 
 Route::get('/teacher/edit', [TeacherController::class, 'edit'])->middleware(['auth', 'verified']);
 Route::put('/teacher/update/{id}', [TeacherController::class, 'update'])->middleware(['auth', 'verified'])->name('teacher.update');
@@ -117,6 +119,8 @@ Route::get('/tickets', [TicketController::class, 'index'])->middleware(['auth', 
 Route::get('/tickets/create', [TicketController::class, 'create'])->middleware(['auth', 'verified']);
 Route::post('/tickets/storeLot/{id}', [TicketController::class, 'storeLot'])->middleware(['auth', 'verified']);
 
+Route::get('/tickets/storeLot/progress/{jobId}', [TicketController::class, 'progressStoreLot'])->name('progress.status');
+
 /**
  * TODO: Rutas para la configuracion de la IA
  */
@@ -125,7 +129,25 @@ Route::post('/setting-ia', [SettingIAController::class, 'store']);
 
 
 
-Route::get('test', [TicketController::class, 'store']);
+Route::get('test', function () {
+    $response = Http::get('http://localhost:4000/api/teacher/index');
+    //return "hola";
+
+    if ($response->successful()) {
+        $data = $response->json();
+
+        return response()->json([
+            'data' => $data
+        ]);
+    } else {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Fallo al conectar con la API o error del servidor.',
+            'status_code' => $response->status()
+        ], $response->status());
+    }
+    return "error en algo";
+});
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

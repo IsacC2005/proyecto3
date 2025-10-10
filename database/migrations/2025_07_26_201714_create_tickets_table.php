@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained()->onDelete('restrict');
+            $table->unsignedBigInteger('student_id');
             $table->foreignId('learning_project_id')->constrained()->onDelete('restrict');
             $table->string('average')->length(2);
             $table->text('personality');

@@ -17,9 +17,7 @@ class TeacherFactory implements Factory
     public static function fromRequest(Request $request): DTOSummary
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:100',
-            'surname' => 'required|string|max:100',
-            'phone' => 'nullable|string|max:11',
+            'id' => 'required|integer',
             'email' => 'required|string|unique:users',
             'password' => 'required|string|min:8',
         ]);
@@ -29,17 +27,18 @@ class TeacherFactory implements Factory
         }
 
         $teacher = new TeacherDTO(
-            id: 0,
-            name: $request->input('name'),
-            surname: $request->input('surname'),
-            phone: $request->input('phone') ?? null
+            id: $request->input('id'),
+            name: '',
+            surname: '',
+            phone: null
         );
 
         $user = new UserDTO(
             id: 0,
-            name: $request->input('name'),
+            name: $request->input('email'),
             email: $request->input('email'),
-            password: $request->input('password')
+            password: $request->input('password'),
+            userable_id: $request->input('id')
         );
 
         $teacher->UserDTO = $user;

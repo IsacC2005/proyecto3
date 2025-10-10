@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('enrollments', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('teacher_id')->nullable()->constrained()->onDelete('restrict');
-            $table->string('school_year')->length(9); // Format: YYYY-YYYY
-            $table->integer('school_moment')->length(1); // 1: First moment, 2: Second moment, etc.
-            $table->integer('grade')->lengeth(1);
-            $table->string('section')->length(2);
-            $table->string('classroom')->length(3);
-            $table->timestamps();
-        });
+        // Schema::create('enrollments', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('teacher_id')->nullable()->constrained()->onDelete('restrict');
+        //     $table->string('school_year')->length(9); // Format: YYYY-YYYY
+        //     $table->integer('school_moment')->length(1); // 1: First moment, 2: Second moment, etc.
+        //     $table->integer('grade')->lengeth(1);
+        //     $table->string('section')->length(2);
+        //     $table->string('classroom')->length(3);
+        //     $table->timestamps();
+        // });
     }
 
     /**

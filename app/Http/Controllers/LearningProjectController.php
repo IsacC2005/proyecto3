@@ -27,12 +27,7 @@ class LearningProjectController extends Controller
      */
     public function index()
     {
-        $data = $this->learningProjectServices->findByTeacher();
-        return Inertia::render('LearningProject/ListLearningProjects', [
-            'projects' => array_map(function ($aux) {
-                return $aux->toArray();
-            }, $data)
-        ]);
+        return $this->learningProjectServices->findByTeacher();
     }
 
     /**
@@ -68,7 +63,7 @@ class LearningProjectController extends Controller
     {
         $data =  LearningProjectFactory::fromRequestDetail($request);
 
-        return $this->learningProjectServices->createProject($data);
+        return $this->learningProjectServices->storeProject($data);
         ///return response()->json($data->getDailyClasses());
     }
 

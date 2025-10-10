@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('learning_projects', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('teacher_id')->constrained()->onDelete('restrict');
-            $table->foreignId('enrollment_id')->constrained()->onDelete('restrict');
+            $table->unsignedBigInteger('teacher_id');
+            $table->unsignedBigInteger('enrollment_id');
+            $table->tinyInteger('school_moment');
             $table->string('title');
             $table->text('content');
             $table->timestamps();
