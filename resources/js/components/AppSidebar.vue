@@ -44,7 +44,7 @@ const mainNavItems: NavItem[] = [
         icon: Users,
         children: [
             { title: 'Lista de profesores', href: '/teacher/index', icon: List, },
-            { title: 'Crear profesor', href: '/teacher/create', icon: UserPlus },
+            // { title: 'Crear profesor', href: '/teacher/create', icon: UserPlus },
         ]
     },
     {

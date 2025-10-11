@@ -39,8 +39,8 @@ Route::post('create-user', [UserController::class, 'create'])->middleware(['auth
 
 Route::get('/teacher/index', [TeacherController::class, 'index'])->middleware(['auth', 'verified'])->name('teacher.index');
 
-Route::get('/teacher/create-user/{id}', [TeacherController::class, 'create'])->middleware(['auth', 'verified']);
-Route::post('/teacher/create-user', [TeacherController::class, 'storeUser'])->middleware(['auth', 'verified'])->name('teacher.create-user');
+//Route::get('/teacher/create-user/{id}', [TeacherController::class, 'create'])->middleware(['auth', 'verified']);
+//Route::post('/teacher/create-user', [TeacherController::class, 'storeUser'])->middleware(['auth', 'verified'])->name('teacher.create-user');
 
 Route::get('/teacher/edit', [TeacherController::class, 'edit'])->middleware(['auth', 'verified']);
 Route::put('/teacher/update/{id}', [TeacherController::class, 'update'])->middleware(['auth', 'verified'])->name('teacher.update');
