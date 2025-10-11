@@ -10,10 +10,9 @@ class EnrollmentDetailDTO implements DTODetail
     public function __construct(
         public int $id,
         public string $schoolYear,
-        public string $schoolMoment,
         public int $grade,
         public string $section,
-        public int $classroom,
+        public string $classroom,
         public ?TeacherDetailDTO $teacher = null,
         public ?LearningProjectDetailDTO $learningProject = null,
     ) {}
@@ -33,7 +32,6 @@ class EnrollmentDetailDTO implements DTODetail
         return [
             'id' => $this->id,
             'schoolYear' => $this->schoolYear,
-            'schoolMoment' => $this->schoolMoment,
             'grade' => $this->grade,
             'section' => $this->section,
             'classrom' => $this->classroom,

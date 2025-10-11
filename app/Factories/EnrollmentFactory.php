@@ -28,7 +28,6 @@ class EnrollmentFactory implements Factory
         return new EnrollmentDTO(
             id: 0,
             schoolYear: '',
-            schoolMoment: 0,
             grade: $request->input('grade'),
             section: $request->input('secction'),
             classroom: 0,
@@ -40,7 +39,6 @@ class EnrollmentFactory implements Factory
         return new EnrollmentDetailDTO(
             id: 0,
             schoolYear: $request->input('school_year'),
-            schoolMoment: $request->input('school_moment'),
             grade: $request->input('grade'),
             section: $request->input('secction'),
             classroom: 0,
@@ -52,7 +50,6 @@ class EnrollmentFactory implements Factory
         return new EnrollmentDTO(
             id: $data['id'] ?? 0,
             schoolYear: $data['schoolYear'] ?? '',
-            schoolMoment: $data['schoolMoment'] ?? 0,
             grade: $data['grade'] ?? 0,
             section: $data['section'] ?? '',
             classroom: $data['classroom'] ?? 0,
@@ -64,7 +61,6 @@ class EnrollmentFactory implements Factory
         return new EnrollmentDetailDTO(
             id: $data['id'] ?? 0,
             schoolYear: $data['schoolYear'] ?? '',
-            schoolMoment: $data['schoolMoment'] ?? 0,
             grade: $data['grade'] ?? 0,
             section: $data['section'] ?? '',
             classroom: $data['classroom'] ?? 0,

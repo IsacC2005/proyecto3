@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { defineProps } from 'vue';
@@ -8,7 +8,7 @@ const props = defineProps({
 });
 
 let hola = "Hollla";
-const form = useForm ({
+const form = useForm({
     name: '',
     email: '',
     password: '',
@@ -16,7 +16,7 @@ const form = useForm ({
 });
 
 const submit = () => {
-    form.post(route('user.create'),{})
+    form.post(route('user.create'), {})
 }
 
 </script>

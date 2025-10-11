@@ -11,6 +11,7 @@ class UserDTO implements DTOSummary
         public string $name,
         public string $email,
         public ?string $password = null,
+        public ?array $role = [],
         public ?int $roleId = -1,
         public ?int $userable_id = -1,
         public ?UserableInterface $userable = null

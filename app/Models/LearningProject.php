@@ -24,6 +24,15 @@ class LearningProject extends Model
         'enrollment_id'
     ];
 
+    public function teacher(): BelongsTo
+    {
+        return $this->belongsTo(Teacher::class);
+    }
+
+    public function enrollment(): HasOne
+    {
+        return $this->hasOne(Enrollment::class, 'id', 'enrollment_id');
+    }
 
     public function daily_classes(): HasMany
     {

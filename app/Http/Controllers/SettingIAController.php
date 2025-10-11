@@ -13,10 +13,10 @@ class SettingIAController extends Controller
         $data = SettingIA::first();
         return Inertia::render('SettingIA/SettingIA', [
             'initialConfig' => [
-                'system_instruction' => $data->system_instruction,
-                'model' => $data->model,
-                'key' => $data->key,
-                'temperature' => $data->temperature
+                'system_instruction' => $data->system_instruction ?? '',
+                'model' => $data->model ?? '',
+                'key' => $data->key ?? '',
+                'temperature' => $data->temperature ?? 1
             ]
         ]);
     }

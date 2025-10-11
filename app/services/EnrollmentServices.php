@@ -33,14 +33,9 @@ class EnrollmentServices
                 $enrollment->schoolYear = $this->dates->getSchoolYearActual();
             }
 
-            if ($enrollment->schoolMoment === 0) {
-                $enrollment->schoolMoment = $this->dates->getSchoolMomentActual();
-            }
-
             $exist = $this->enrollmentRepository->existEnrollmentSecctionAndSchoolYear(
                 $enrollment->grade,
                 $enrollment->section,
-                $enrollment->schoolMoment,
                 $enrollment->schoolYear
             );
 
@@ -66,12 +61,10 @@ class EnrollmentServices
             $data = EnrollmentFactory::fromArray($item);
 
             $data->schoolYear = $schooleYear;
-            $data->schoolMoment = $schoolMoment;
 
             if (!$this->enrollmentRepository->existEnrollmentSecctionAndSchoolYear(
                 $data->grade,
                 $data->section,
-                $data->schoolMoment,
                 $data->schoolYear
             )) {
                 $this->createEnrollment($data);
@@ -127,17 +120,16 @@ class EnrollmentServices
         $this->enrollmentRepository->addStudent($enrollmentId, $studentId);
     }
 
-    public function findEnrollmentActiveByTeacher(int $teacherId, ?string $fn = null): EnrollmentDTO
+    public function findEnrollmentActiveByTeacher(int $teacherId, ?string $fn = TDTO::SUMMARY): EnrollmentDTO
     {
         $schoolYear = $this->dates->getSchoolYearActual();
         $schoolMoment = $this->dates->getSchoolMomentActual();
 
         return $enrollment = $this
             ->enrollmentRepository
-            ->findEnrollmentOnSchoolYearAndSchoolMomentByTeacher(
+            ->findEnrollmentOnSchoolYearByTeacher(
                 $teacherId,
                 $schoolYear,
-                $schoolMoment,
                 $fn
             );
     }

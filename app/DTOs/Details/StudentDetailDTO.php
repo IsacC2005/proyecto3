@@ -16,7 +16,6 @@ class StudentDetailDTO implements DTODetail
         public int $grade,
         public string $name,
         public string $surname,
-        public ?RepresentativeDetailDTO $representative = null,
     ) {}
 
 

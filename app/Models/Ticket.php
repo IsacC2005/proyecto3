@@ -16,6 +16,11 @@ class Ticket extends Model
         'suggestions'
     ];
 
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Student::class);
+    }
+
     public function learning_project(): BelongsTo
     {
         return $this->belongsTo(LearningProject::class);

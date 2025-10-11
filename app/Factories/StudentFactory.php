@@ -30,7 +30,6 @@ class StudentFactory implements Factory
             grade: $request->input('grade'),
             name: $request->input('name'),
             surname: $request->input('surname'),
-            representativeId: $request->input('representativeId')
         );
     }
 
@@ -54,7 +53,6 @@ class StudentFactory implements Factory
             grade: $request->input('grade'),
             name: $request->input('name'),
             surname: $request->input('surname'),
-            representative: null
         );
     }
 
@@ -66,7 +64,6 @@ class StudentFactory implements Factory
             grade: $data['grade'] ?? null,
             name: $data['name'] ?? '',
             surname: $data['surname'] ?? '',
-            representativeId: $data['representativeId'] ?? null
         );
     }
 
@@ -78,7 +75,6 @@ class StudentFactory implements Factory
             grade: $data['grade'] ?? null,
             name: $data['name'] ?? '',
             surname: $data['surname'] ?? '',
-            representative: null
         );
     }
 }

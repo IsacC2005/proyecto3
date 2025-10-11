@@ -88,7 +88,7 @@ class UserRepository extends TransformDTOs implements UserInterface
     public function findAllUser(): array
     {
         try {
-            $users = User::all();
+            $users = User::with('roles')->get();
             if ($users->isEmpty()) {
                 throw new UserNotFindException();
             }
@@ -171,10 +171,12 @@ class UserRepository extends TransformDTOs implements UserInterface
      */
     protected function transformToDTO(Model $model): DTOSummary
     {
+        $rolesArray = json_decode($model->rol, true);
         return new UserDTO(
             id: $model->id,
             name: $model->name,
             email: $model->email,
+            role: $model->roles->pluck('name')->toArray(),
             //password: $model->password,
             //userable: $user->userable // Assuming userable is a Userable type
         );
@@ -182,6 +184,7 @@ class UserRepository extends TransformDTOs implements UserInterface
 
     protected function transformToDetailDTO(Model $model): DTODetail
     {
+
         return new UserDetailDTO(
             id: $model->id,
             name: $model->name,

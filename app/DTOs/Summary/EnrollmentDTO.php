@@ -10,10 +10,9 @@ class EnrollmentDTO implements DTOSummary
     public function __construct(
         public int $id,
         public string $schoolYear,
-        public int $schoolMoment,
         public int $grade,
         public string $section,
-        public int $classroom,
+        public string $classroom,
         public ?int $teacherId = 0,
         public ?int $learningProjectId = null,
     ) {}
@@ -33,7 +32,6 @@ class EnrollmentDTO implements DTOSummary
         return [
             'id' => $this->id,
             'schoolYear' => $this->schoolYear,
-            'schoolMoment' => $this->schoolMoment,
             'grade' => $this->grade,
             'section' => $this->section,
             'classroom' => $this->classroom,

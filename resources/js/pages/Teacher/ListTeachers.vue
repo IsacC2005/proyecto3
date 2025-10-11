@@ -1,5 +1,6 @@
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
+        {{ props.teachers }}
         <Heading :title="`Lista de profesores`"></Heading>
         <TableTeacher :pagination="props.teachers">
 

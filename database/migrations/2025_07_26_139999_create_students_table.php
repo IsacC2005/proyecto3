@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('students', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->foreignId('representative_id')->constrained()->onDelete('restrict');
-        //     $table->integer('grade')->lengeth(1);
-        //     $table->string('name')->length(100);
-        //     $table->string('surname')->length(100);
-        //     $table->timestamps();
-        // });
+        Schema::create('students', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('japeco_id')->unique();
+            $table->string('school_id')->unique();
+            $table->integer('grade')->lengeth(1);
+            $table->string('name')->length(100);
+            $table->string('surname')->length(100);
+            $table->timestamps();
+        });
     }
 
     /**

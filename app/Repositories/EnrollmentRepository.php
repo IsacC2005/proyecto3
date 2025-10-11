@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Constants\TDTO;
 use App\DTOs\Summary\EnrollmentDTO;
 use App\Exceptions\Enrollment\EnrollmentNotCreatedException;
 use App\Exceptions\Enrollment\EnrollmentNotDeleteException;
@@ -41,7 +42,6 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
         try {
             $enrollmentModel = Enrollment::create([
                 'school_year' => $enrollment->schoolYear,
-                'school_moment' => $enrollment->schoolMoment,
                 'grade' => $enrollment->grade,
                 'section' => $enrollment->section,
                 'classroom' => $enrollment->classroom,
@@ -231,38 +231,22 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 
 
 
-    public function findEnrollmentOnSchoolYearByTeacher(int $teacherId, string $schoolYear): array
+    public function findEnrollmentOnSchoolYearByTeacher(int $teacherId, string $schoolYear, ?string $fn = TDTO::SUMMARY): EnrollmentDTO
     {
         $enrollmentModel = Enrollment::where('school_year', $schoolYear)
             ->where('teacher_id', $teacherId)
-            ->get();
+            ->first();
 
-        return $this->transformListDTO($enrollmentModel);
-    }
-
-
-
-    public function findEnrollmentOnSchoolYearAndSchoolMomentByTeacher(int $teacherId, string $schoolYear, int $schoolMoment): EnrollmentDTO | null
-    {
-        $enrollmentModel = Enrollment::where('school_year', $schoolYear)
-            ->where('school_moment', $schoolMoment)
-            ->where('teacher_id', $teacherId)->first();
-
-        if (!$enrollmentModel) {
-            return null;
-        }
-
-        return $this->transformToDTO($enrollmentModel);
+        return $this->$fn($enrollmentModel);
     }
 
 
 
 
-    public function existEnrollmentSecctionAndSchoolYear(int $grade, string $section, int $moment, string $year): bool
+    public function existEnrollmentSecctionAndSchoolYear(int $grade, string $section, string $year): bool
     {
         return Enrollment::where('grade', $grade)
             ->where('section', $section)
-            ->where('school_moment', $moment)
             ->where('school_year', $year)->exists();
     }
 
@@ -283,7 +267,6 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
             }
 
             $enrollmentModel->school_year = $enrollment->schoolYear;
-            $enrollmentModel->school_moment = $enrollment->schoolMoment;
             $enrollmentModel->section = $enrollment->section;
             $enrollmentModel->clasroom = $enrollment->classroom;
 
@@ -326,7 +309,6 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
         $enrollment = new EnrollmentDTO(
             id: $model->id,
             schoolYear: $model->school_year,
-            schoolMoment: $model->school_moment,
             grade: $model->grade,
             section: $model->section,
             classroom: $model->classroom,
@@ -346,7 +328,6 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
         $enrollment = new EnrollmentDetailDTO(
             id: $model->id,
             schoolYear: $model->school_year,
-            schoolMoment: $model->school_moment,
             grade: $model->grade,
             section: $model->section,
             classroom: $model->classroom,

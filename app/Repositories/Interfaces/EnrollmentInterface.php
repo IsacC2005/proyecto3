@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Interfaces;
 
+use App\Constants\TDTO;
 use App\DTOs\Summary\EnrollmentDTO;
 use App\DTOs\Details\EnrollmentDetailDTO;
 
@@ -31,11 +32,9 @@ interface EnrollmentInterface
 
     public function findByLearningProject(int $learningProject): EnrollmentDTO;
 
-    public function findEnrollmentOnSchoolYearByTeacher(int $teacherId, string $schoolYear): array;
+    public function findEnrollmentOnSchoolYearByTeacher(int $teacherId, string $schoolYear, ?string $fn = TDTO::SUMMARY): EnrollmentDTO;
 
-    public function findEnrollmentOnSchoolYearAndSchoolMomentByTeacher(int $teacherId, string $schoolYear, int $schoolMoment): EnrollmentDTO | null;
-
-    public function existEnrollmentSecctionAndSchoolYear(int $grade, string $section, int $moment, string $year): bool;
+    public function existEnrollmentSecctionAndSchoolYear(int $grade, string $section, string $year): bool;
 
     public function search(EnrollmentDTO $enrollment): array;
 

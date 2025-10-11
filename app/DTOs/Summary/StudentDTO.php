@@ -14,7 +14,6 @@ class StudentDTO implements DTOSummary
         public int $grade,
         public string $name,
         public string $surname,
-        public ?int $representativeId = 0,
     ) {}
 
 

@@ -16,6 +16,7 @@ use App\Jobs\testJob;
 use App\Models\User;
 use App\Repositories\AIRepositori;
 use App\Repositories\LearningProjectRepository;
+use App\Services\JapecoSyncService;
 use App\services\UserServices;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,8 @@ Route::get('/', WelcomeController::class)->name('home');
 
 Route::get('dashboard', DashboardController::class)
     ->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/user/index', [UserController::class, 'index'])->middleware(['auth', 'verified']);
 
 Route::get('create-user', [UserController::class, 'show'])->middleware(['auth', 'verified'])->name('user.show');
 
@@ -130,23 +133,9 @@ Route::post('/setting-ia', [SettingIAController::class, 'store']);
 
 
 Route::get('test', function () {
-    $response = Http::get('http://localhost:4000/api/teacher/index');
-    //return "hola";
+    $test = new JapecoSyncService();
 
-    if ($response->successful()) {
-        $data = $response->json();
-
-        return response()->json([
-            'data' => $data
-        ]);
-    } else {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Fallo al conectar con la API o error del servidor.',
-            'status_code' => $response->status()
-        ], $response->status());
-    }
-    return "error en algo";
+    return $test->JapecoSysnc();
 });
 
 require __DIR__ . '/settings.php';

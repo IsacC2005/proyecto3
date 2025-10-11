@@ -21,8 +21,8 @@ class EvaluationItem extends Model
 
     public function students(): BelongsToMany
     {
-        // Apunta a una clase Dummy o a sí mismo, pero especifica la tabla pivot
-        return $this->belongsToMany(self::class, 'evaluation_item_student', 'evaluation_item_id', 'student_id')
-            ->withPivot('note', 'student_id', 'evaluation_item_id');
+        return $this->belongsToMany(Student::class)
+            ->withPivot('note')
+            ->withTimestamps();
     }
 }

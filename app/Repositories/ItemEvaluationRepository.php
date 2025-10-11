@@ -69,7 +69,7 @@ class ItemEvaluationRepository extends TransformDTOs implements ItemEvaluationIn
                 throw new EvaluationNotExistException('este Evaluacion no existe');
             }
 
-            $evaluation->notesPivot()->syncWithoutDetaching([$studentId => ['note' => $note]]);
+            $evaluation->students()->syncWithoutDetaching([$studentId => ['note' => $note]]);
         });
     }
 

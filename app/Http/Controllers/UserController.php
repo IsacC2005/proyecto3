@@ -11,8 +11,7 @@ class UserController extends Controller
 {
     public function __construct(
         private UserServices $userService
-    )
-    {}
+    ) {}
     /**
      * Display a listing of the resource.
      * 
@@ -21,7 +20,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        // Debería devolver una vista con todos los elementos.
+        return Inertia::render('Users/ListUsers', [
+            'users' => $this->userService->findAllUser()
+        ]);
     }
 
     /**

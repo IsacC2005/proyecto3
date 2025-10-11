@@ -20,6 +20,7 @@ use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\TeacherDetailDTO;
 use App\DTOs\Searches\DTOSearch;
 use App\Exceptions\User\UserNotFindException;
+use Illuminate\Support\Collection;
 
 class TeacherRepository extends TransformDTOs implements TeacherInterface
 {
@@ -74,9 +75,13 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
     {
         $teacherModels = Teacher::orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
+        $sss = Teacher::first();
+
         $paginationDTO = new PaginationDTO($teacherModels);
 
-        $data = $this->transformListDTO($teacherModels->getCollection());
+        $data = $this->transformListDTO($teacherModels->getCollection(), $fn);
+
+        //throw new TeacherNotFindException(json_encode($sss));
 
         $paginationDTO->data = $data;
 
@@ -122,6 +127,12 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
     {
         $teacherModels = Teacher::where('name', 'like', "%$name%")->get();
         return $this->transformListDTO($teacherModels->toArray());
+    }
+
+
+    public function existTeacher(int $id): bool
+    {
+        return Teacher::where('id', $id)->exists();
     }
 
 

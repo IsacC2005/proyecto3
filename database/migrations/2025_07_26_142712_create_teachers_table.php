@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('teachers', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('name')->length(100);
-        //     $table->string('surname')->length(100);
-        //     $table->string('phone')->length(11)->nullable();
-        //     $table->timestamps();
-        // });
+        Schema::create('teachers', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('japeco_id')->unique();
+            $table->string('name')->length(100);
+            $table->string('surname')->length(100);
+            $table->string('idcard')->length(10)->nullable()->unique();
+            $table->string('phone')->length(11)->nullable();
+            $table->timestamps();
+        });
     }
 
     /**

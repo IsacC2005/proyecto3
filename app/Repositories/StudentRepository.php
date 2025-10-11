@@ -32,7 +32,6 @@ class StudentRepository extends TransformDTOs implements StudentInterface
         try {
 
             $studentModel = Student::create([
-                'representative_id' => $student->representativeId,
                 'grade' => $student->grade,
                 'name' => $student->name,
                 'surname' => $student->surname
@@ -249,7 +248,6 @@ class StudentRepository extends TransformDTOs implements StudentInterface
             grade: $model->grade,
             name: $model->name,
             surname: $model->surname,
-            representativeId: $representative->id
         );
     }
 
