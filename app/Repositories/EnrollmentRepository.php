@@ -237,6 +237,10 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
             ->where('teacher_id', $teacherId)
             ->first();
 
+        if ($enrollmentModel) {
+            throw new EnrollmentNotFindException();
+        }
+
         return $this->$fn($enrollmentModel);
     }
 

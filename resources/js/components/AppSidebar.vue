@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpenText, ChartBarBig, ExternalLink, Folder, GraduationCap, LayoutGrid, LibrarySquare, List, MonitorCog, Notebook, School, User, UserPlus, UserRound, UserRoundPlus, Users, UsersRound } from 'lucide-vue-next';
+import { BookOpenText, ChartBarBig, ExternalLink, Folder, GraduationCap, LayoutGrid, LibrarySquare, List, Logs, MonitorCog, Notebook, School, User, UserPlus, UserRound, UserRoundPlus, Users, UsersRound } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { computed } from 'vue';
 
@@ -22,7 +22,8 @@ const mainNavItems: NavItem[] = [
         icon: MonitorCog,
         children: [
             { title: 'Configuracion IA', href: '/setting-ia', icon: UsersRound },
-            { title: 'Usuarios', href: '#', icon: UsersRound },
+            { title: 'Registro de Actividad', href: '/activity-log', icon: Logs },
+            { title: 'Usuarios', href: '/user/index', icon: UsersRound },
             { title: 'Proyectos de aprendizaje', href: '#', icon: LibrarySquare },
             { title: 'Crear usuario', href: '#', icon: UserRoundPlus },
         ]
@@ -48,23 +49,12 @@ const mainNavItems: NavItem[] = [
         ]
     },
     {
-        title: 'Representante',
-        href: '#',
-        icon: GraduationCap,
-        role: ['Administrador'],
-        children: [
-            { title: 'Lista de Representates', href: '/representative/index', icon: List, role: ['Administrador'] },
-            { title: 'Crear Representante', href: '/representative/create', role: ['Administrador'] },
-        ]
-
-    },
-    {
         title: 'Estudiante',
         href: '#',
         icon: GraduationCap,
         children: [
             { title: 'Lista de Estudiantes', href: '/student/index', icon: List, role: ['Administrador'] },
-            { title: 'Crear Estudiantes', href: '/student/create', role: ['Administrador'] },
+            //{ title: 'Crear Estudiantes', href: '/student/create', role: ['Administrador'] },
             { title: 'Estadisticas', href: '/learning-project/notes/', role: ['Profesor'] }
         ]
 

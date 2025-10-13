@@ -6,10 +6,10 @@
             {{ `${props.section.teacher.name} ${props.section.teacher.surname}` }}
         </p>
         <div v-else class="mt-1">
-            <Link href="/enrollment/assign-teacher" :data="{ enrollmentId: props.section.id }"
+            <a href="https://sigesin.japeco.com/" target="_blank"
                 class="px-2 py-1 text-center bg-blue-700 text-white text-xs md:text-sm font-bold rounded-full hover:bg-blue-800 transition-colors duration-200">
-            Asignar
-            </Link>
+                Asignar
+            </a>
         </div>
     </div>
 </template>

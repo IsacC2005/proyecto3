@@ -1,6 +1,7 @@
 <?php
 
 use App\DTOs\UserDTO;
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\DailyClassController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
@@ -39,8 +40,8 @@ Route::post('create-user', [UserController::class, 'create'])->middleware(['auth
 
 Route::get('/teacher/index', [TeacherController::class, 'index'])->middleware(['auth', 'verified'])->name('teacher.index');
 
-//Route::get('/teacher/create-user/{id}', [TeacherController::class, 'create'])->middleware(['auth', 'verified']);
-//Route::post('/teacher/create-user', [TeacherController::class, 'storeUser'])->middleware(['auth', 'verified'])->name('teacher.create-user');
+Route::get('/teacher/create-user/{id}', [TeacherController::class, 'create'])->middleware(['auth', 'verified']);
+Route::post('/teacher/create-user', [TeacherController::class, 'storeUser'])->middleware(['auth', 'verified'])->name('teacher.create-user');
 
 Route::get('/teacher/edit', [TeacherController::class, 'edit'])->middleware(['auth', 'verified']);
 Route::put('/teacher/update/{id}', [TeacherController::class, 'update'])->middleware(['auth', 'verified'])->name('teacher.update');
@@ -56,15 +57,17 @@ Route::post('/teacher/evaluate/class/save', [TeacherController::class, 'evaluate
 
 Route::get('/student/index', [StudentController::class, 'index'])->middleware(['auth', 'verified']);
 
-Route::get('/student/create', [StudentController::class, 'create'])->middleware(['auth', 'verified'])->name('student.create');
-Route::post('/student/store', [StudentController::class, 'store'])->middleware(['auth', 'verified'])->name('student.store');
+//Route::get('/student/create', [StudentController::class, 'create'])->middleware(['auth', 'verified'])->name('student.create');
+//Route::post('/student/store', [StudentController::class, 'store'])->middleware(['auth', 'verified'])->name('student.store');
 
 /**
  * TODO: Rutas para Representative ;)
+ * ? Ya no se van a crear representantes dado que los estudiantes 
+ * ? no se van a crear tampoco ya que se van a traer de japeco
  */
-Route::get('/representative/index', [RepresentativeController::class, 'index'])->name('representative.index');
+//Route::get('/representative/index', [RepresentativeController::class, 'index'])->name('representative.index');
 
-Route::get('/representative/show/idcard/{id}', [RepresentativeController::class, 'findByIdcard'])->middleware(['auth', 'verified'])->name('representative.show');
+//Route::get('/representative/show/idcard/{id}', [RepresentativeController::class, 'findByIdcard'])->middleware(['auth', 'verified'])->name('representative.show');
 
 
 /**
@@ -74,18 +77,18 @@ Route::get('/representative/show/idcard/{id}', [RepresentativeController::class,
 Route::get('/enrollment/index', [EnrollmentController::class, 'index'])->middleware(['auth', 'verified']);
 Route::get('/enrollment/list/moment/{moment}', [EnrollmentController::class, 'findEnrollmentByYearSchool'])->middleware(['auth', 'verified']);
 
-Route::get('/enrollment/create', [EnrollmentController::class, 'create'])->middleware(['auth', 'verified']);
-Route::post('/enrollment/create', [EnrollmentController::class, 'store'])->middleware(['auth', 'verified'])->name('enrollment.create');
-Route::post('/enrollment/createLot', [EnrollmentController::class, 'storeLot'])->middleware(['auth', 'verified'])->name('enrollment.createLot');
+//Route::get('/enrollment/create', [EnrollmentController::class, 'create'])->middleware(['auth', 'verified']);
+//Route::post('/enrollment/create', [EnrollmentController::class, 'store'])->middleware(['auth', 'verified'])->name('enrollment.create');
+//Route::post('/enrollment/createLot', [EnrollmentController::class, 'storeLot'])->middleware(['auth', 'verified'])->name('enrollment.createLot');
 
 
-Route::get('/enrollment/edit/{id}', [EnrollmentController::class, 'edit'])->middleware(['auth', 'verified']);
+//Route::get('/enrollment/edit/{id}', [EnrollmentController::class, 'edit'])->middleware(['auth', 'verified']);
 
-Route::get('/enrollment/assign-teacher/', [EnrollmentController::class, 'assignTeacher'])->middleware(['auth', 'verified']);
-Route::post('/enrollment/assign-teacher', [EnrollmentController::class, 'assignTeacherSave'])->middleware(['auth', 'verified'])->name('enrollment.assign-teacher');
+//Route::get('/enrollment/assign-teacher/', [EnrollmentController::class, 'assignTeacher'])->middleware(['auth', 'verified']);
+//Route::post('/enrollment/assign-teacher', [EnrollmentController::class, 'assignTeacherSave'])->middleware(['auth', 'verified'])->name('enrollment.assign-teacher');
 
-Route::get('/enrollment/add-student/', [EnrollmentController::class, 'addStudent'])->middleware(['auth', 'verified']);
-Route::post('/enrollment/add-student/', [EnrollmentController::class, 'addStudentSave'])->middleware(['auth', 'verified'])->name('enrollment.add-student');
+//Route::get('/enrollment/add-student/', [EnrollmentController::class, 'addStudent'])->middleware(['auth', 'verified']);
+//Route::post('/enrollment/add-student/', [EnrollmentController::class, 'addStudentSave'])->middleware(['auth', 'verified'])->name('enrollment.add-student');
 
 /**
  * TODO: Rutas para LearningProject ;-)
@@ -130,8 +133,16 @@ Route::get('/tickets/storeLot/progress/{jobId}', [TicketController::class, 'prog
 Route::get('/setting-ia', [SettingIAController::class, 'index']);
 Route::post('/setting-ia', [SettingIAController::class, 'store']);
 
+/**
+ * 
+ */
+
+Route::get('/activity-log', [ActivityLogController::class, 'index']);
 
 
+/**
+ * Ruta de prueba
+ */
 Route::get('test', function () {
     $test = new JapecoSyncService();
 

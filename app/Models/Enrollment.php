@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Enrollment extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
     /**
      * The attributes that are mass assignable.
      *
@@ -38,5 +40,17 @@ class Enrollment extends Model
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(Student::class);
+    }
+
+
+    /*
+
+    TODO:  funcio para crear registro cuando se afecte esta tabla en la bd
+    */
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll();
     }
 }

@@ -19,7 +19,7 @@
                     <p class="text-gray-600 text-center">
 
                     </p>
-                    <Link href="/projects/create"
+                    <Link href="/teacher/enrollments-assigns"
                         class="p-3 mt-14 text-2xl font-bold text-white bg-emerald-600 rounded-2xl shadow-2xl shadow-emerald-500 hover:scale-110 transition-all duration-150 animate-bounce">
                     Crear Proyecto
                     </Link>

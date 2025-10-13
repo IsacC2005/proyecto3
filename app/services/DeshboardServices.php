@@ -25,7 +25,12 @@ class DeshboardServices
 
     public function welcome()
     {
-        $teacher_id = Auth::user()->userable_id;
+        $user = Auth::user();
+        $teacher_id = $user->userable_id;
+
+        activity('dasboard')
+            ->causedBy($user) // Opcional, si quieres ser explícito
+            ->log('El usuario Esta en el dasboard en ves de estar revisando el proyecto XD');
 
         $moment = $this->date->getSchoolMomentActual();
         $year = $this->date->getSchoolYearActual();

@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Representative extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
-    protected $fillable= [
+    protected $fillable = [
         'idcard',
         'phone',
         'name',
@@ -18,7 +20,20 @@ class Representative extends Model
         'direction'
     ];
 
-    public function students(): HasMany{
+    public function students(): HasMany
+    {
         return $this->hasMany(Student::class);
+    }
+
+
+    /*
+
+    TODO:  funcio para crear registro cuando se afecte esta tabla en la bd
+    */
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll();
     }
 }
