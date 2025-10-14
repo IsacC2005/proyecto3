@@ -5,6 +5,7 @@ use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\DailyClassController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\JapecoSyncController;
 use App\Http\Controllers\LearningProjectController;
 use App\Http\Controllers\RepresentativeController;
 use App\Http\Controllers\SettingIAController;
@@ -14,11 +15,13 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
 use App\Jobs\testJob;
+use App\Models\JapecoSync;
 use App\Models\User;
 use App\Repositories\AIRepositori;
 use App\Repositories\LearningProjectRepository;
 use App\Services\JapecoSyncService;
 use App\services\UserServices;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,9 +33,9 @@ Route::get('dashboard', DashboardController::class)
 
 Route::get('/user/index', [UserController::class, 'index'])->middleware(['auth', 'verified']);
 
-Route::get('create-user', [UserController::class, 'show'])->middleware(['auth', 'verified'])->name('user.show');
+Route::get('/user/create', [UserController::class, 'create'])->middleware(['auth', 'verified']);
 
-Route::post('create-user', [UserController::class, 'create'])->middleware(['auth', 'verified'])->name('user.create');
+Route::post('/user/create', [UserController::class, 'store'])->middleware(['auth', 'verified'])->name('user.create');
 
 /**
  * TODO: Rutas para Teachers
@@ -139,15 +142,20 @@ Route::post('/setting-ia', [SettingIAController::class, 'store']);
 
 Route::get('/activity-log', [ActivityLogController::class, 'index']);
 
+/**
+ * TODO: Rutas para gestionar la sincronizacion con japeco
+ */
+
+Route::post('/japeco-test-conection', [JapecoSyncController::class, 'testContection']);
+
+Route::get('/japeco-sync', [JapecoSyncController::class, 'JapecoSync']);
+Route::post('/japeco-sync', [JapecoSyncController::class, 'JapecoSyncStart']);
+Route::get('/japeco-sync/progress', [JapecoSyncController::class, 'JapecoSyncProgress']);
 
 /**
  * Ruta de prueba
  */
-Route::get('test', function () {
-    $test = new JapecoSyncService();
-
-    return $test->JapecoSysnc();
-});
+Route::get('test/{id}', [UserController::class, 'edit']);
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

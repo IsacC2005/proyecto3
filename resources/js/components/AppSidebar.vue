@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpenText, ChartBarBig, ExternalLink, Folder, GraduationCap, LayoutGrid, LibrarySquare, List, Logs, MonitorCog, Notebook, School, User, UserPlus, UserRound, UserRoundPlus, Users, UsersRound } from 'lucide-vue-next';
+import { BookOpenText, ChartBarBig, ExternalLink, Folder, FolderSync, GraduationCap, LayoutGrid, LibrarySquare, List, Logs, MonitorCog, Notebook, School, User, UserPlus, UserRound, UserRoundPlus, Users, UsersRound } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { computed } from 'vue';
 
@@ -22,10 +22,11 @@ const mainNavItems: NavItem[] = [
         icon: MonitorCog,
         children: [
             { title: 'Configuracion IA', href: '/setting-ia', icon: UsersRound },
+            { title: 'Sincronizacion con Japeco', href: '/japeco-sync', icon: FolderSync },
             { title: 'Registro de Actividad', href: '/activity-log', icon: Logs },
             { title: 'Usuarios', href: '/user/index', icon: UsersRound },
             { title: 'Proyectos de aprendizaje', href: '#', icon: LibrarySquare },
-            { title: 'Crear usuario', href: '#', icon: UserRoundPlus },
+            { title: 'Crear usuario', href: '/user/create', icon: UserRoundPlus },
         ]
     },
     {

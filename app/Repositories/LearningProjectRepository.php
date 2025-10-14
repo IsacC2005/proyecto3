@@ -26,7 +26,6 @@ use App\DTOs\Summary\EnrollmentDTO;
 use App\Factories\DailyClassFactory;
 use App\Factories\EnrollmentFactory;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -172,29 +171,15 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
         try {
             //return null;
 
-            $japecoUrl = env('JAPECO_URL');
-
-            $response = Http::get("$japecoUrl/api/section/find/school-year-and-teacher-id", [
-                'schoolYear' => "2025-2026",
-                'teacherId' => 72
-            ]);
-
-            if (!$response->successful()) {
-                return null;
+            if ($teacherId) {
+                $project = LearningProject::whereHas('enrollment', function ($query) use ($schoolYear, $schoolMoment, $teacherId) {
+                    $query->where('school_year', $schoolYear)->where('school_moment', $schoolMoment)->where('teacher_id', $teacherId);
+                })->first();
+            } else {
+                $project = LearningProject::whereHas('enrollment', function ($query) use ($schoolYear, $schoolMoment) {
+                    $query->where('school_year', $schoolYear)->where('school_moment', $schoolMoment);
+                })->first();
             }
-
-            $apiData = $response->json();
-
-            if (!isEmpty($apiData['data'])) {
-                return null;
-            }
-
-            $enrollment = $apiData['data'];
-
-            $project = LearningProject::where('enrollment_id', $enrollment['id'])
-                ->where('school_moment', $schoolMoment)
-                ->where('teacher_id', $teacherId)->first();
-
             if (!$project) {
                 return null;
             }
@@ -217,125 +202,42 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
     public function getAllEvaluationByProject(int $projectId): array
     {
-
-        // 1. CARGA DE DATOS LOCALES (BD)
-        // Se utiliza Eager Loading selectivo para las clases y los ítems.
-        // La carga se detiene antes de la relación 'students' fallida.
-        $project = LearningProject::with([
-            // Seleccionamos solo las columnas que necesitamos para el rendimiento
-            'daily_classes:id,learning_project_id,title',
-            'daily_classes.evaluation_items:id,daily_class_id,title',
-        ])->find($projectId);
+        $project = LearningProject::with(
+            [
+                'daily_classes.evaluation_items.students' => function ($query) {
+                    $query->withPivot('note');
+                }
+            ]
+        )->find($projectId);
 
         if (!$project) {
             return [];
         }
 
-        // --- 2. CARGA DE NOTAS DE LA TABLA PIVOTE (DB::table) ---
+        $classes = [];
+        $students = [];
 
-        // Obtener todos los IDs de los ítems de evaluación necesarios para la consulta
-        $evaluationItemIds = $project->daily_classes
-            ->flatMap(fn($class) => $class->evaluation_items->pluck('id'))
-            ->unique()
-            ->values()
-            ->toArray();
-
-        // Consultar la tabla pivote directamente, evitando el modelo de estudiante
-        // y agrupando el resultado por el ID del ítem de evaluación.
-        $notesData = DB::table('evaluation_item_student')
-            ->select('evaluation_item_id', 'student_id', 'note')
-            ->whereIn('evaluation_item_id', $evaluationItemIds)
-            ->get()
-            ->groupBy('evaluation_item_id');
-
-
-        // 3. CARGA DE ESTUDIANTES EXTERNOS (API)
-        $japecoUrl = env('JAPECO_URL');
-        $response = Http::get("{$japecoUrl}/api/student/to-section/{$project->enrollment_id}");
-
-        if (!$response->successful()) {
-            // En un caso real, podrías querer registrar este error
-            return [];
-        }
-
-        $apiData = $response->json();
-
-        // Crear una colección indexada por ID para una búsqueda eficiente O(1)
-        $students = collect($apiData['data'])->keyBy('id');
-
-        // 4. INICIALIZACIÓN DE LA ESTRUCTURA FINAL DE DATOS
-
-        // Inicializar el array de estudiantes con la estructura final requerida
-        $finalStudents = $students->map(function ($student) {
-            return [
-                'id' => $student['id'],
-                'name' => trim("{$student['name']} {$student['surname']}"), // Nombre completo
-                'notesByReferent' => [] // Estructura donde se almacenarán las notas
-            ];
-        });
-
-        // 5. CONSOLIDACIÓN DE NOTAS (Fusionar BD local con Estudiantes de API)
-
-        // Recorrer la estructura de clases e ítems para asignar las notas
         foreach ($project->daily_classes as $dailyClass) {
-            foreach ($dailyClass->evaluation_items as $evaluationItem) {
-                $itemId = $evaluationItem->id;
+            $indicators = $dailyClass->evaluation_items->map(function ($evaluationItem) {
+                return [
+                    'id' => $evaluationItem->id,
+                    'name' => $evaluationItem->title
+                ];
+            })->toArray();
 
-                // Verificar si hay notas en el set obtenido del Query Builder
-                if (isset($notesData[$itemId])) {
-
-                    foreach ($notesData[$itemId] as $noteEntry) {
-
-                        $studentId = (int) $noteEntry->student_id; // Asegurar el tipo para la clave
-
-                        // Solo si el estudiante existe en la lista de la API
-                        if ($finalStudents->has($studentId)) {
-                            // OBTENEMOS el elemento (una copia)
-                            $studentData = $finalStudents->get($studentId);
-
-                            $dailyClassId = $dailyClass->id;
-
-                            // 2. MODIFICAR LA COPIA
-                            // Inicializar el array de la clase si no existe
-                            if (!isset($studentData['notesByReferent'][$dailyClassId])) {
-                                $studentData['notesByReferent'][$dailyClassId] = [];
-                            }
-
-                            // Asignar la nota a la copia
-                            $studentData['notesByReferent'][$dailyClassId][$itemId] = $noteEntry->note;
-
-                            // 3. ACTUALIZAR LA COLECCIÓN ORIGINAL con la copia modificada
-                            $finalStudents->put($studentId, $studentData);
-                        }
-                    }
-                }
-            }
-        }
-
-        // 6. CREACIÓN DE LA ESTRUCTURA DE CLASES/INDICADORES
-
-        // Se usa el método map de las colecciones de Laravel para un código más limpio
-        $classes = $project->daily_classes->map(function ($dailyClass) {
-            return [
+            $classes[] = [
                 'id' => $dailyClass->id,
                 'title' => $dailyClass->title,
-                'indicators' => $dailyClass->evaluation_items->map(function ($evaluationItem) {
-                    return [
-                        'id' => $evaluationItem->id,
-                        'name' => $evaluationItem->title
-                    ];
-                })->toArray()
+                'indicators' => $indicators
             ];
-        })->toArray();
-
-
-        // 7. RESPUESTA FINAL
-        return [
+        }
+        $data = [
             'projectId' => $project->id,
             'classes' => $classes,
-            // Usar values() para convertir la colección indexada en un array secuencial
-            'students' => $finalStudents->values()->toArray()
+            'students' => array_values($students)
         ];
+
+        return $data;
     }
 
 
@@ -453,29 +355,6 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
     protected function transformToDetailDTO(Model $model): DTODetail
     {
-        $japecoUrl = env('JAPECO_URL');
-
-        //        throw new \ErrorException($model->enrollment_id . "asdfaf");
-
-        $response = Http::get("$japecoUrl/api/section/show/{$model->enrollment_id}");
-
-        $enrollment = null;
-
-        if ($response->successful()) {
-
-            $apiData = $response->json();
-
-            $enrollmentData = $apiData['data'];
-
-            $enrollment = EnrollmentFactory::fromArrayDetail([
-                'id' => (int) $enrollmentData['id'],
-                'schoolYear' => $enrollmentData['schoolYear'],
-                'section' => $enrollmentData['section'],
-                'grade' => (int) $enrollmentData['grade']
-            ]);
-
-            //throw new \ErrorException(json_encode($enrollment));
-        }
 
         $project = new LearningProjectDetailDTO(
             id: $model->id,
@@ -483,7 +362,7 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
             content: $model->content,
             schoolMoment: $model->school_moment,
             teacher: null,
-            enrollment: $enrollment,
+            enrollment: null,
         );
 
 

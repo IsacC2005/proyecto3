@@ -82,12 +82,6 @@ class CreateTicketJob implements ShouldQueue
 
         RateLimiter::hit($limitKey);
 
-        RateLimiter::hit($limitKey);
-
-
-
-
-
         try {
             $service->create($this->projectId, $this->studentId);
 

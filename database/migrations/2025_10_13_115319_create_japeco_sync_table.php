@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('japeco_sync_models', function (Blueprint $table) {
+        Schema::create('japeco_sync', function (Blueprint $table) {
             $table->id();
+            $table->integer('time_sync');
             $table->timestamps();
         });
     }
@@ -22,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('japeco_sync_models');
+        Schema::dropIfExists('japeco_sync');
     }
 };

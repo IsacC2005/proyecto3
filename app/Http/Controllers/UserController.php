@@ -33,7 +33,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        // Debería mostrar el formulario para crear un nuevo elemento.
+        return Inertia::render('Users/Create');
     }
 
     /**
@@ -66,7 +66,11 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        // Debería mostrar el formulario para editar un elemento existente.
+        $data = $this->userService->findByUserById($id);
+
+        return Inertia::render('Users/EditUser', [
+            'initialUser' => $data
+        ]);
     }
 
     /**
