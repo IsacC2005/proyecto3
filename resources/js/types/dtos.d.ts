@@ -79,3 +79,14 @@ export interface User {
     password: string,
     roles: string[]
 }
+
+export interface ReportNote {
+    id: number
+    average: string
+    content: string
+    suggestions: string
+    studentName: string
+    studentSurName: string
+    learningProjectId: number
+    studentId: number
+}

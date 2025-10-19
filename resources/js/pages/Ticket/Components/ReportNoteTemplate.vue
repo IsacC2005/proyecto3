@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { type ReportNote } from '@/types/dtos';
+
 // Definición de tipos simplificada basada en tu imagen
 interface BoletinData {
     docente: string;
@@ -16,7 +18,7 @@ interface BoletinData {
 }
 
 const props = defineProps<{
-    data: BoletinData;
+    data: ReportNote;
 }>();
 </script>
 

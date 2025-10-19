@@ -32,7 +32,7 @@ interface EnrollmentInterface
 
     public function findByLearningProject(int $learningProject): EnrollmentDTO;
 
-    public function findEnrollmentOnSchoolYearByTeacher(int $teacherId, string $schoolYear, ?string $fn = TDTO::SUMMARY): EnrollmentDTO;
+    public function findEnrollmentOnSchoolYearByTeacher(int $teacherId, string $schoolYear, ?string $fn = TDTO::SUMMARY): EnrollmentDTO | null;
 
     public function existEnrollmentSecctionAndSchoolYear(int $grade, string $section, string $year): bool;
 

@@ -4,12 +4,14 @@ namespace App\Services;
 
 use App\DTOs\Summary\TicketDTO;
 use App\Jobs\CreateTicketJob;
+use App\Models\LearningProjectQualiteStudent;
 use App\Repositories\Interfaces\LearningProjectInterface;
 use App\Repositories\Interfaces\StudentInterface;
 use App\Repositories\Interfaces\TicketInterface;
 use GrahamCampbell\ResultType\Error;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Mockery\Expectation;
 
 class TicketServices
@@ -55,6 +57,22 @@ class TicketServices
     public function create(int $projectId, int $studentId)
     {
         $AllNote = $this->project->getAllNoteStudent($projectId, $studentId);
+
+
+        $Qualities = '';
+        $QualitiesCollection = DB::table('learning_project_qualitie_student as lqs')
+            ->join('qualities as q', 'lqs.qualitie_id', '=', 'q.id')
+
+            ->where('lqs.learning_project_id', 4)
+            ->where('lqs.student_id', 35741)
+            ->pluck('q.name');
+
+        $QualitiesString = $QualitiesCollection->implode(', ');
+
+        $Qualities = $QualitiesString;
+
+
+
         $NoteString = "";
         $clases_aplanadas = [];
 
@@ -75,9 +93,11 @@ class TicketServices
 
         $NoteString = implode("\n", $clases_aplanadas);
 
-        //return $NoteString;
+        $promp = "estas son las cualidades del estudiante: $Qualities ;y estas son sus calificiones: $NoteString";
 
-        $content = $this->gemini->conection($NoteString);
+        $content = $this->gemini->conection($promp);
+
+        //$content = $promp;
 
         $this->ticket->create(new TicketDTO(
             id: 0,
@@ -87,8 +107,6 @@ class TicketServices
             learningProjectId: $projectId,
             studentId: $studentId
         ));
-
-        return "todo salio fino crack";
     }
 
 
@@ -104,19 +122,17 @@ class TicketServices
 
 
 
-        Cache::forget($cacheKey); // Limpia el estado anterior
+        Cache::forget($cacheKey);
 
-        // Inicializa el estado para la barra de progreso
         Cache::put($cacheKey, [
             'percentage' => 0,
             'message' => 'Lote iniciado. Despachando tareas individuales...',
             'finished' => false
         ], now()->addHours(1));
 
-        // Inicializa el contador de documentos completados.
         Cache::put($cacheKey . '_completed', 0, now()->addHours(1));
 
-        foreach ($students as $i => $student) {
+        foreach ($students as $student) {
             CreateTicketJob::dispatch(
                 $projectId,
                 $student->id,
@@ -131,38 +147,6 @@ class TicketServices
             'message' => "{$totalStudents} tareas de creación despachadas.",
             'finished' => false
         ], now()->addHours(1));
-
-
-        // Cache::forget($cacheKey);
-
-        // Cache::put($cacheKey, [
-        //     'percentage' => 0,
-        //     'message' => 'Preparando la tarea de creación masiva...',
-        //     'finished' => false
-        // ], now()->addHours(1));
-
-
-        // $count = 0;
-
-        // foreach ($students as $student) {
-        //     $count++;
-
-        //     $this->create($projectId, $student->id);
-
-        //     $statusDescription = "$count documentos de $totalStudents";
-        //     $progressPercent = round(($count / $totalStudents) * 100);
-
-        //     Cache::put($cacheKey, [
-        //         'percentage' => $progressPercent,
-        //         'message' => $statusDescription,
-        //         'finished' => false
-        //     ], now()->addHours(1));
-        // }
-        // Cache::put($cacheKey, [
-        //     'percentage' => 100,
-        //     'message' => '¡Lote de documentos completado!',
-        //     'finished' => true
-        // ], now()->addHours(1));
     }
 
 

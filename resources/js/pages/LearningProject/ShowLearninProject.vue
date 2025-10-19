@@ -13,6 +13,9 @@
                     class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors duration-200">
                 Modificar Proyecto
                 </Link>
+                <Link href="/qualitie"
+                    class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors duration-200">
+                Evaluar Cualidades de los estudiantes</Link>
             </div>
 
             <div class="space-y-8">

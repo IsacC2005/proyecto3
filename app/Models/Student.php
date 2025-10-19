@@ -39,7 +39,6 @@ class Student extends Model
     }
 
     /*
-
     TODO:  funcio para crear registro cuando se afecte esta tabla en la bd
     */
 

@@ -20,11 +20,11 @@ class TicketController extends Controller
      * This method should retrieve all resources from the database
      * and return a view displaying the list of resources.
      */
-    public function index()
+    public function index(int $id)
     {
-        $data = $this->ticket->getAllTicketToProject(1);
+        $data = $this->ticket->getAllTicketToProject($id);
         return Inertia::render('Ticket/ListTicket', [
-            'tickets' => $data
+            'ReportsNotes' => $data
         ]);
     }
 

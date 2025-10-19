@@ -92,9 +92,6 @@ class GeminiServices
 
         try {
 
-            sleep(1);
-            return "test";
-
             $response = $client->post($apiUrl, [
                 'headers' => [
                     'Content-Type' => 'application/json',

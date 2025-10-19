@@ -231,14 +231,14 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
 
 
 
-    public function findEnrollmentOnSchoolYearByTeacher(int $teacherId, string $schoolYear, ?string $fn = TDTO::SUMMARY): EnrollmentDTO
+    public function findEnrollmentOnSchoolYearByTeacher(int $teacherId, string $schoolYear, ?string $fn = TDTO::SUMMARY): EnrollmentDTO | null
     {
         $enrollmentModel = Enrollment::where('school_year', $schoolYear)
             ->where('teacher_id', $teacherId)
             ->first();
 
-        if ($enrollmentModel) {
-            throw new EnrollmentNotFindException();
+        if (!$enrollmentModel) {
+            return null;
         }
 
         return $this->$fn($enrollmentModel);

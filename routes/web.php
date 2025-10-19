@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\JapecoSyncController;
 use App\Http\Controllers\LearningProjectController;
+use App\Http\Controllers\QualitieController;
 use App\Http\Controllers\RepresentativeController;
 use App\Http\Controllers\SettingIAController;
 use App\Http\Controllers\StudentController;
@@ -16,12 +17,16 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
 use App\Jobs\testJob;
 use App\Models\JapecoSync;
+use App\Models\LearningProjectQualiteStudent;
+use App\Models\Qualitie;
 use App\Models\User;
 use App\Repositories\AIRepositori;
 use App\Repositories\LearningProjectRepository;
 use App\Services\JapecoSyncService;
+use App\Services\TicketServices;
 use App\services\UserServices;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -54,6 +59,14 @@ Route::get('teacher/enrollments-assigns', [TeacherController::class, 'enrollment
 Route::get('/teacher/evaluate', [TeacherController::class, 'evaluate'])->middleware(['auth', 'verified'])->name('teacher.evaluate');
 Route::get('/teacher/evaluate/class', [TeacherController::class, 'listStudentsEvaluate'])->middleware(['auth', 'verified']);
 Route::post('/teacher/evaluate/class/save', [TeacherController::class, 'evaluateStudent'])->middleware(['auth', 'verified'])->name('teacher.evaluateStudent');
+
+/**
+ * TODO: Rutasa para evaluar el ser del estudiante
+ */
+
+Route::get('/qualitie', [QualitieController::class, 'create']);
+Route::post('/qualitie', [QualitieController::class, 'store']);
+
 /**
  * TODO: Rutas para Students
  */
@@ -123,7 +136,7 @@ Route::put('daily-class/update/{id}', [DailyClassController::class, 'update'])->
 /**
  * TODO: Rutas para las boletas
  */
-Route::get('/tickets', [TicketController::class, 'index'])->middleware(['auth', 'verified']);
+Route::get('/tickets/{id}', [TicketController::class, 'index'])->middleware(['auth', 'verified']);
 
 Route::get('/tickets/create', [TicketController::class, 'create'])->middleware(['auth', 'verified']);
 Route::post('/tickets/storeLot/{id}', [TicketController::class, 'storeLot'])->middleware(['auth', 'verified']);
@@ -153,9 +166,17 @@ Route::post('/japeco-sync', [JapecoSyncController::class, 'JapecoSyncStart']);
 Route::get('/japeco-sync/progress', [JapecoSyncController::class, 'JapecoSyncProgress']);
 
 /**
- * Ruta de prueba
+ * ? Ruta de prueba
  */
-Route::get('test/{id}', [UserController::class, 'edit']);
+// Route::get('/test', [QualitieController::class, 'create']);
+// Route::post('/test', [QualitieController::class, 'store']);
+// Route::post('/test/status', [QualitieController::class, 'storeStatus']);
+
+// Route::get('/test2', function (TicketServices $servie) {
+//     $servie->create(4, 35741);
+
+//     return response()->json('que pasa crak');
+// });
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

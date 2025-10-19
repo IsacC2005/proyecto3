@@ -23,6 +23,7 @@ use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
 use App\DTOs\Details\DTODetail;
+use App\Models\LearningProject;
 
 class StudentRepository extends TransformDTOs implements StudentInterface
 {
@@ -154,19 +155,21 @@ class StudentRepository extends TransformDTOs implements StudentInterface
     public function findStudentByLearningProject(int $learningProjectId): array
     {
         try {
-            $studentModels = Student::whereHas('enrollments', function ($query) use ($learningProjectId) {
-                $query->whereHas('learning_project', function ($subQuery) use ($learningProjectId) {
-                    $subQuery->where('id', $learningProjectId);
-                });
-            })->get();
+            // $studentModels = Student::whereHas('enrollments', function ($query) use ($learningProjectId) {
+            //     $query->whereHas('learning_project', function ($subQuery) use ($learningProjectId) {
+            //         $subQuery->where('id', $learningProjectId);
+            //     });
+            // })->get();
+
+            $studentModels = LearningProject::with('enrollment.students')->find($learningProjectId);
 
             if (!$studentModels) {
                 throw new StudentNotFindException();
             }
 
-            return $this->transformListDTO($studentModels->toArray());
+            return $this->transformListDTO($studentModels->enrollment->students);
         } catch (\Throwable $th) {
-            throw new StudentNotFindException();
+            throw new StudentNotFindException($th->getMessage());
         }
     }
 

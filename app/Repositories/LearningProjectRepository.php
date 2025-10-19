@@ -140,7 +140,6 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
                 ->where('school_moment', $moment)->first();
 
             if (!$project) {
-                //throw new \Exception($enrollmentId . ' ' . $moment);
                 return null;
             }
 

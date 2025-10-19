@@ -30,7 +30,7 @@ class SettingIAController extends Controller
             'temperature' => 'required|numeric'
         ]);
 
-        SettingIA::query()->delete(); // Borra todos los registros
+        //  SettingIA::query()->delete(); // Borra todos los registros
 
         $settings = SettingIA::create([
             'system_instruction' => $request->input('system_instruction'),

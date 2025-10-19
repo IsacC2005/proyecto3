@@ -12,6 +12,7 @@ use App\Repositories\Interfaces\EnrollmentInterface;
 use App\Repositories\Interfaces\StudentInterface;
 use App\Repositories\interfaces\TeacherInterface;
 use Error;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class EnrollmentServices
@@ -120,18 +121,28 @@ class EnrollmentServices
         $this->enrollmentRepository->addStudent($enrollmentId, $studentId);
     }
 
-    public function findEnrollmentActiveByTeacher(int $teacherId, ?string $fn = TDTO::SUMMARY): EnrollmentDTO
+    public function findEnrollmentActiveByTeacher(int $teacherId, ?string $fn = TDTO::SUMMARY): EnrollmentDTO | null
     {
         $schoolYear = $this->dates->getSchoolYearActual();
-        $schoolMoment = $this->dates->getSchoolMomentActual();
+        //$schoolMoment = $this->dates->getSchoolMomentActual();
 
-        return $enrollment = $this
+        $enrollment = $this
             ->enrollmentRepository
             ->findEnrollmentOnSchoolYearByTeacher(
                 $teacherId,
                 $schoolYear,
                 $fn
             );
+
+        if (!$enrollment) {
+            activity('Seccion no encontrada')
+                ->causedBy(Auth::user())
+                ->log("El profesor $teacherId intento buscar una seccion del $schoolYear pero no se encontron ninguna");
+
+            return null;
+        }
+
+        return $enrollment;
     }
 
 
@@ -152,27 +163,4 @@ class EnrollmentServices
     public function deleteEnrollment() {}
 
     public function addStudentEnrollent() {}
-
-    public function assignTeacherToEnrollment(int $enrollmentId, int $teacherId)
-    {
-
-        $enrollment = $this->enrollmentRepository->find($enrollmentId);
-
-        $relation = $this->enrollmentRepository
-            ->findEnrollmentOnSchoolYearAndSchoolMomentByTeacher(
-                $teacherId,
-                $enrollment->schoolYear,
-                $enrollment->schoolMoment
-            );
-
-        if ($relation) {
-            throw new EnrollmentNotFindException('El profesor ya esta asignada a otra matricula', 422);
-        }
-
-        $rs = $this->enrollmentRepository->assignTeacher($enrollmentId, $teacherId);
-
-        if ($rs) {
-            return 'Se asignó el profesor correctamente.';
-        }
-    }
 }

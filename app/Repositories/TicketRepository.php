@@ -24,6 +24,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface
     {
         try {
             $ticketModel = Ticket::create([
+                'personality' => '',
                 'learning_project_id' => $ticket->learningProjectId,
                 'student_id' => $ticket->studentId,
                 'average' => $ticket->average,
@@ -37,7 +38,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface
 
             return $this->transformToDTO($ticketModel);
         } catch (\Throwable $th) {
-            throw new TicketNotCreatedException();
+            throw new TicketNotCreatedException($th->getMessage());
         }
     }
 
@@ -80,7 +81,7 @@ class TicketRepository extends TransformDTOs implements TicketInterface
     public function findByStudent(int $studentId): array
     {
         try {
-            $ticketModel = Ticket::where('student_id', $studentId)->get();
+            $ticketModel = Ticket::with('student')->where('student_id', $studentId)->get();
 
             if (!$ticketModel) {
                 throw new TicketNotFindException();
@@ -156,6 +157,8 @@ class TicketRepository extends TransformDTOs implements TicketInterface
             average: $model->average,
             content: $model->content,
             suggestions: $model->suggestions,
+            studentName: $model->student->name,
+            studentSurName: $model->student->surname,
             learningProjectId: $model->learning_project->id,
             studentId: $model->student->id
         );

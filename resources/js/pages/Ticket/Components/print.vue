@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import printJS from 'print-js'; // 👈 Importamos la librería
-import BoletinTemplate from './BoletinTemplate.vue';
+import BoletinTemplate from './ReportNoteTemplate.vue';
 
 const props = defineProps({
     boletinData: {
