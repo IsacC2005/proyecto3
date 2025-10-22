@@ -8,9 +8,7 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function __construct(
-        private DeshboardServices $das
-    ) {}
+    public function __construct() {}
     public function __invoke()
     {
         return Inertia::render('Dashboard/Dashboard', ['data' => []]);
