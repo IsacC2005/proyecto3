@@ -15,6 +15,7 @@ use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
 use App\DTOs\Details\DTODetail;
+use App\DTOs\Details\TicketDetailDTO;
 use App\DTOs\Searches\DTOSearch;
 
 class TicketRepository extends TransformDTOs implements TicketInterface
@@ -44,18 +45,18 @@ class TicketRepository extends TransformDTOs implements TicketInterface
 
 
 
-    public function find($id): TicketDTO
+    public function find(int $id, ?string $fn = TDTO::SUMMARY): TicketDTO | TicketDetailDTO
     {
         try {
-            $ticketModel = Ticket::find($id);
+            $ticketModel = Ticket::with('learning_project.teacher', 'learning_project.enrollment', 'student')->find($id);
 
             if (!$ticketModel) {
                 throw new TicketNotFindException();
             }
 
-            return $this->transformToDTO($ticketModel);
+            return $this->$fn($ticketModel);
         } catch (\Throwable $th) {
-            throw new TicketNotFindException();
+            throw new TicketNotFindException($th->getMessage());
         }
     }
 
@@ -157,15 +158,31 @@ class TicketRepository extends TransformDTOs implements TicketInterface
             average: $model->average,
             content: $model->content,
             suggestions: $model->suggestions,
-            studentName: $model->student->name,
-            studentSurName: $model->student->surname,
             learningProjectId: $model->learning_project->id,
             studentId: $model->student->id
         );
     }
 
-    protected function transformToDetailDTO(Model $model): DTODetail
+    protected function transformToDetailDTO(Model $model): TicketDetailDTO
     {
-        // TODO
+        $project = $model->learning_project;
+        $enrollment = $project->enrollment;
+        $student = $model->student;
+
+        return new TicketDetailDTO(
+            id: $model->id,
+            assistence: $model->assistence ?? 0, // TODO: Implementar lógica para obtener asistencias
+            absence: $model->absence ?? 0,    // TODO: Implementar lógica para obtener inasistencias
+            teacherName: $project->teacher->name . ' ' . $project->teacher->surname,
+            section: $enrollment->grade . ' ' . $enrollment->section,
+            studentName: $student->name . ' ' . $student->surname,
+            schoolId: $student->school_id ?? 'N/A',
+            schoolYear: $enrollment->school_year,
+            schoolMoment: (string) $project->school_moment,
+            average: $model->average,
+            content: $model->content,
+            suggestions: $model->suggestions,
+            projectTitle: $project->title
+        );
     }
 }

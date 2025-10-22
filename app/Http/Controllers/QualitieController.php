@@ -7,7 +7,6 @@ use App\Models\LearningProjectQualiteStudent;
 use App\Models\LearningProjectQualitieStudentStatus;
 use App\Services\QualitieServices;
 use Illuminate\Support\Facades\DB;
-use Inertia\Inertia;
 
 
 
@@ -21,10 +20,12 @@ class QualitieController extends Controller
      * Inserta una nueva evaluación en la tabla pivote.
      */
 
-    public function create()
+    public function showPageEvaluate(Request $request)
     {
-        //return response()->json();
-        return $this->qualitieServices->evaluate();
+        $validate = $request->validate([
+            'learning_project_id' => 'required|integer'
+        ]);
+        return $this->qualitieServices->showPageEvaluate($request->input('learning_project_id'));
     }
 
     public function store(Request $request)
@@ -72,5 +73,10 @@ class QualitieController extends Controller
                 'status' => true
             ]);
         }
+    }
+
+    public function storeRandom(int $id)
+    {
+        $this->qualitieServices->evaluateRandomToProject($id);
     }
 }

@@ -26,6 +26,11 @@ class JapecoSyncController extends Controller
 
             return response()->json($data);
         } catch (\Throwable $th) {
+
+
+            if ($th->getCode() === 0) {
+            }
+
             return response()->json([
                 'data' => 'false',
                 'status' => 'error',
@@ -44,6 +49,11 @@ class JapecoSyncController extends Controller
 
     public function JapecoSyncStart()
     {
+        Cache::put('japeco-sync', [
+            'percentage' => 0,
+            'message' => 'Comensando sincronizacion...',
+            'finished' => false
+        ], now()->addHours(1));
         JapecoSyncJob::dispatch()->onQueue('japeco-sync');
     }
 

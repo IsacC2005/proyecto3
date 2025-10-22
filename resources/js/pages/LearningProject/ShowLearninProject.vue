@@ -13,9 +13,12 @@
                     class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors duration-200">
                 Modificar Proyecto
                 </Link>
-                <Link href="/qualitie"
+                <Link href="/qualitie" :data="{ learning_project_id: props.project.id }"
                     class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors duration-200">
                 Evaluar Cualidades de los estudiantes</Link>
+                <Link :href="`/tickets/${props.project.id}`"
+                    class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors duration-200">
+                Boletas</Link>
             </div>
 
             <div class="space-y-8">
@@ -31,13 +34,16 @@
                             <h3 class="text-xl font-bold text-gray-800 mb-1">{{ dailyClass.title }}</h3>
                             <p class="text-sm text-gray-500">Fecha: {{ formatDate(dailyClass.date) }}</p>
                         </div>
-                        <Link :href="`/daily-class/edit/${dailyClass.id}`">
-                        Modificar
-                        </Link>
-                        <Link :href="`/teacher/evaluate/class`" :data="{ classId: dailyClass.id }"
-                            class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition-colors duration-200">
-                        Evaluar
-                        </Link>
+                        <div class="flex flex-col gap-2">
+                            <Link :href="`/teacher/evaluate/class`" :data="{ classId: dailyClass.id }"
+                                class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition-colors duration-200">
+                            Evaluar
+                            </Link>
+                            <Link :href="`/daily-class/edit/${dailyClass.id}`"
+                                class="px-4 py-2 bg-indigo-500 text-white font-semibold rounded-md hover:bg-green-600 transition-colors duration-200">
+                            Modificar
+                            </Link>
+                        </div>
                     </div>
 
                     <div v-html="dailyClass.content" class="text-gray-600 mb-4 prose max-w-none"></div>

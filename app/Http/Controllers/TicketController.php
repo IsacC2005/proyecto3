@@ -34,10 +34,12 @@ class TicketController extends Controller
      * This method should return a view containing a form
      * to create a new resource.
      */
-    public function create()
+    public function create(?int $id)
     {
-
-        $data = $this->ticket->createShowPage();
+        if (!$id) {
+            $id = 5;
+        }
+        $data = $this->ticket->createShowPage($id);
 
         // return $data;
         return Inertia::render('Ticket/Create', [
@@ -124,6 +126,11 @@ class TicketController extends Controller
     public function update(Request $request, string $id)
     {
         // Debería actualizar un elemento existente en la base de datos.
+    }
+
+    public function impress(int $id)
+    {
+        return $this->ticket->impressTicket($id);
     }
 
     /**

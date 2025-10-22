@@ -9,8 +9,7 @@
         <div class="mb-4 border-b border-gray-200 pb-2">
             <h3 class="font-semibold text-gray-700 mb-2">Información de la Sección:</h3>
             <p class="text-sm text-gray-600">
-                <span class="font-semibold">Sección:</span> {{ project.enrollment?.grade }}° "{{
-                    project.enrollment?.section }}"
+                <span class="font-semibold">Sección:</span> {{ props.section }}
             </p>
             <p class="text-sm text-gray-600">
                 <span class="font-semibold">Momento Escolar:</span> {{ formatSchoolMoment(project.schoolMoment) }}
@@ -56,14 +55,14 @@ import { defineProps } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { DailyClass, LearningProject } from '@/types/dtos';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps<{
-    project: LearningProject
+    project: LearningProject,
+    section: string
 }>()
 
 /**
- * Formatea una fecha a un formato legible.
- * @param dateObject El objeto de fecha de la API.
+ * 
+ * @param dateObject
  */
 const formatDate = (dateObject) => {
     // Si el objeto de fecha no es válido, retorna un string vacío.
@@ -79,8 +78,8 @@ const formatDate = (dateObject) => {
 };
 
 /**
- * Convierte el código numérico del momento escolar a una etiqueta legible.
- * @param momentCode El código del momento escolar (ej. 1, 2, 3).
+ * 
+ * @param momentCode
  */
 const formatSchoolMoment = (momentCode: number) => {
     switch (momentCode) {
@@ -104,7 +103,3 @@ const getFirstClasses = (dailyClasses: DailyClass[], count = 3) => {
     return dailyClasses ? dailyClasses.slice(0, count) : [];
 };
 </script>
-
-<style>
-/* ... (Estilos Tailwind) ... */
-</style>

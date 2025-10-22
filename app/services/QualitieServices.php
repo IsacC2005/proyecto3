@@ -32,7 +32,7 @@ class QualitieServices
         private LearningProjectInterface $projectRepository
     ) {}
 
-    public function evaluate(): InertiaResponse | RedirectResponse
+    public function showPageEvaluate(int $ProjectId): InertiaResponse | RedirectResponse
     {
         $user = Auth::user();
 
@@ -44,29 +44,28 @@ class QualitieServices
             throw new \ErrorException();
         }
 
-        $enrollment = $this->enrollmentServices->findEnrollmentActiveByTeacher($id);
+        // $enrollment = $this->enrollmentServices->findEnrollmentActiveByTeacher($id);
 
-        if (!$enrollment) {
-            activity('Seccion no encontrada')
-                ->causedBy($user)
-                ->log("Se intento acceder a la vista de evaluacion de cualidades de los estudiantes pero no se encontro una seccion actual");
+        // if (!$enrollment) {
+        //     activity('Seccion no encontrada')
+        //         ->causedBy($user)
+        //         ->log("Se intento acceder a la vista de evaluacion de cualidades de los estudiantes pero no se encontro una seccion actual");
 
-            return redirect()->route('dashboard')
-                ->with('flash', FlashMessage::error(
-                    'Seccion no encontrada',
-                    'No tienes una seccion actual asignada',
-                    'Para evaluar las cualidades de los estudiantes necesitas un proyecto en una seccion actual'
-                ));
-        }
+        //     return redirect()->route('dashboard')
+        //         ->with('flash', FlashMessage::error(
+        //             'Seccion no encontrada',
+        //             'No tienes una seccion actual asignada',
+        //             'Para evaluar las cualidades de los estudiantes necesitas un proyecto en una seccion actual'
+        //         ));
+        // }
 
-        $moment = $this->datesActual->getSchoolMomentActual();
-
-        $learningProject = $this->projectRepository->findByEnrollmentAndMoment($enrollment->id, $moment);
+        // $moment = $this->datesActual->getSchoolMomentActual();
+        $learningProject = $this->projectRepository->find($ProjectId);
 
         if (!$learningProject) {
             activity('Proyecto no encontrado')
                 ->causedBy($user)
-                ->log("Se intento buscar un proyecto de aprendizaje en la seccion {$enrollment->id} del momento $moment pero no se encontro ninguno");
+                ->log("Se intento buscar un proyecto de aprendizaje pero no se encontro");
 
             return redirect()->route('dashboard')
                 ->with('flash', FlashMessage::error(
@@ -109,5 +108,40 @@ class QualitieServices
             'allNote' => $allNote,
             'allEvaluatedStatus' => $allEvaluatedStatus
         ]);
+    }
+
+    /**
+     * Asigna de 4 a 5 cualidades aleatorias a cada estudiante de un proyecto.
+     *
+     * @param int $projectId
+     * @return void
+     */
+    public function evaluateRandomToProject(int $projectId): void
+    {
+        $project = $this->projectRepository->find($projectId);
+        if (!$project) {
+            // Opcional: lanzar una excepción si el proyecto no existe.
+            return;
+        }
+
+        $students = $this->studentRepository->findStudentByLearningProject($projectId);
+        $allQualities = Qualitie::all()->pluck('id');
+
+        if ($allQualities->isEmpty()) {
+            return; // No hay cualidades para asignar.
+        }
+
+        foreach ($students as $student) {
+            $numberOfQualities = rand(4, 5);
+            $randomQualities = $allQualities->random($numberOfQualities)->unique();
+
+            foreach ($randomQualities as $qualityId) {
+                LearningProjectQualiteStudent::create([
+                    'student_id' => $student->id,
+                    'learning_project_id' => $projectId,
+                    'qualitie_id' => $qualityId,
+                ]);
+            }
+        }
     }
 }

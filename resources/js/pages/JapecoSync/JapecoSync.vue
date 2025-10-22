@@ -57,11 +57,12 @@ const fetchProgress = async () => {
     try {
         const response = await axios.get('/japeco-sync/progress');
         const data = response.data;
+        console.log(data);
 
         syncProgress.value = data.percentage;
         syncMessage.value = data.message;
 
-        if (data.finished) {
+        if (data.finished === true) {
             stopPolling();
             isSyncing.value = false;
             router.reload({ only: ['lastSyncedAt'] });
@@ -118,6 +119,7 @@ const testConnection = async () => {
     try {
         const response = await axios.post('/japeco-test-conection');
 
+        console.log(response.data)
         if (response.data.status === 'success') {
             connectionStatus.value = 'success';
         } else {

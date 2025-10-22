@@ -4,7 +4,9 @@ use App\DTOs\UserDTO;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\DailyClassController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentGeneratorController;
 use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\EvaluationItemController;
 use App\Http\Controllers\JapecoSyncController;
 use App\Http\Controllers\LearningProjectController;
 use App\Http\Controllers\QualitieController;
@@ -64,7 +66,7 @@ Route::post('/teacher/evaluate/class/save', [TeacherController::class, 'evaluate
  * TODO: Rutasa para evaluar el ser del estudiante
  */
 
-Route::get('/qualitie', [QualitieController::class, 'create']);
+Route::get('/qualitie', [QualitieController::class, 'showPageEvaluate']);
 Route::post('/qualitie', [QualitieController::class, 'store']);
 
 /**
@@ -138,10 +140,11 @@ Route::put('daily-class/update/{id}', [DailyClassController::class, 'update'])->
  */
 Route::get('/tickets/{id}', [TicketController::class, 'index'])->middleware(['auth', 'verified']);
 
-Route::get('/tickets/create', [TicketController::class, 'create'])->middleware(['auth', 'verified']);
+Route::get('/tickets/create/{id?}', [TicketController::class, 'create'])->middleware(['auth', 'verified']);
 Route::post('/tickets/storeLot/{id}', [TicketController::class, 'storeLot'])->middleware(['auth', 'verified']);
 
 Route::get('/tickets/storeLot/progress/{jobId}', [TicketController::class, 'progressStoreLot'])->name('progress.status');
+Route::get('/ticket/impress/{id}', [TicketController::class, 'impress']);
 
 /**
  * TODO: Rutas para la configuracion de la IA
@@ -168,15 +171,21 @@ Route::get('/japeco-sync/progress', [JapecoSyncController::class, 'JapecoSyncPro
 /**
  * ? Ruta de prueba
  */
-// Route::get('/test', [QualitieController::class, 'create']);
+
+Route::get('/test/evaluate/{id}', [EvaluationItemController::class, 'evaluateRandom']);
+Route::get('/test/evaluate-qualitie/{id}', [QualitieController::class, 'storeRandom']);
+// Route::get('/test', [QualitieController::class, 'create']); 
 // Route::post('/test', [QualitieController::class, 'store']);
 // Route::post('/test/status', [QualitieController::class, 'storeStatus']);
 
-// Route::get('/test2', function (TicketServices $servie) {
-//     $servie->create(4, 35741);
+Route::get('/test2', function (TicketServices $servie) {
+    $servie->create(5, 36405);
 
-//     return response()->json('que pasa crak');
-// });
+    return response()->json('que pasa crak');
+});
+
+
+Route::get('/test-docx', [DocumentGeneratorController::class, 'generateDocx']);
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

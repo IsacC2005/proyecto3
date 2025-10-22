@@ -56,7 +56,7 @@ class QualitieSeeder extends Seeder
             ],
             [
                 'qualitie_type_id' => $idsTypes['Social y Emocional'],
-                'name' => 'Compañerista'
+                'name' => 'Comparte con los demás'
             ],
 
             // CUALIDADES DE RESPONSABILIDAD Y AUTONOMÍA

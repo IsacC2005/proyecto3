@@ -98,7 +98,7 @@ class JapecoSyncService
                 ];
                 $i++;
                 Cache::put('japeco-sync', [
-                    'percentage' => ($i / $totalTeachers) * 100,
+                    'percentage' => round(($i / $totalTeachers) * 100, 2),
                     'message' => 'Sincronizando profesores...',
                     'finished' => false
                 ]);
@@ -174,7 +174,7 @@ class JapecoSyncService
                 ];
                 $i++;
                 Cache::put('japeco-sync', [
-                    'percentage' => ($i / $totalStudents) * 100,
+                    'percentage' => round(($i / $totalStudents) * 100, 2),
                     'message' => 'Sincronizando estudiantes...',
                     'finished' => false
                 ]);
@@ -288,7 +288,7 @@ class JapecoSyncService
 
                 $i++;
                 Cache::put('japeco-sync', [
-                    'percentage' => ($i / $totalEnrollments) * 100,
+                    'percentage' => round(($i / $totalEnrollments) * 100, 2),
                     'message' => 'Sincronizando profesores...',
                     'finished' => false
                 ]);

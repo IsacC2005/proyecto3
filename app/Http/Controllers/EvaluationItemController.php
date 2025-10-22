@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\EvaluationServices;
 use App\Services\ResultNote;
 use Illuminate\Http\Request;
 
 class EvaluationItemController extends Controller
 {
+
+    public function __construct(
+        public EvaluationServices $evaluate
+    ) {}
     /**
      * Display a listing of the resource.
      * 
@@ -16,6 +21,11 @@ class EvaluationItemController extends Controller
     public function index()
     {
         // Debería devolver una vista con todos los elementos.
+    }
+
+    public function evaluateRandom(int $id)
+    {
+        $this->evaluate->evaluateRandomToProject($id);
     }
 
     /**

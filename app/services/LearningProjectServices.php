@@ -98,12 +98,49 @@ class LearningProjectServices
 
         $teacher_id = $user->userable_id;
 
-        $data = $this->projectRepository->findByTeacher($teacher_id ? $teacher_id : 0, TDTO::DETAIL);
+
+        $pagination = $this->projectRepository->findByTeacher($teacher_id, TDTO::DETAIL);
+
+        /**
+         * @var LearningProjectDetailDTO[]
+         */
+        $data = $pagination->data;
+
+        $projectsByEnrollment = [];
+
+        foreach ($data as $d) {
+            $enrollmentId = $d->enrollment->id;
+
+            if (!isset($projectsByEnrollment[$enrollmentId])) {
+                $enrollmentArray = $d->enrollment->toArray();
+
+                unset($enrollmentArray['teacher']);
+                unset($enrollmentArray['learningProject']);
+                unset($enrollmentArray['students']);
+
+                $projectsByEnrollment[$enrollmentId] = [
+                    'section' => $enrollmentArray,
+                    'projects'   => []
+                ];
+            }
+            $projectArray = $d->toArray();
+
+            unset($projectArray['enrollment']);
+            unset($projectArray['teacher']);
+
+            // Agregar el proyecto limpio al grupo
+            $projectsByEnrollment[$enrollmentId]['projects'][] = $projectArray;
+        }
+
+        // 3. Usa array_values para reindexar y eliminar las claves de ID.
+        // Esto genera un array de objetos, donde cada objeto es un grupo.
+        $groupedProjects = array_values($projectsByEnrollment);
+
+        $pagination->data = $groupedProjects;
+
 
         return Inertia::render('LearningProject/ListLearningProjects', [
-            'projects' => array_map(function ($aux) {
-                return $aux->toArray();
-            }, $data)
+            'projects' => $pagination
         ]);
     }
 

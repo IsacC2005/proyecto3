@@ -49,19 +49,15 @@
 </template>
 
 <script setup lang="ts">
-import Heading from '@/components/Heading.vue';
 import ProjectOptionCard from './ProjectOptionCard.vue';
-import { defineEmits, defineProps, computed } from 'vue'; // Usamos 'computed' en lugar de ref/onMounted
+import { defineEmits, defineProps, computed } from 'vue';
 import { LearningProject } from '@/types/dtos';
 import { Link } from '@inertiajs/vue3';
 
-// --- DEFINICIÓN DE PROPS ---
 const props = defineProps<{
     projects: LearningProject[]
 }>()
 
-// --- PROPIEDAD COMPUTADA PARA CLASIFICAR PROYECTOS ---
-// Esta propiedad procesa la lista una sola vez y se actualiza reactivamente.
 const projectStates = computed(() => {
     // Encuentra el proyecto para cada momento o usa null si no existe.
     const m1 = props.projects.find(p => p.schoolMoment === 1);
@@ -84,18 +80,18 @@ const projectStates = computed(() => {
     };
 });
 
-// --- MANEJO DE EVENTOS ---
 const emit = defineEmits(['selectType']);
 
 /**
  * Emite el tipo de proyecto seleccionado (1, 2, o 3) para que el padre pueda mostrar el formulario.
  * @param projectType El Momento Escolar ID a crear.
  */
-const handleCreate = (projectType: number) => {
-    // Solo emitimos si el proyecto NO existe (para forzar la creación)
+
+type ProjectType = 1 | 2 | 3;
+
+const handleCreate = (projectType: ProjectType) => {
     if (!projectStates.value[`m${projectType}`].exists) {
         emit('selectType', projectType);
     }
-    // Si el proyecto existe, la acción se manejará con el Link de Inertia.
 };
 </script>

@@ -4,8 +4,8 @@
             <template v-for="(page, index) in props.pages" :key="index">
                 <li v-if="page.url === null">
                     <span
-                        class="flex items-center justify-center px-2 py-2 sm:px-4 sm:py-2 whitespace-nowrap text-gray-400 bg-gray-100 rounded-md cursor-not-allowed dark:bg-gray-700 dark:text-gray-500"
-                        v-html="page.label"></span>
+                        class="flex items-center justify-center px-2 py-2 sm:px-4 sm:py-2 whitespace-nowrap text-gray-400 bg-gray-100 rounded-md cursor-not-allowed dark:bg-gray-700 dark:text-gray-500">{{
+                            showLabel(page.label) }}</span>
                 </li>
 
                 <li v-else-if="page.active">
@@ -35,7 +35,7 @@ type pagination = {
 }
 
 const props = defineProps<{
-    pages: pagination[]
+    pages: string[]
 }>();
 
 const showLabel = (value: string): string => {

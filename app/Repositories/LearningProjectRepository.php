@@ -10,22 +10,17 @@ use App\Exceptions\LearningProject\LearningProjectNotDeleteException;
 use App\Exceptions\LearningProject\LearningProjectNotExistException;
 use App\Exceptions\LearningProject\LearningProjectNotFindException;
 use App\Exceptions\LearningProject\LearningProjectNotUpdateException;
-use App\Exceptions\Teacher\TeacherNotExistException;
 use App\Models\Enrollment;
 use App\Models\Teacher;
 use App\Repositories\Interfaces\LearningProjectInterface;
 use App\Repositories\TransformDTOs\TransformDTOs;
-use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\LearningProjectDetailDTO;
-use App\DTOs\Details\NotesDetailDTO;
 use App\DTOs\Searches\DTOSearch;
-use App\DTOs\Summary\EnrollmentDTO;
 use App\Factories\DailyClassFactory;
 use App\Factories\EnrollmentFactory;
-use Illuminate\Support\Facades\DB;
+use App\DTOs\PaginationDTO;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -151,13 +146,23 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
 
 
-    public function findByTeacher(int $teacherId, ?string $fn = null): array
+    public function findByTeacher(int $teacherId, ?string $fn = null): PaginationDTO
     {
         try {
 
-            $projects = LearningProject::where('teacher_id', $teacherId)->get();
+            $projects = LearningProject::orderBy('created_at', 'desc')->where('teacher_id', $teacherId)->paginate(12)->withQueryString();
 
-            return $this->transformListDTO($projects, $fn);
+            $sss = Teacher::first();
+
+            $paginationDTO = new PaginationDTO($projects);
+
+            $data = $this->transformListDTO($projects->getCollection(), $fn);
+
+            //throw new TeacherNotFindException(json_encode($sss));
+
+            $paginationDTO->data = $data;
+
+            return $paginationDTO;
         } catch (\Throwable $th) {
             throw new LearningProjectNotFindException($th->getMessage());
         }
@@ -361,10 +366,13 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
             content: $model->content,
             schoolMoment: $model->school_moment,
             teacher: null,
-            enrollment: null,
+            enrollment: EnrollmentFactory::fromArrayDetail([
+                'id' => $model->enrollment_id,
+                'schoolYear' => $model->enrollment->school_year,
+                'section' => $model->enrollment->section,
+                'grade' => $model->enrollment->grade
+            ])
         );
-
-
 
         $classes = $model->daily_classes;
 

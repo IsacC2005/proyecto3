@@ -5,6 +5,7 @@ namespace App\Repositories\Interfaces;
 use App\Constants\TDTO;
 use App\DTOs\Details\LearningProjectDetailDTO;
 use App\DTOs\Summary\LearningProjectDTO;
+use App\DTOs\PaginationDTO;
 
 interface LearningProjectInterface
 {
@@ -24,7 +25,7 @@ interface LearningProjectInterface
 
     public function findByEnrollmentAndMoment(int $enrollmentId, int $moment): LearningProjectDTO | null;
 
-    public function findByTeacher(int $teacherId, ?string $fn = null): array;
+    public function findByTeacher(int $teacherId, ?string $fn = null): PaginationDTO;
 
     public function findOnDate(string $schoolYear, string $schoolMoment, ?int $teacher_id, ?string $fn = TDTO::SUMMARY): LearningProjectDTO | LearningProjectDetailDTO | null;
 
