@@ -13,6 +13,6 @@ class DashboardController extends Controller
     ) {}
     public function __invoke()
     {
-        return Inertia::render('Dashboard/Dashboard', ['data' => $this->das->welcome()]);
+        return Inertia::render('Dashboard/Dashboard', ['data' => []]);
     }
 }
