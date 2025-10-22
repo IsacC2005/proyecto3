@@ -18,7 +18,7 @@ use App\Models\DailyClass;
 use App\Models\Enrollment;
 use App\Models\Representative;
 use App\Models\Student;
-use App\Repositories\interfaces\StudentInterface;
+use App\Repositories\Interfaces\StudentInterface;
 use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;

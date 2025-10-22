@@ -13,7 +13,7 @@ use App\Exceptions\User\UserNotFindForRoleException;
 use App\Exceptions\User\UserNotUpdateException;
 use App\DTOs\Summary\UserDTO;
 use App\Models\User;
-use App\Repositories\interfaces\UserInterface;
+use App\Repositories\Interfaces\UserInterface;
 use App\Repositories\TransformDTOs\TransformDTOs;
 use Spatie\Permission\Models\Role;
 use App\DTOs\Summary\DTOSummary;

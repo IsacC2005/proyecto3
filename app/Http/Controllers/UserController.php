@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\Summary\UserDTO;
-use App\services\UserServices;
+use App\Services\UserServices;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 

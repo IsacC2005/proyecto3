@@ -16,7 +16,7 @@ use App\Models\Enrollment;
 use App\Models\LearningProject;
 use App\Models\Student;
 use App\Models\Teacher;
-use App\Repositories\interfaces\EnrollmentInterface;
+use App\Repositories\Interfaces\EnrollmentInterface;
 use App\Repositories\TransformDTOs\TransformDTOs;
 use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
