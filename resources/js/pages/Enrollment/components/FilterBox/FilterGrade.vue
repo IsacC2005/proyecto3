@@ -13,13 +13,10 @@ const grades = [
     { id: 6, name: 'Sexto Grado' },
 ];
 
-// Estado reactivo para el grado seleccionado
-const selectedGrade = ref(grades[0]); // Por defecto, se selecciona el primer grado
+const selectedGrade = ref(grades[0]);
 
-// Define el evento que se emitirá al componente padre
 const emits = defineEmits(['filterGrade']);
 
-// Observa el cambio en 'selectedGrade' y emite el valor
 watch(selectedGrade, (newValue) => {
     emits('filterGrade', newValue);
 });

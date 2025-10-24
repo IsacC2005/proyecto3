@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Interfaces;
 
+use App\DTOs\Details\TeacherDetailDTO;
 use App\DTOs\Summary\TeacherDTO;
 use App\DTOs\PaginationDTO;
 
@@ -11,7 +12,7 @@ interface TeacherInterface
 
     public function existTeacher(int $id): bool;
 
-    public function find(int $id): TeacherDTO;
+    public function find(int $id): TeacherDTO | TeacherDetailDTO;
 
     public function findByEmail(string $email): TeacherDTO;
 

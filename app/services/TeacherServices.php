@@ -5,13 +5,18 @@ namespace App\Services;
 use App\DTOs\Summary\TeacherDTO;
 use App\Constants\RoleConstants;
 use App\Constants\TDTO;
+use App\DTOs\Details\TeacherDetailDTO;
 use App\DTOs\PaginationDTO;
+use App\DTOs\Summary\UserDTO;
 use App\Exceptions\Enrollment\EnrollmentNotFindException;
+use App\Models\Teacher;
+use App\Models\User;
 use App\Repositories\Interfaces\DailyClassInterface;
 use App\Repositories\Interfaces\LearningProjectInterface;
 use App\Repositories\Interfaces\TeacherInterface;
 use App\Utilities\FlashMessage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class TeacherServices
@@ -53,6 +58,37 @@ class TeacherServices
                 'code' => '200'
             ]
         ]);
+    }
+
+
+    public function createUser(UserDTO $user)
+    {
+
+        DB::transaction(function () use ($user) {
+            $teacher = Teacher::find($user->userable_id);
+
+            if (!$teacher) {
+                throw new  \ErrorException($user->userable_id);
+            }
+
+            $user = User::create([
+                'name' => $user->name,
+                'email' => $user->email,
+                'password' => bcrypt($user->password)
+            ]);
+
+            $user->userable()->associate($teacher);
+
+            $user->save();
+
+            $user->assignRole(RoleConstants::PROFESOR);
+        });
+
+        return redirect()->route('teacher.index')->with('flash', FlashMessage::success(
+            '¡Exito!',
+            "Se creo el usario de {$user->name} sin problemas",
+            'Usuario creado ahora el profesor podra acceder con los datos creados'
+        ));
     }
 
 
@@ -139,11 +175,9 @@ class TeacherServices
         );
     }
 
-    public function findTeacher(int $id): TeacherDTO
+    public function findTeacher(int $id): TeacherDetailDTO
     {
-        $user = $this->userServices->findByUserByUserable($id);
-        $teacher = $this->teacherRepository->find($id);
-        $teacher->user = $user;
+        $teacher = $this->teacherRepository->find($id, TDTO::DETAIL);
 
         return $teacher;
     }

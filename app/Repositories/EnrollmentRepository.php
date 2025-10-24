@@ -176,7 +176,7 @@ class EnrollmentRepository extends TransformDTOs implements EnrollmentInterface
     public function findByTeacher(int $teacherId, ?String $f = null): array
     {
         try {
-            $enrollments = Enrollment::where('teacher_id', $teacherId)->get();
+            $enrollments = Enrollment::where('teacher_id', $teacherId)->orderBy('school_year', 'desc')->get();
             if (!$enrollments) {
                 throw new EnrollmentNotFindException();
             }

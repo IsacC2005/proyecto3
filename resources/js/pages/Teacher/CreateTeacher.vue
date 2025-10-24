@@ -48,6 +48,10 @@ const props = defineProps({
     id: {
         type: Number,
         required: true
+    },
+    name: {
+        type: String,
+        required: true
     }
 });
 

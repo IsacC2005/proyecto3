@@ -19,7 +19,7 @@ class TeacherDetailDTO implements UserableDetailInterface, DTODetail
         public int $id,
         public string $name,
         public string $surname,
-        public int $phone,
+        public string | null $phone,
         public ?UserDetailDTO $user = null
     ) {}
 

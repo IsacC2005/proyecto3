@@ -21,6 +21,7 @@ use App\Jobs\testJob;
 use App\Models\JapecoSync;
 use App\Models\LearningProjectQualiteStudent;
 use App\Models\Qualitie;
+use App\Models\Teacher;
 use App\Models\User;
 use App\Repositories\AIRepositori;
 use App\Repositories\LearningProjectRepository;
@@ -50,10 +51,10 @@ Route::post('/user/create', [UserController::class, 'store'])->middleware(['auth
 
 Route::get('/teacher/index', [TeacherController::class, 'index'])->middleware(['auth', 'verified'])->name('teacher.index');
 
-Route::get('/teacher/create-user/{id}', [TeacherController::class, 'create'])->middleware(['auth', 'verified']);
+Route::get('/teacher/create-user/{id}', [TeacherController::class, 'createUser'])->middleware(['auth', 'verified']);
 Route::post('/teacher/create-user', [TeacherController::class, 'storeUser'])->middleware(['auth', 'verified'])->name('teacher.create-user');
 
-Route::get('/teacher/edit', [TeacherController::class, 'edit'])->middleware(['auth', 'verified']);
+Route::get('/teacher/edit/{id}', [TeacherController::class, 'edit'])->middleware(['auth', 'verified']);
 Route::put('/teacher/update/{id}', [TeacherController::class, 'update'])->middleware(['auth', 'verified'])->name('teacher.update');
 
 Route::get('teacher/enrollments-assigns', [TeacherController::class, 'enrollmentsAssigns'])->middleware(['auth', 'verified']);
@@ -93,7 +94,7 @@ Route::get('/student/index', [StudentController::class, 'index'])->middleware(['
  */
 
 Route::get('/enrollment/index', [EnrollmentController::class, 'index'])->middleware(['auth', 'verified']);
-Route::get('/enrollment/list/moment/{moment}', [EnrollmentController::class, 'findEnrollmentByYearSchool'])->middleware(['auth', 'verified']);
+//Route::get('/enrollment/list/moment/{moment}', [EnrollmentController::class, 'findEnrollmentByYearSchool'])->middleware(['auth', 'verified']);
 
 //Route::get('/enrollment/create', [EnrollmentController::class, 'create'])->middleware(['auth', 'verified']);
 //Route::post('/enrollment/create', [EnrollmentController::class, 'store'])->middleware(['auth', 'verified'])->name('enrollment.create');
@@ -177,6 +178,16 @@ Route::get('/test/evaluate-qualitie/{id}', [QualitieController::class, 'storeRan
 // Route::get('/test', [QualitieController::class, 'create']); 
 // Route::post('/test', [QualitieController::class, 'store']);
 // Route::post('/test/status', [QualitieController::class, 'storeStatus']);
+
+Route::get('test', function () {
+    $teacher = Teacher::find(606);
+
+    $user = User::find(5);
+
+    $user->userable()->associate($teacher);
+
+    $user->save();
+});
 
 Route::get('/test2', function (TicketServices $servie) {
     $servie->create(5, 36405);

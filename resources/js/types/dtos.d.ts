@@ -69,6 +69,7 @@ export interface Teacher {
     name: string,
     surname: string,
     phone: string,
+    userId: int,
     user: User,
 }
 

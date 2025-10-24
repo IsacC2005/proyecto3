@@ -6,8 +6,13 @@
             <TableDate>{{ item.surname }}</TableDate>
             <TableDate v-if="!isMobile">{{ item.phone }}</TableDate>
             <TableDate>
-                <TableButton :name="`Crear Usuario`" :route="`/teacher/create-user/${item.id}`">
-                </TableButton>
+                <template v-if="item.userId">
+                    <TableButton :name="`Ver Usuario`" :route="`/teacher/create-user/${item.id}`"
+                        class="bg-green-500 hover:bg-green-600 transition-colors ease-in-out" />
+                </template>
+                <template v-else>
+                    <TableButton :name="`Crear Usuario`" :route="`/teacher/create-user/${item.id}`" />
+                </template>
             </TableDate>
         </template>
     </Table>

@@ -33,7 +33,7 @@ const props = defineProps<{
 }>()
 
 onMounted(() => {
-    noteSelect.value = props.noteProp ? props.noteProp : '';
+    noteSelect.value = props.noteProp ?? '';
 })
 
 const gradeOptions = [
@@ -41,6 +41,6 @@ const gradeOptions = [
     { label: '😎 Logrado', value: 'L' },
     { label: '🛠️ En Proceso', value: 'EP' },
     { label: '🔄 Por Mejorar', value: 'PM' },
-    { label: '❌ Sin Lograr', value: 'NL' }
+    { label: '❌ Sin Lograr', value: 'SL' }
 ];
 </script>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\Summary\UserDTO;
+use App\Factories\UserFactory;
 use App\Services\UserServices;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -33,7 +34,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Users/Create');
+        return Inertia::render('Users/CreateUser');
     }
 
     /**
@@ -44,7 +45,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // Debería guardar un nuevo elemento en la base de datos.
+        $userDTO = UserFactory::fromRequest($request);
+        $this->userService->createUser($userDTO);
     }
 
     /**

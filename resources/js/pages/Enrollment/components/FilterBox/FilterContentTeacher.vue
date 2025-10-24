@@ -13,7 +13,7 @@ const options = [
     { name: 'Sin profesor', value: false },
 ];
 
-const selectedOption = ref(options[2].value);
+const selectedOption = ref(options[0].value);
 
 const emits = defineEmits(['select']);
 

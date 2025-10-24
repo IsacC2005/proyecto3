@@ -20,6 +20,7 @@ use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\TeacherDetailDTO;
 use App\DTOs\Searches\DTOSearch;
 use App\Exceptions\User\UserNotFindException;
+use App\Factories\UserFactory;
 use Illuminate\Support\Collection;
 
 class TeacherRepository extends TransformDTOs implements TeacherInterface
@@ -52,7 +53,7 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
 
 
 
-    public function find(int $id): TeacherDTO
+    public function find(int $id, ?string $fn = TDTO::SUMMARY): TeacherDTO | TeacherDetailDTO
     {
         try {
             $teacherModel = Teacher::find($id);
@@ -63,9 +64,9 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
 
             // $userModel = $teacherModel->user;
 
-            return $this->transformToDTO($teacherModel);
+            return $this->$fn($teacherModel);
         } catch (\Throwable $th) {
-            throw new TeacherNotFindException();
+            throw new TeacherNotFindException($th->getMessage());
         }
     }
 
@@ -178,26 +179,31 @@ class TeacherRepository extends TransformDTOs implements TeacherInterface
     }
 
 
-
-    protected function transformToDTO(Model $model): DTOSummary
+    /**
+     * @param Teacher $model
+     * @return TeacherDTO
+     */
+    protected function transformToDTO(Model $model): TeacherDTO
     {
         return new TeacherDTO(
             id: $model->id,
             name: $model->name,
             surname: $model->surname,
             phone: $model->phone,
-            //user_id: $model->user?->id ?? null
+            userId: $model->user->id ?? null,
         );
     }
 
     protected function transformToDetailDTO(Model $model): DTODetail
     {
+        $user = $model->user ?? null;
         return new TeacherDetailDTO(
             id: $model->id,
             name: $model->name,
             surname: $model->surname,
-            phone: $model->phone,
-            user: null
+            phone: $model->phone ?? null,
+            user: $user ? UserFactory::fromArrayDetail(['id' => $user->id, 'name' => $user->name, 'surname' => $user->surname, 'email' => $user->email]) : null
+
         );
     }
 }

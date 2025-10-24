@@ -20,7 +20,7 @@ class TeacherDTO implements UserableInterface, DTOSummary
         public string $name,
         public string $surname,
         public string | null $phone,
-        public ?int $userId = 0
+        public ?int $userId = 0,
     ) {}
 
     public function addLearningProject(int $projectId): void

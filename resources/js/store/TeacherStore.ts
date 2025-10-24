@@ -43,3 +43,16 @@ export const useTeacherStore = defineStore('teacher-store', () => {
 
     return { form, resetForm, repeatPassword, somePassword, cleanPassword }
 });
+
+export const useCreateUserForTeacher = defineStore('create-user-for-teacher', () => {
+    const form = useForm({
+        id: 577,
+        name: 's',
+        email: '',
+        password: ''
+    })
+
+    const repeatPassword = ref('');
+
+    return { form, repeatPassword }
+})

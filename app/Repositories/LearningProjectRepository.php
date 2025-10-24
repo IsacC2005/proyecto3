@@ -206,11 +206,15 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
     public function getAllEvaluationByProject(int $projectId): array
     {
+        /**
+         * @var LearningProject
+         */
         $project = LearningProject::with(
             [
                 'daily_classes.evaluation_items.students' => function ($query) {
                     $query->withPivot('note');
-                }
+                },
+                'enrollment.students'
             ]
         )->find($projectId);
 
@@ -220,6 +224,30 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
 
         $classes = [];
         $students = [];
+
+        foreach ($project->enrollment->students as $student) {
+            $students[$student->id] = [
+                'id' => $student->id,
+                'name' => $student->name,
+                'notesByReferent' => []
+            ];
+        }
+
+        foreach ($project->daily_classes as $dailyClass) {
+            foreach ($dailyClass->evaluation_items as $evaluationItem) {
+                foreach ($evaluationItem->students as $student) {
+                    if (!isset($students[$student->id])) {
+                        $students[$student->id] = [
+                            'id' => $student->id,
+                            'name' => $student->name,
+                            'notesByReferent' => []
+                        ];
+                    }
+
+                    $students[$student->id]['notesByReferent'][$dailyClass->id][$evaluationItem->id] = $student->pivot->note;
+                }
+            }
+        }
 
         foreach ($project->daily_classes as $dailyClass) {
             $indicators = $dailyClass->evaluation_items->map(function ($evaluationItem) {

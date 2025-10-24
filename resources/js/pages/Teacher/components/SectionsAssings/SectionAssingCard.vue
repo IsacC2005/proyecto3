@@ -17,8 +17,7 @@
                 <SectionGrade :grade="props.section.grade"></SectionGrade>
             </div>
 
-            <SectionAssingLearningProject :learningProject="props.section.learningProject"
-                :enrollment-id="props.section.id" :teacher-id="props.section.teacher?.id">
+            <SectionAssingLearningProject :enrollment-id="props.section.id" :teacher-id="props.section.teacher?.id">
             </SectionAssingLearningProject>
         </div>
 

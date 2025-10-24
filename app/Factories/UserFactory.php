@@ -8,6 +8,7 @@ use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\DTOs\Details\DTODetail;
+use App\DTOs\Details\UserDetailDTO;
 
 class UserFactory implements Factory
 {
@@ -19,15 +20,15 @@ class UserFactory implements Factory
             'name' => 'required|string|max:255',
             'email' => 'required|string|unique:users',
             'password' => 'required|string|min:8',
-            'roleId' => 'required|exists:roles,id'
+            'roleId' => 'required|integer'
         ]);
 
         if ($validate->fails()) {
-            throw new ValidationException();
+            throw new ValidationException($validate->getMessageBag());
         }
 
         return new UserDTO(
-            id: $request->id,
+            id: $request->id ?? 0,
             name: $request->name,
             email: $request->email,
             password: $request->password,
@@ -45,8 +46,13 @@ class UserFactory implements Factory
         // TODO
     }
 
-    public static function fromArrayDetail(array $data): DTODetail
+    public static function fromArrayDetail(array $data): UserDetailDTO
     {
-        // TODO
+        return new UserDetailDTO(
+            id: $data['id'] ?? 0,
+            name: $data['name'] ?? '',
+            email: $data['email'] ?? '',
+            roleId: $data['roleId'] ?? null
+        );
     }
 }

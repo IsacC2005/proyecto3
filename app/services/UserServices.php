@@ -15,7 +15,7 @@ class UserServices
 
 
 
-    public function createUser(UserDTO $user):UserDTO
+    public function createUser(UserDTO $user): UserDTO
     {
         return $this->userRepository->createUser($user);
     }

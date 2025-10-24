@@ -18,6 +18,10 @@ const props = defineProps({
     sections: {
         type: Array as () => Section[],
         required: true
+    },
+    schoolYear: {
+        type: String,
+        required: true
     }
 });
 
@@ -32,7 +36,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
         <Heading :title="`Matriculas del periodo escolar ${props.sections[0].schoolYear}`" />
-        <FilterBox @filtered="filtered = $event" :sections="props.sections" />
+
+        <FilterBox @filtered="filtered = $event" :sections="props.sections" :schoolYear="props.schoolYear" />
         <div class="p-2 sm:p-4 md:p-6">
             <GridSections :sections="filtered" />
         </div>

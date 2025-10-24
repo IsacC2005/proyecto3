@@ -56,7 +56,6 @@ class EnrollmentServices
     public function createLot(array $lot)
     {
         $schooleYear = $this->dates->getSchoolYearActual();
-        $schoolMoment = $this->dates->getSchoolMomentActual();
 
         foreach ($lot as $item) {
             $data = EnrollmentFactory::fromArray($item);
@@ -76,26 +75,33 @@ class EnrollmentServices
 
 
 
-    public function findAllEnrollment(?String $f = null): array
+    public function showEnrollments(?string $schoolYear = null)
     {
-        return $this->enrollmentRepository->findAll($f);
+        if (!$schoolYear) {
+            $schoolYear = $this->dates->getSchoolYearActual();
+        }
+
+        /**
+         * @var Array<EnrollmentDetailDTO>
+         */
+        $sections = $this->findEnrollmentByYearSchool($schoolYear);
+
+        return Inertia::render('Enrollment/ListSections', [
+            'sections' => array_map(function ($section) {
+                return $section->toArray();
+            }, $sections),
+            'schoolYear' => $schoolYear
+        ]);
     }
 
 
-    public function findEnrollmentByYearSchool(?String $year = null)
+    private function findEnrollmentByYearSchool(?String $schoolYear = null)
     {
-        if (strlen($year) != 9) {
+        if (strlen($schoolYear) != 9) {
             throw new \InvalidArgumentException('El formato del momento es inválido.');
         }
 
-        $data = $this->enrollmentRepository->findByYearSchool($year, TDTO::DETAIL);
-        return Inertia::render('Enrollment/ListSections', [
-            'sections' => array_map(function ($item) {
-                return $item->toArray();
-            }, $data),
-            'message' => "Todas las matriculas del $year"
-
-        ]);
+        return $this->enrollmentRepository->findByYearSchool($schoolYear, TDTO::DETAIL);
     }
 
 

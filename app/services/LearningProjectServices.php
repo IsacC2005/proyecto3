@@ -198,24 +198,32 @@ class LearningProjectServices
 
     public function Notes(?int $projectId = null)
     {
-        if (!$projectId) {
-        }
+        $projectId = 5;
         $user =  Auth::user();
 
         if (!$user->hasRole(RoleConstants::PROFESOR)) {
             throw new \ErrorException("Este usuario no es un profesor");
         }
 
-        $teacher_id = $user->userable_id;
+        if ($projectId) {
+            $project = $this->projectRepository->find($projectId);
+        } else {
 
-        if (!$teacher_id) {
-            $teacher_id = -1;
+            $teacher_id = $user->userable_id;
+
+            if (!$teacher_id) {
+                $teacher_id = -1;
+            }
+
+            $year = $this->datesActual->getSchoolYearActual();
+            $moment = $this->datesActual->getSchoolMomentActual();
+
+            $project = $this->projectRepository->findOnDate($year, $moment, $teacher_id);
+
+            if (!$project) {
+                return [];
+            }
         }
-
-        $year = $this->datesActual->getSchoolYearActual();
-        $moment = $this->datesActual->getSchoolMomentActual();
-
-        $project = $this->projectRepository->findOnDate($year, $moment, $teacher_id);
 
 
         return $this->projectRepository->getAllEvaluationByProject($project->id);

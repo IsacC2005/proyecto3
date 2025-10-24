@@ -38,8 +38,7 @@ class UserRepository extends TransformDTOs implements UserInterface
             $model = User::create([
                 'name' => $user->name,
                 'email' => $user->email,
-                'password' => bcrypt($user->password),
-                'userable_id' => $user->userable_id
+                'password' => bcrypt($user->password)
             ]);
 
             $role = Role::find($user->roleId);

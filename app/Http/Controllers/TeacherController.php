@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\DTOs\Details\UserDetailDTO;
+use App\DTOs\Summary\UserDTO;
 use App\Factories\TeacherFactory;
 use App\Services\TeacherServices;
 use App\Services\EvaluationServices;
@@ -37,9 +39,10 @@ class TeacherController extends Controller
      * This method should return a view containing a form
      * to create a new resource.
      */
-    public function create(int $id)
+    public function createUser(int $id)
     {
-        return Inertia::render('Teacher/CreateTeacher', ['id' => $id]);
+        $teacher = $this->teacherServices->findTeacher($id);
+        return Inertia::render('Teacher/CreateUser', ['teacher' => $teacher]);
     }
 
     /**
@@ -50,9 +53,22 @@ class TeacherController extends Controller
      */
     public function storeUser(Request $request)
     {
-        $teacher = TeacherFactory::fromRequest($request);
-        //return response()->json($teacher);
-        return $this->teacherServices->createTeacher($teacher);
+        $validated = $request->validate([
+            'id' => 'required|integer|exists:teachers,id',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8'
+        ]);
+
+        $user = new UserDTO(
+            id: 0,
+            name: $validated['name'],
+            email: $validated['email'],
+            password: $validated['password'],
+            userable_id: $validated['id']
+        );
+
+        return $this->teacherServices->createUser($user);
     }
 
     /**
@@ -103,15 +119,11 @@ class TeacherController extends Controller
 
 
 
-    public function edit(Request $request)
+    public function edit(int $id)
     {
-        $request->validate([
-            'teacherId' => 'required|integer',
-        ]);
-
-        $id = $request->input('teacherId');
 
         $teacher = $this->teacherServices->findTeacher($id);
+        return response()->json($teacher);
         return Inertia::render('Teacher/EditTeacher', [
             'teacher' => $teacher
         ]);

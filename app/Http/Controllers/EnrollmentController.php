@@ -25,14 +25,10 @@ class EnrollmentController extends Controller
      * This method should retrieve all resources from the database
      * and return a view displaying the list of resources.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = $this->enrollmentServices->findAllEnrollment(TDTO::DETAIL);
-        return Inertia::render('Enrollment/ListSections', [
-            'sections' => array_map(function ($item) {
-                return $item->toArray();
-            }, $data)
-        ]);
+        $schoolYear = $request->input('schoolYear') ?? null;
+        return $this->enrollmentServices->showEnrollments($schoolYear);
     }
 
     /**
@@ -152,12 +148,6 @@ class EnrollmentController extends Controller
     public function show(string $id)
     {
         // Debería mostrar un elemento específico según su ID.
-    }
-
-
-    public function findEnrollmentByYearSchool(string $moment)
-    {
-        return $this->enrollmentServices->findEnrollmentByYearSchool($moment);
     }
 
     /**

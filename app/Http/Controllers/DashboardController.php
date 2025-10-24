@@ -9,7 +9,7 @@ use Inertia\Inertia;
 class DashboardController extends Controller
 {
     public function __construct(
-        //private DeshboardServices $das
+        private DeshboardServices $das
     ) {}
     public function __invoke()
     {
