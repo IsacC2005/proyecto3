@@ -35,7 +35,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
-        <Heading :title="`Matriculas del periodo escolar ${props.sections[0].schoolYear}`" />
+        <Heading :title="`Matriculas del periodo escolar ${props.schoolYear}`" />
 
         <FilterBox @filtered="filtered = $event" :sections="props.sections" :schoolYear="props.schoolYear" />
         <div class="p-2 sm:p-4 md:p-6">
