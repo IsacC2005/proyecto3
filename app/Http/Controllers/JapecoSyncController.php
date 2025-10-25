@@ -15,6 +15,7 @@ class JapecoSyncController extends Controller
     public function testContection()
     {
         try {
+
             $japecoUrl = env('JAPECO_URL');
 
             $response = Http::get("$japecoUrl/api/test-conection");
