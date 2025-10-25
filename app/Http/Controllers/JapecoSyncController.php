@@ -43,7 +43,7 @@ class JapecoSyncController extends Controller
     {
         $time = JapecoSync::first();
         return Inertia::render('JapecoSync/JapecoSync', [
-            'lastSyncedAt' => $time->updated_at
+            'lastSyncedAt' => $time->updated_at ?? ''
         ]);
     }
 
