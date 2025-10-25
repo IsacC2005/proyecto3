@@ -38,7 +38,7 @@ class JapecoSyncService
         $finishTime = Carbon::now();
         $durationInSeconds = $startTime->diffInSeconds($finishTime);
 
-        $time = JapecoSync::first();
+        $time = JapecoSync::firstOrNew([]);
 
         $time->time_sync = $durationInSeconds;
 
