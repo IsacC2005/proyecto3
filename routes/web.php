@@ -173,6 +173,10 @@ Route::get('/japeco-sync/progress', [JapecoSyncController::class, 'JapecoSyncPro
  * ? Ruta de prueba
  */
 
+Route::get('/test-sync', function (JapecoSyncService $service) {
+    $service->JapecoSync();
+});
+
 Route::get('/test/evaluate/{id}', [EvaluationItemController::class, 'evaluateRandom']);
 Route::get('/test/evaluate-qualitie/{id}', [QualitieController::class, 'storeRandom']);
 // Route::get('/test', [QualitieController::class, 'create']); 
