@@ -52,7 +52,7 @@ class UserFactory implements Factory
             id: $data['id'] ?? 0,
             name: $data['name'] ?? '',
             email: $data['email'] ?? '',
-            roleId: $data['roleId'] ?? null
+            roles: $data['roles'] ?? []
         );
     }
 }

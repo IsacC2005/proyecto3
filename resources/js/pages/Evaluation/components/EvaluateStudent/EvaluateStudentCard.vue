@@ -10,7 +10,7 @@ const bg = () => {
         return 'bg-gradient-to-r from-green-100 to-green-300 border border-green-100';
     } else if (props.status === 'L' || props.status === 'EP' || props.status === 'PM') {
         return 'bg-green-100';
-    } else if (props.status === 'NL') {
+    } else if (props.status === 'SL') {
         return 'bg-red-100';
     } else if (props.status === '') {
         return 'bg-background';

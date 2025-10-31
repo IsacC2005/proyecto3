@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants\TDTO;
 use App\Exceptions\LearningProject\LearningProjectNotCreatedException;
 use App\Factories\LearningProjectFactory;
+use App\Http\Requests\GetNotesRequest;
 use App\Services\LearningProjectServices;
 use App\Services\ResultNoteServices;
 use Illuminate\Http\Request;
@@ -134,13 +135,12 @@ class LearningProjectController extends Controller
     }
 
 
-    public function notes(?string $id = null)
+    public function notes(GetNotesRequest $request)
     {
-        $data = $this->learningProjectServices->Notes($id);
-        //return response()->json($data);
-        return Inertia::render('Notes/ListNotes', [
-            'data' => $data
-        ]);
+
+        $projectId = $request->validated('projectId');
+
+        return $this->learningProjectServices->Notes($projectId);
     }
 
 

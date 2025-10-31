@@ -8,8 +8,9 @@ export const useQualitesStore = defineStore('qualities-store', () => {
     const students = ref([] as Student[])
     const qualities = ref([] as qualitiesType[])
 
-    const evaluate = (qualitieId?: number, learningProjectId: number, studentId: number, qualitieName?: string) => {
-        router.post('/test', {
+    const evaluate = (learningProjectId: number, studentId: number, qualitieId?: number, qualitieName?: string,) => {
+        console.log(learningProjectId, studentId, qualitieId, qualitieName + 'asdfasdf')
+        router.post('/qualitie/test', {
             student_id: studentId,
             learning_project_id: learningProjectId,
             qualitie_id: qualitieId,
@@ -22,7 +23,7 @@ export const useQualitesStore = defineStore('qualities-store', () => {
     }
 
     const evaluateStatus = (learningProjectId: number, studentId: number) => {
-        router.post('/test/status', {
+        router.post('/quelitie/test/status', {
             student_id: studentId,
             learning_project_id: learningProjectId,
         }, {

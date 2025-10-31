@@ -3,7 +3,7 @@ import { DailyClass, Student } from "@/types/dtos";
 import { ref } from "vue";
 import { router } from "@inertiajs/vue3";
 
-export type noteValue = 'PL' | 'L' | 'EP' | 'PM' | 'NL' | '';
+export type noteValue = 'PL' | 'L' | 'EP' | 'PM' | 'SL' | '';
 
 export interface indicatorNote {
     [indicatorId: number]: { note: noteValue }

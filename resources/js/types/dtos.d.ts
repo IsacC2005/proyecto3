@@ -78,7 +78,12 @@ export interface User {
     name: string,
     email: string,
     password: string,
-    roles: string[]
+    roles: Role[]
+}
+
+export interface Role {
+    id: number
+    name: string
 }
 
 export interface ReportNote {

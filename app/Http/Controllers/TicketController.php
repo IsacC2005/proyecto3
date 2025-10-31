@@ -12,7 +12,7 @@ class TicketController extends Controller
 {
 
     public function __construct(
-        private TicketServices $ticket
+        private TicketServices $ticket,
     ) {}
     /**
      * Display a listing of the resource.
@@ -20,12 +20,9 @@ class TicketController extends Controller
      * This method should retrieve all resources from the database
      * and return a view displaying the list of resources.
      */
-    public function index(int $id)
+    public function index(?int $id = null)
     {
-        $data = $this->ticket->getAllTicketToProject($id);
-        return Inertia::render('Ticket/ListTicket', [
-            'ReportsNotes' => $data
-        ]);
+        return $this->ticket->getAllTicketToProject($id);
     }
 
     /**

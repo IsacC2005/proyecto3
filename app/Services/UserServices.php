@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-
+use App\DTOs\Details\UserDetailDTO;
+use App\DTOs\PaginationDTO;
 use App\DTOs\Summary\UserDTO;
 use App\Repositories\Interfaces\UserInterface;
 
@@ -36,7 +37,7 @@ class UserServices
 
 
 
-    public function findAllUser(): array
+    public function findAllUser(): PaginationDTO
     {
         return $this->userRepository->findAllUser();
     }
@@ -57,11 +58,16 @@ class UserServices
 
 
 
-    public function updateUser(UserDTO $user): UserDTO
+    public function AdminUpdateUser(UserDetailDTO $user): UserDTO
     {
         return $this->userRepository->updateUser($user);
     }
 
+
+    public function AdminResetPaswordUser(string $password, int $id): void
+    {
+        $this->userRepository->resetPaswordUser($password, $id);
+    }
 
 
     public function deleteUser(int $id): void

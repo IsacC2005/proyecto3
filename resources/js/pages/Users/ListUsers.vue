@@ -1,24 +1,15 @@
 <script setup lang="ts">
+import Paginator from '@/components/Paginator.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { defineProps } from 'vue';
-
-// 1. Definición de tipos para las props (basado en el JSON)
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    password: string | null;
-    role: string[]; // <--- Array de strings (roles de Spatie)
-    roleId: number;
-    userable_id: number;
-    userable: any | null; // Puedes refinar este tipo si es necesario
-}
+import { Link } from '@inertiajs/vue3';
+import { Pagination } from '@/types/dtos';
+import { User } from '@/types/dtos';
 
 const props = defineProps<{
-    users: User[];
+    users: Pagination<User>;
 }>();
 
-// 2. Función para formatear el array de roles en una cadena legible
 const formatRoles = (roles: string[]): string => {
     return roles.join(', ');
 }
@@ -65,7 +56,7 @@ const formatRoles = (roles: string[]): string => {
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <tr v-for="user in props.users" :key="user.id" class="hover:bg-gray-50">
+                                <tr v-for="user in props.users.data" :key="user.id" class="hover:bg-gray-50">
 
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         {{ user.id }}
@@ -82,19 +73,21 @@ const formatRoles = (roles: string[]): string => {
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                         <span
                                             class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800"
-                                            v-for="role in user.role" :key="role">
+                                            v-for="role in user.roles" :key="role.id">
                                             {{ role }}
                                         </span>
                                     </td>
 
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="#" class="text-blue-600 hover:text-blue-900">Editar</a>
+                                        <Link :href="`/manager/users/edit/${user.id}`"
+                                            class="text-blue-600 hover:text-blue-900">Editar</Link>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
+                <Paginator :pages="props.users.links" />
             </div>
         </div>
     </AppLayout>

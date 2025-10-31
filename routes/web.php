@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\RoleConstants;
 use App\DTOs\UserDTO;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\DailyClassController;
@@ -33,6 +34,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 
 Route::get('/', WelcomeController::class)->name('home');
 
@@ -68,7 +70,8 @@ Route::post('/teacher/evaluate/class/save', [TeacherController::class, 'evaluate
  */
 
 Route::get('/qualitie', [QualitieController::class, 'showPageEvaluate']);
-Route::post('/qualitie', [QualitieController::class, 'store']);
+Route::post('/qualitie/test', [QualitieController::class, 'store'])->name('qualitie.test');
+Route::post('/quelitie/test/status', [QualitieController::class, 'storeStatus'])->name('qualitie.test.status');
 
 /**
  * TODO: Rutas para Students
@@ -120,7 +123,11 @@ Route::get('/learning-project/show/{id}', [LearningProjectController::class, 'sh
 Route::get('/learning-project/create', [LearningProjectController::class, 'create'])->middleware(['auth', 'verified']);
 Route::post('/learning-project/create', [LearningProjectController::class, 'store'])->middleware(['auth', 'verified'])->name('learning-project.create');
 
-Route::get('/learning-project/notes/{id?}', [LearningProjectController::class, 'notes'])->name('learning-project.notes');
+Route::get('/learning-project/notes/', [LearningProjectController::class, 'notes'])->middleware([
+    'auth',
+    'role:' . RoleConstants::PROFESOR . '||' . RoleConstants::ADMINISTRADOR,
+    \App\Http\Middleware\EnsureProjectBelongsToTeacher::class
+])->name('learning-project.notes');
 
 Route::get('/learning-project/edit/{id}', [LearningProjectController::class, 'edit'])->middleware(['auth', 'verified']);
 Route::put('/learning-project/update/{id}', [LearningProjectController::class, 'update'])->middleware(['auth', 'verified'])->name('learning-project.update');
@@ -170,28 +177,37 @@ Route::post('/japeco-sync', [JapecoSyncController::class, 'JapecoSyncStart']);
 Route::get('/japeco-sync/progress', [JapecoSyncController::class, 'JapecoSyncProgress']);
 
 /**
+ * TODO: Rutas de gestion de usuarios
+ */
+
+
+Route::get('/manager/users/edit/{id}', [UserController::class, 'AdminEditUser']);
+Route::put('/manager/user/update/{id}', [UserController::class,  'AdminUpdateUser'])->name('manager.user.update');
+Route::put('/manager/user/reset-password/{id}', [UserController::class,  'AdminResetPaswordUser'])->name('manager.user.reset-password');
+
+
+
+/**
  * ? Ruta de prueba
  */
 
-Route::get('/test-sync', function (JapecoSyncService $service) {
-    $service->JapecoSync();
-    return 'listo';
-});
-
-Route::get('/test/evaluate/{id}', [EvaluationItemController::class, 'evaluateRandom']);
-Route::get('/test/evaluate-qualitie/{id}', [QualitieController::class, 'storeRandom']);
+//Route::get('/test/evaluate/{id}', [EvaluationItemController::class, 'evaluateRandom']);
+//Route::get('/test/evaluate-qualitie/{id}', [QualitieController::class, 'storeRandom']);
 // Route::get('/test', [QualitieController::class, 'create']); 
 // Route::post('/test', [QualitieController::class, 'store']);
 // Route::post('/test/status', [QualitieController::class, 'storeStatus']);
 
 Route::get('test', function () {
-    $teacher = Teacher::find(606);
-
-    $user = User::find(5);
-
-    $user->userable()->associate($teacher);
-
-    $user->save();
+    $user = [
+        'id' =>  10,
+        'name' => 'isacc',
+        'email' => 'isacc@isacc',
+        'password' => null, // Aunque es null en el JSON, en la DB es string
+        'role' => [],
+        'roleId' => 1,
+        'userable_id' => 9
+    ];
+    return Inertia::render('Users/UserEdit/UserEdit');
 });
 
 Route::get('/test2', function (TicketServices $servie) {

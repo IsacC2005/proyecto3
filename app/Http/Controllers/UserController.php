@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\TDTO;
 use App\DTOs\Summary\UserDTO;
 use App\Factories\UserFactory;
+use App\Http\Requests\AdminResetPasswordUser;
+use App\Http\Requests\AdminUpdateUser;
 use App\Services\UserServices;
+use Exception;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Permission\Models\Role;
+
 
 class UserController extends Controller
 {
@@ -66,12 +73,36 @@ class UserController extends Controller
      * This method should return a view with a form to edit
      * the specified resource.
      */
-    public function edit(string $id)
+    public function AdminEditUser(string $id)
     {
-        $data = $this->userService->findByUserById($id);
+        $data = $this->userService->findByUserById($id, TDTO::DETAIL);
 
-        return Inertia::render('Users/EditUser', [
-            'initialUser' => $data
+        $roles = Role::all()->map(function ($role) {
+            return [
+                'id' => $role->id,
+                'name' => $role->name
+            ];
+        })->toArray();
+
+        $logs = Activity::with('causer')->where('causer_id', $id)
+            ->latest()
+            ->paginate(10)
+            ->through(function ($activity) {
+                return [
+                    'id' => $activity->id,
+                    'description' => $activity->description,
+                    'subject_type' => $activity->subject_type,
+                    'subject_id' => $activity->subject_id,
+                    'causer_name' => $activity->causer ? $activity->causer->name : 'Sistema',
+                    'created_at' => $activity->created_at->diffForHumans(),
+                    'properties' => $activity->properties,
+                ];
+            });
+
+        return Inertia::render('Users/UserEdit/UserEdit', [
+            'initialUser' => $data,
+            'roles' => $roles,
+            'logs' => $logs
         ]);
     }
 
@@ -81,9 +112,27 @@ class UserController extends Controller
      * This method should validate the request data and update
      * the specified resource in the database.
      */
-    public function update(Request $request, string $id)
+
+    public function AdminUpdateUser(AdminUpdateUser $request, string $id)
     {
-        // Debería actualizar un elemento existente en la base de datos.
+
+        $data = $request->validated();
+
+        $userDTO = UserFactory::fromArrayDetail($data);
+        $userDTO->id = $id;
+
+
+
+        $this->userService->AdminUpdateUser($userDTO);
+    }
+
+
+    public function AdminResetPaswordUser(Request $request, string $id)
+    {
+        $request->validate([
+            'password' => 'required|string|min:8|max:254'
+        ]);
+        $this->userService->AdminResetPaswordUser($request->input('password'), $id);
     }
 
     /**

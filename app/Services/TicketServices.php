@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 use Mockery\Expectation;
 use PhpOffice\PhpWord\TemplateProcessor;
 
@@ -159,9 +161,15 @@ class TicketServices
     }
 
 
-    public function getAllTicketToProject(int $projectId)
+    public function getAllTicketToProject(?int $projectId = null): InertiaResponse
     {
-        return $this->ticket->findByLearningProject($projectId);
+
+
+        $data = $this->ticket->findByLearningProject($projectId);
+
+        return Inertia::render('Ticket/ListTicket', [
+            'ReportsNotes' => $data
+        ]);
     }
 
 

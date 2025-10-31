@@ -33,7 +33,7 @@ const save = (id: number) => {
         localQualities.value.splice(index, 1);
     }
 
-    store.evaluate(id, props.learningProjectId, props.studentId);
+    store.evaluate(props.learningProjectId, props.studentId, id);
 }
 </script>
 

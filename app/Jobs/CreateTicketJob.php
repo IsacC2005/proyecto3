@@ -27,10 +27,12 @@ class CreateTicketJob implements ShouldQueue
         protected string $cacheKey,
     ) {}
 
-    // public function middleware(): array
-    // {
-    //     return [new RateLimited('gemini_jobs')];
-    // }
+    public function middleware(): array
+    {
+        return [
+            //new RateLimited('gemini_jobs')
+        ];
+    }
 
     /**
      * Ejecuta el trabajo de creación de un único documento.
@@ -41,10 +43,23 @@ class CreateTicketJob implements ShouldQueue
         $maxAttempts = config('ia_limits.rate_limit');
         $dailyLimit = config('ia_limits.daily_limit');
 
-        if (RateLimiter::tooManyAttempts($limitKey, $maxAttempts)) {
-            $seconds = RateLimiter::availableIn($limitKey);
-            //$message = "Límite de peticiones por minuto excedido. Reintente en {$seconds} segundos.";
-            sleep($seconds);
+        if (RateLimiter::tooManyAttempts($limitKey, 10)) {
+
+            $data = Cache::get('ia_pendientes_list', ['data' => []]);
+
+            // 2. Extrae y añade los parámetros del Job actual.
+            $data['data'][] = [
+                'projectId' => $this->projectId,
+                'studentId' => $this->studentId,
+                'totalStudents' => $this->totalStudents,
+                'cacheKey' => $this->cacheKey,
+            ];
+
+            Cache::put('ia_pendientes_list', $data, now()->addDays(7));
+
+            $this->delete();
+
+            return;
         }
 
         DB::transaction(
@@ -67,7 +82,7 @@ class CreateTicketJob implements ShouldQueue
                     $midnight = now()->addDay()->startOfDay();
                     $retryAfter = now()->diffInSeconds($midnight) + 60;
 
-                    sleep($retryAfter);
+                    //sleep($retryAfter);
                     DB::table('ia_daily_usages')->where('id', 1)->update([
                         'request_count' => 0,
                         'last_reset_date' => now()->toDateString(),

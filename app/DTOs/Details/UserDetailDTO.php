@@ -10,8 +10,8 @@ class UserDetailDTO implements DTODetail
         public int $id,
         public string $name,
         public string $email,
+        public array $roles,
         public ?string $password = null,
-        public ?int $roleId = -1,
         public ?UserableDetailInterface $userable = null
     ) {}
 }

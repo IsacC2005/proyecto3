@@ -2,7 +2,7 @@
     <EvaluateStudentCard :status="status">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold text-gray-700 truncate">{{ props.student.name + " " + student.surname
-            }}</h2>
+                }}</h2>
             <div class="w-24 bg-gray-200 rounded-full h-2.5">
                 <div class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300 ease-in-out"
                     :style="'width:' + studentProgress + '%'"></div>
@@ -10,7 +10,7 @@
         </div>
 
         <div v-for="indicator in referent?.indicators" :key="indicator.id"
-            class="w-full flex flex-row items-center px-2 gap-x-4 border rounded mb-2">
+            class="w-full flex flex-col items-start lg:flex-row lg:items-center px-2 gap-x-4 border rounded mb-2">
             <EvaluateStudentIndicator :studentId="props.student.id" :indicator='indicator'
                 :noteProp='notes ? notes[props.student.id]?.[indicator.id] ?? "" : ""' />
         </div>
@@ -45,7 +45,7 @@ const studentNotes = computed(() => {
 const updateStatus = (newNotes: Notes) => {
     const totalIndicators = referent.value?.indicators.length || 0;
     const totalPL = Object.values(newNotes).filter(note => note === 'PL').length;
-    const totalNL = Object.values(newNotes).filter(note => note === 'NL').length;
+    const totalNL = Object.values(newNotes).filter(note => note === 'SL').length;
     const totalNotes = Object.values(newNotes).length;
 
     if (totalNotes === 0) {
@@ -53,7 +53,7 @@ const updateStatus = (newNotes: Notes) => {
     } else if (totalPL === totalIndicators && totalIndicators > 0) {
         status.value = 'PL';
     } else if (totalNL === totalIndicators && totalIndicators > 0) {
-        status.value = 'NL';
+        status.value = 'SL';
     } else if (totalNotes === totalIndicators) {
         status.value = 'L';
     } else {

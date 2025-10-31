@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Cache\RateLimiter as L;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -23,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         RateLimiter::for('gemini-jobs', function (object $job) {
-            return  Limit::perMinute(1);
+            return  Limit::perMinute(1, 2);
         });
     }
 }

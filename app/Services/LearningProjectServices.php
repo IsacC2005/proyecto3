@@ -11,9 +11,11 @@ use App\Exceptions\LearningProject\LearningProjectNotFindException;
 use App\Repositories\Interfaces\EnrollmentInterface;
 use App\Repositories\Interfaces\LearningProjectInterface;
 use App\Utilities\FlashMessage;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class LearningProjectServices
 {
@@ -196,14 +198,11 @@ class LearningProjectServices
     public function findProjectById(int $id) {}
 
 
-    public function Notes(?int $projectId = null)
+    public function Notes(?int $projectId = null): Response | RedirectResponse
     {
-        $projectId = 5;
         $user =  Auth::user();
 
-        if (!$user->hasRole(RoleConstants::PROFESOR)) {
-            throw new \ErrorException("Este usuario no es un profesor");
-        }
+        $project = null;
 
         if ($projectId) {
             $project = $this->projectRepository->find($projectId);
@@ -211,22 +210,31 @@ class LearningProjectServices
 
             $teacher_id = $user->userable_id;
 
-            if (!$teacher_id) {
-                $teacher_id = -1;
-            }
-
             $year = $this->datesActual->getSchoolYearActual();
             $moment = $this->datesActual->getSchoolMomentActual();
 
             $project = $this->projectRepository->findOnDate($year, $moment, $teacher_id);
 
             if (!$project) {
-                return [];
+                activity('Proyecto no encontrado')
+                    ->causedBy($user)
+                    ->log('Se intento ver las notas del proyecto activo pero no se encontro.');
+                return redirect()->route('dashboard')->with(
+                    'flash',
+                    FlashMessage::error(
+                        'Error',
+                        'No se encontro el proyecto',
+                        "No tienes un proyecto de aprendizaje que se encuentre activo para el $year, Momento $moment."
+                    )
+                );
             }
         }
 
+        $data = $this->projectRepository->getAllEvaluationByProject($project->id);
 
-        return $this->projectRepository->getAllEvaluationByProject($project->id);
+        return Inertia::render('Notes/ListNotes', [
+            'data' => $data
+        ]);
     }
 
 

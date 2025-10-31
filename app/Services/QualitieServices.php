@@ -104,14 +104,13 @@ class QualitieServices
         return Inertia::render('Qualitie/EvaluateQualitie', [
             'students' => $students,
             'qualities' => $qualities,
-            'learningProjectId' => 4,
+            'learningProjectId' => $ProjectId,
             'allNote' => $allNote,
             'allEvaluatedStatus' => $allEvaluatedStatus
         ]);
     }
 
     /**
-     * Asigna de 4 a 5 cualidades aleatorias a cada estudiante de un proyecto.
      *
      * @param int $projectId
      * @return void
@@ -120,7 +119,6 @@ class QualitieServices
     {
         $project = $this->projectRepository->find($projectId);
         if (!$project) {
-            // Opcional: lanzar una excepción si el proyecto no existe.
             return;
         }
 
@@ -128,7 +126,7 @@ class QualitieServices
         $allQualities = Qualitie::all()->pluck('id');
 
         if ($allQualities->isEmpty()) {
-            return; // No hay cualidades para asignar.
+            return;
         }
 
         foreach ($students as $student) {

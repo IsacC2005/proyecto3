@@ -9,13 +9,13 @@
                 </li>
 
                 <li v-else-if="page.active">
-                    <Link
+                    <Link preserve-state preserve-scroll
                         class="flex items-center justify-center px-2 py-2 sm:px-4 sm:py-2 whitespace-nowrap text-white bg-blue-600 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                         :href="page.url">{{ showLabel(page.label) }}</Link>
                 </li>
 
                 <li v-else>
-                    <Link
+                    <Link preserve-state preserve-scroll
                         class="flex items-center justify-center px-2 py-2 sm:px-4 sm:py-2 whitespace-nowrap text-gray-700 bg-white rounded-md shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-200"
                         :href="page.url">{{ showLabel(page.label) }}</Link>
                 </li>

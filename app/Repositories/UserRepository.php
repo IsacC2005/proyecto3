@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Constants\TDTO;
 use App\Exceptions\Role\RoleNotExistException;
 use App\Exceptions\User\EmailDuplicateException;
 use App\Exceptions\User\UserNotCreatedException;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\UserDetailDTO;
+use App\DTOs\PaginationDTO;
 use App\DTOs\Searches\DTOSearch;
 use Illuminate\Support\Facades\DB;
 
@@ -48,19 +50,19 @@ class UserRepository extends TransformDTOs implements UserInterface
             }
             $model->assignRole($role);
         });
-        return $this->transformToDTO($model);
+        return $model ? $this->transformToDTO($model) : null;
     }
 
 
 
-    public function findUserById($id): UserDTO
+    public function findUserById(int $id, ?string $fn = TDTO::SUMMARY): UserDTO
     {
         try {
             $user = User::find($id);
             if (!$user) {
                 throw new UserNotFindException();
             }
-            return $this->transformToDTO($user);
+            return $this->$fn($user);
         } catch (\Exception $e) {
             throw new UserNotCreatedException();
         }
@@ -84,16 +86,22 @@ class UserRepository extends TransformDTOs implements UserInterface
 
 
 
-    public function findAllUser(): array
+    public function findAllUser(): PaginationDTO
     {
         try {
-            $users = User::with('roles')->get();
+            $users = User::with('roles')->paginate(10);
             if ($users->isEmpty()) {
                 throw new UserNotFindException();
             }
-            return $this->transformListDTO($users);
+            $pagination = new PaginationDTO($users);
+
+            $userData = $this->transformListDTO($users->getCollection());
+
+            $pagination->data = $userData;
+
+            return $pagination;
         } catch (\Throwable $th) {
-            throw new UserNotFindException();
+            throw new UserNotFindException($th->getMessage());
         }
     }
 
@@ -129,8 +137,10 @@ class UserRepository extends TransformDTOs implements UserInterface
 
 
 
-    public function updateUser(UserDTO $user): UserDTO
+    public function updateUser(UserDetailDTO $user): UserDTO
     {
+
+
         try {
             $userModel = User::find($user->id);
             if (!$userModel) {
@@ -139,13 +149,28 @@ class UserRepository extends TransformDTOs implements UserInterface
 
             $userModel->name = $user->name;
             $userModel->email = $user->email;
-            $userModel->password = bcrypt($user->password);
             $userModel->save();
+
+            $userModel->syncRoles($user->roles);
+
+            $this->destorySecion($userModel->id);
 
             return $this->transformToDTO($userModel);
         } catch (\Throwable $th) {
-            throw new UserNotUpdateException();
+            throw new UserNotUpdateException($th->getMessage());
         }
+    }
+
+
+    public function resetPaswordUser(string $password, int $id): void
+    {
+        $userModel = User::find($id);
+
+        $userModel->password = bcrypt($password);
+
+        $userModel->save();
+
+        $this->destorySecion($id);
     }
 
 
@@ -163,6 +188,15 @@ class UserRepository extends TransformDTOs implements UserInterface
         }
     }
 
+
+    public function destorySecion($id)
+    {
+        if (config('session.driver') === 'database') {
+            DB::table('sessions')
+                ->where('user_id', $id)
+                ->delete();
+        }
+    }
     /**
      *
      * TODO Este método se está redefiniendo polimórficamente.
@@ -170,24 +204,32 @@ class UserRepository extends TransformDTOs implements UserInterface
      */
     protected function transformToDTO(Model $model): DTOSummary
     {
-        $rolesArray = json_decode($model->rol, true);
         return new UserDTO(
             id: $model->id,
             name: $model->name,
             email: $model->email,
-            role: $model->roles->pluck('name')->toArray(),
+            roles: $model->roles->pluck('id')->toArray(),
             //password: $model->password,
             //userable: $user->userable // Assuming userable is a Userable type
         );
     }
 
-    protected function transformToDetailDTO(Model $model): DTODetail
+    /**
+     * @param User $user
+     */
+
+    protected function transformToDetailDTO(Model $user): UserDetailDTO
     {
 
+        $roles = $user->roles->pluck('id')->toArray();
+
+
+
         return new UserDetailDTO(
-            id: $model->id,
-            name: $model->name,
-            email: $model->email,
+            id: $user->id,
+            name: $user->name,
+            email: $user->email,
+            roles: $roles
             //password: $model->password,
             //userable: $user->userable // Assuming userable is a Userable type
         );

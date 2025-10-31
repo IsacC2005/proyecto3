@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Log;
 class JapecoSyncJob implements ShouldQueue
 {
     use Queueable;
-
-
-    public $tries = 3;
-
-    public $queu = 'japeco-sync';
     /**
      * Create a new job instance.
      */
