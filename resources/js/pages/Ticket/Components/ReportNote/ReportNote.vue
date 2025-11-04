@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { ReportNote } from '@/types/dtos';
+import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps<{
     reportNote: ReportNote
@@ -20,7 +21,6 @@ interface Report {
     studentId: number;
 }
 
-// Datos de ejemplo
 const initialReports: Report[] = [
     { "id": 46, "average": "A", "content": "Maria es una estudiante amable y respetuosa que se integra activamente en el aula y demuestra una curiosidad innata por el aprendizaje. Con gran claridad, identifica los tres pasos principales del reciclaje y distingue con precisión entre materiales orgánicos e inorgánicos; además, reconoce los colores de los contenedores de reciclaje y su función, mostrando un progreso constante en esta área. Con entusiasmo, explora la importancia de reducir el consumo de recursos naturales y vincula eficazmente la acción de reciclar con sus beneficios ambientales. Asimismo, clasifica los desechos sólidos en los contenedores apropiados y contribuye activamente en la creación de objetos útiles a partir de material de desecho, exhibiendo un potencial prometedor en su participación, mientras maneja herramientas básicas de forma segura y eficiente. Demuestra un notable respeto por el medio ambiente al mantener su área limpia y desarrolla con compromiso sus habilidades para comunicar la importancia del proyecto de reciclaje. Asume con creciente responsabilidad el cuidado de los objetos creados y colabora de manera excelente con su equipo en las tareas asignadas, además de proponer ideas originales para la reducción del uso de plásticos o papel en el aula, destacando su creatividad e interés.", "suggestions": "", "studentName": "HURTADO MENDOZA HECTOR LUIS", "studentSurName": "", "learningProjectId": 4, "studentId": 35741 },
     { "id": 47, "average": "A", "content": "Maria es una estudiante amable y respetuosa, que siempre se muestra curiosa e interesada, participando activamente en todas las actividades. Ella identifica correctamente los tres pasos principales del ciclo de vida de los materiales y distingue con facilidad entre materiales orgánicos e inorgánicos. Además, profundiza su conocimiento sobre los colores de los contenedores de reciclaje y su función, y comienza a articular la relevancia de la reducción del consumo de recursos naturales, mientras relaciona la acción de reciclar con sus beneficios ambientales. En las actividades prácticas, organiza plenamente los desechos sólidos en los contenedores apropiados y muestra creciente entusiasmo en la elaboración de objetos útiles a partir de material de desecho, empleando herramientas básicas de forma segura y eficiente. Manifiesta respeto por el medio ambiente al mantener siempre limpia su área de trabajo y el entorno escolar, y está fortaleciendo su capacidad para comunicar la importancia del proyecto de reciclaje a sus compañeros y familiares. Asimismo, está desarrollando un sentido de compromiso en el cuidado de los objetos o espacios creados con material reutilizado, colabora activamente con su equipo en las tareas asignadas y formula ideas creativas para la reducción del uso de plásticos o papel en el aula.", "suggestions": "", "studentName": "HURTADO MENDOZA HECTOR LUIS", "studentSurName": "", "learningProjectId": 4, "studentId": 35741 }
@@ -75,6 +75,11 @@ const closeModal = (): void => {
     selectedReport.value = null;
 };
 
+const impressForm = useForm({});
+
+const impress = () => {
+    impressForm.get('/test-docx')
+}
 </script>
 
 <template>
@@ -109,10 +114,10 @@ const closeModal = (): void => {
         <!-- Pie de la Tarjeta con Acciones -->
         <div
             class="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0 sm:space-x-2 pt-3 border-t">
-            <button @click="emit('showDetails')"
+            <a :href="`/ticket/impress/${props.reportNote.id}`"
                 class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out shadow-md hover:shadow-lg text-sm">
-                Ver Detalles (ID: {{ props.reportNote.id }})
-            </button>
+                Imprimir {{ props.reportNote.id }}
+            </a>
             <button @click="handleDelete(props.reportNote.id)"
                 class="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out text-sm">
                 Eliminar

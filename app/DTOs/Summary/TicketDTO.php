@@ -10,6 +10,7 @@ class TicketDTO implements DTOSummary
         public string $average,
         public string $content,
         public string $suggestions,
+        public string $studentName,
         public ?int $learningProjectId = 0,
         public ?int $studentId = 0
     ) {}

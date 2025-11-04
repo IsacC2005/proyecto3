@@ -108,13 +108,12 @@ class TicketServices
 
         $content = $this->gemini->conection($promp);
 
-        //$content = $promp;
-
         $this->ticket->create(new TicketDTO(
             id: 0,
             average: 'A',
             content: $content,
             suggestions: "",
+            studentName: "",
             learningProjectId: $projectId,
             studentId: $studentId
         ));
@@ -196,10 +195,8 @@ class TicketServices
         $templateProcessor = new TemplateProcessor($templatePath);
 
         try {
-            // 2. Instanciar el TemplateProcessor
             $templateProcessor = new TemplateProcessor($templatePath);
 
-            // --- DATOS FIJOS PARA PRUEBA (Estos vendrían de tu DB) ---
             $data = [
                 'teacherName' => $ticket->teacherName,
                 'studentName' => $ticket->studentName,
@@ -211,28 +208,19 @@ class TicketServices
                 'assistance' => $ticket->assistence,
                 'absence' => $ticket->absence,
                 'average' => $ticket->average,
-                // Texto largo de los logros.
                 'content' => $ticket->content,
                 'suggestions' => $ticket->suggestions
             ];
-            // -------------------------------------------------------------
 
             foreach ($data as $key => $value) {
-                // Aseguramos que los valores sean cadenas. PHPWord requiere cadenas.
                 $templateProcessor->setValue($key, (string) $value);
             }
 
-            // NOTA IMPORTANTE: Si la plantilla usa tablas, también puedes clonar filas
-            // con TemplateProcessor::cloneRow('marco_tabla', $count), pero para el boletín
-            // con estructura fija, los marcadores de posición simples son suficientes.
-
-            // 4. Guardar el documento generado en una ubicación temporal
             $fileName = 'boletin_procesado_' . time() . '.docx';
             $tempPath = tempnam(sys_get_temp_dir(), 'phpword_template');
 
             $templateProcessor->saveAs($tempPath);
 
-            // 5. Preparar la respuesta de descarga
             $headers = [
                 'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                 'Content-Disposition' => 'attachment;filename="' . $fileName . '"',
@@ -241,7 +229,6 @@ class TicketServices
                 'Expires' => '0',
             ];
 
-            // 6. Forzar la descarga del archivo
             return Response::download($tempPath, $fileName, $headers)->deleteFileAfterSend(true);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al generar el documento: ' . $e->getMessage()], 500);

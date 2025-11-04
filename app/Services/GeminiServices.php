@@ -15,8 +15,6 @@ class GeminiServices
 
     public function conection(string $prompContent): string
     {
-        sleep(3);
-        return "jaja xd";
         $settings = SettingIA::first();
 
         if (!$settings) {

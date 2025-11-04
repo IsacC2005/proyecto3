@@ -35,4 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('ia:dispatch-pending')->everyMinute();
         $schedule->command('app:japeco-sync')->cron('0 3 */2 * *');
+        $schedule->command('backup:run')->dailyAt('01:00');
+
+        $schedule->command('backup:clean')->dailyAt('02:00');
     })->create();

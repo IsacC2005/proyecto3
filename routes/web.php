@@ -36,6 +36,14 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 
+use App\Http\Controllers\BackupController;
+
+Route::prefix('backups')->group(function () {
+    Route::get('/', [BackupController::class, 'index'])->middleware(['auth', 'verified'])->name('backups.index');
+    Route::post('/', [BackupController::class, 'store'])->middleware(['auth', 'verified'])->name('backups.store');
+    Route::delete('/', [BackupController::class, 'destroy'])->middleware(['auth', 'verified'])->name('backups.destroy');
+});
+
 Route::get('/', WelcomeController::class)->name('home');
 
 Route::get('dashboard', DashboardController::class)

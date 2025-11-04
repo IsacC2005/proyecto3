@@ -21,7 +21,10 @@
                 Ver Resumen de notas</Link>
                 <Link :href="`/tickets/${props.project.id}`"
                     class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors duration-200">
-                Boletas</Link>
+                Ver Boletas</Link>
+                <Link :href="`/tickets/create/${props.project.id}`"
+                    class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors duration-200">
+                Crear Boletas</Link>
             </div>
 
             <div class="space-y-8">

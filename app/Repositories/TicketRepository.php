@@ -158,8 +158,10 @@ class TicketRepository extends TransformDTOs implements TicketInterface
             average: $model->average,
             content: $model->content,
             suggestions: $model->suggestions,
+            studentName: $model->student->name . ' ' . $model->student->surname,
             learningProjectId: $model->learning_project->id,
             studentId: $model->student->id
+
         );
     }
 
