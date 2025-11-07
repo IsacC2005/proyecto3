@@ -9,6 +9,12 @@ import InputAccessData from './Components/InputAccessData.vue';
 import ButtonSubmit from '@/components/ui/button/ButtonSubmit.vue';
 import { useUserStore } from '@/store/UserStore';
 
+const props = defineProps({
+    roles: {
+        type: Object
+    }
+})
+
 const { form } = useUserStore();
 
 type Role = {
@@ -43,9 +49,17 @@ const submit = () => {
                     <Input type="text" id="username" v-model="form.name" required />
                 </div>
                 <InputAccessData />
+                <Label for="select-role" class="block my-2 text-sm font-medium text-foreground">Selecciona un
+                    rol</Label>
+                <select id="select-role" required v-model="form.roleId"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 border bg-white">
+                    <option value="" disabled>-- Selecciona un rol --</option>
+                    <option v-for="modelName in props.roles" :key="modelName.id" :value="modelName.id">
+                        {{ modelName.name }}
+                    </option>
+                </select>
                 <ButtonSubmit text="Crear Usuario" processingText="Creando Usuairo..." class="mt-2 sm:mt-4" />
             </ContentPage>
-            <button type="submit">Enviar</button>
         </form>
     </AppLayout>
 

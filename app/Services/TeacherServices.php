@@ -121,20 +121,24 @@ class TeacherServices
 
 
 
-    public function evaluateShowPage()
+    public function evaluateShowPage(?int $id = null)
     {
         $user = Auth::user();
 
-        //throw new \ErrorException($user->userable());
-        $id = $user->userable_id;
+        $teacher = $user->getTeacherEntity();
 
-        $teacher = $this->teacherRepository->find($id);
+        if (!$teacher) {
+            activity('Acceso restringido, se intento crear un referente teórico sin profesor asignado')
+                ->causedBy($user);
 
-        $enrollment = $this->enrollmentServices->findEnrollmentActiveByTeacher($id);
+            return redirect()->route('dashboard');
+        }
+
+        $enrollment = $this->enrollmentServices->findEnrollmentActiveByTeacher($teacher->id);
 
         $moment = $this->datesActual->getSchoolMomentActual();
 
-        $learningProject = $this->projectRepository->findByEnrollmentAndMoment($enrollment->id, $moment);
+        $learningProject = $this->projectRepository->findByEnrollmentAndMoment($enrollment->id ?? 0, $moment);
 
         if (!$learningProject) {
             return redirect()->route('dashboard')->with(

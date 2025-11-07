@@ -6,6 +6,9 @@ use App\DTOs\Details\UserDetailDTO;
 use App\DTOs\PaginationDTO;
 use App\DTOs\Summary\UserDTO;
 use App\Repositories\Interfaces\UserInterface;
+use App\Utilities\FlashMessage;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class UserServices
 {
@@ -16,9 +19,31 @@ class UserServices
 
 
 
-    public function createUser(UserDTO $user): UserDTO
+    public function createUser(UserDTO $user)
     {
-        return $this->userRepository->createUser($user);
+        $result = $this->userRepository->createUser($user);
+
+        if (!$result) {
+            activity('Error al crear usuario')
+                ->causedBy(Auth::user())
+                ->log('Error al crear usuario: se intento crear un usuario con estos datos: ' . json_encode($user));
+            return Inertia::render('Users/CreateUser')->with(
+                'flash',
+                FlashMessage::error(
+                    'Error',
+                    'Usuario no creado',
+                    'El usuario no se creo'
+                )
+            );
+        }
+        return redirect()->route('manager.user.index')->with(
+            'flash',
+            FlashMessage::success(
+                'Exito',
+                'Usuario Creado',
+                'El usuario se creo sin problemas'
+            )
+        );
     }
 
 

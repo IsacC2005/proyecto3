@@ -110,9 +110,6 @@ const handleSync = async () => {
 };
 
 
-/**
- * Realiza una prueba rápida de conexión al API externo.
- */
 const testConnection = async () => {
     connectionStatus.value = 'testing';
 
@@ -138,7 +135,6 @@ const testConnection = async () => {
     }
 };
 
-// Limpiar el intervalo al destruir el componente para evitar fugas de memoria
 onUnmounted(() => {
     stopPolling();
 });

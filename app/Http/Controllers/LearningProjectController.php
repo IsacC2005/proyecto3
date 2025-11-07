@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
+use function PHPUnit\Framework\isEmpty;
 use function PHPUnit\Framework\isNumeric;
 
 class LearningProjectController extends Controller
@@ -108,7 +109,7 @@ class LearningProjectController extends Controller
             return;
         }
         $data = LearningProjectFactory::fromRequest($request);
-        $data->id = $id;
+        $data->id = (int) $id;
 
         $this->learningProjectServices->updateProject($data);
 

@@ -1,5 +1,5 @@
 <template>
-    <nav class="w-full my-8 flex justify-center ">
+    <nav class="w-full my-8 flex justify-center">
         <ul class="max-w-full overflow-auto flex items-center space-x-1 sm:space-x-2 text-sm font-medium">
             <template v-for="(page, index) in props.pages" :key="index">
                 <li v-if="page.url === null">

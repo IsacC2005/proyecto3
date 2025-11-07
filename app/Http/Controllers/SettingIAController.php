@@ -24,9 +24,9 @@ class SettingIAController extends Controller
     public function store(Request $request)
     {
         $validator = $request->validate([
-            'system_instruction' => 'required|string',
+            'system_instruction' => 'required|string|max:10000',
             'model' => 'required|string',
-            'key' => 'required|string',
+            'key' => 'required|string|max:50',
             'temperature' => 'required|numeric'
         ]);
 

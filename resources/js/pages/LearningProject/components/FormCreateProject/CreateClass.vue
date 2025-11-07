@@ -2,8 +2,8 @@
     <Label :for="'daily_class_' + index" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
         Referente Teorico #{{ index + 1 }}
     </Label>
-    <Input v-model="dailyClass.title" type="text" :id="'daily_class_' + index" placeholder="Ej: Introducción a Vue.js"
-        required />
+    <Input v-model="dailyClass.title" type="text" maxlength="254" :id="'daily_class_' + index"
+        placeholder="Ej: Introducción a Vue.js" required />
 
     <InputDate v-model="dailyClass.date" :id="'daily_class_date_' + index" />
 </template>

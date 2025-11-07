@@ -57,6 +57,20 @@ class User extends Authenticatable
         return $this->morphTo();
     }
 
+    public function getTeacherEntity(): ?\App\Models\Teacher
+    {
+        if (!$this->userable_type) {
+            return null;
+        }
+
+        if (!$this->userable instanceof \App\Models\Teacher) {
+            return null;
+        }
+
+        return $this->userable;
+    }
+
+
     /*
 
     TODO:  funcio para crear registro cuando se afecte esta tabla en la bd

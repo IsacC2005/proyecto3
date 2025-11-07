@@ -19,48 +19,57 @@ use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\ItemEvaluationDetailDTO;
 use App\Models\EvaluationItem;
 use DateTime;
+use Illuminate\Support\Facades\DB;
 
 class DailyClassRepository extends TransformDTOs implements DailyClassInterface
 {
 
-    public function create(DailyClassDTO | DailyClassDetailDTO $dailyClass): DailyClassDTO
+    public function create(DailyClassDTO | DailyClassDetailDTO $dailyClass): DailyClassDTO | null
     {
         try {
-            if ($dailyClass instanceof DailyClassDTO) {
-                $dailyClassModel = DailyClass::create([
-                    'date' => $dailyClass->date->format('Y-m-d'),
-                    'title' => $dailyClass->title,
-                    'content' => $dailyClass->content,
-                    'learning_project_id' => $dailyClass->learningProjectId
-                ]);
-
-                if (!$dailyClassModel) {
-                    throw new DailyClassNotCreateException();
-                }
-
-                foreach ($dailyClass->getItemEvaluations() as $evaluation) {
-                    $dailyClassModel->evaluation_items()->create([
-                        'title' => $evaluation->title
+            $dailyClassModel = null;
+            DB::transaction(function () use ($dailyClass, $dailyClassModel) {
+                if ($dailyClass instanceof DailyClassDTO) {
+                    $dailyClassModel = DailyClass::create([
+                        'date' => $dailyClass->date->format('Y-m-d'),
+                        'title' => $dailyClass->title,
+                        'content' => $dailyClass->content,
+                        'learning_project_id' => $dailyClass->learningProjectId
                     ]);
+
+                    if (!$dailyClassModel) {
+                        throw new DailyClassNotCreateException();
+                    }
+
+                    foreach ($dailyClass->getItemEvaluations() as $evaluation) {
+                        $dailyClassModel->evaluation_items()->create([
+                            'title' => $evaluation->title
+                        ]);
+                    }
+                } else {
+                    $dailyClassModel = DailyClass::create([
+                        'date' => $dailyClass->date->format('Y-m-d'),
+                        'title' => $dailyClass->title,
+                        'content' => $dailyClass->content,
+                        'learning_project_id' => $dailyClass->learningProject->id
+                    ]);
+
+
+                    if (!$dailyClassModel) {
+                        throw new DailyClassNotCreateException();
+                    }
+
+                    foreach ($dailyClass->getItemEvaluations() as $indicator) {
+                        $dailyClassModel->evaluation_items()->create([
+                            'title' => $indicator->title
+                        ]);
+                    }
+
+                    $dailyClassModel->save();
                 }
+            });
 
-                return $this->transformToDTO($dailyClassModel);
-            } else {
-                $dailyClassModel = DailyClass::create([
-                    'date' => $dailyClass->date->format('Y-m-d'),
-                    'title' => $dailyClass->title,
-                    'content' => $dailyClass->content,
-                    'learning_project_id' => $dailyClass->learningProject->id
-                ]);
-
-
-                if (!$dailyClassModel) {
-                    throw new DailyClassNotCreateException();
-                }
-
-
-                return $this->transformToDTO($dailyClassModel);
-            }
+            return $dailyClassModel ? $this->transformToDTO($dailyClassModel) : null;
         } catch (\Throwable $th) {
             throw $th;
         }

@@ -7,7 +7,7 @@ import { ref } from "vue";
 export const useUserStore = defineStore('user-store', () => {
 
     const form = useForm({
-        roleId: 4,
+        roleId: 0,
         name: '',
         email: '',
         password: ''

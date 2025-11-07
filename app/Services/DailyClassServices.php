@@ -30,12 +30,16 @@ class DailyClassServices
 
 
 
-    public function createDailyClassShowPage()
+    public function createDailyClassShowPage(?int $id = null)
     {
+
+
         $user = Auth::user();
-        $teacher_id = $user->userable_id;
+        $teacher = $user->getTeacherEntity();
 
         if (!$user->hasRole(RoleConstants::PROFESOR)) {
+            activity('Acceso restringido, se intento crear un referente teórico con un usuario sin el rol requerido')
+                ->causedBy($user);
             return redirect()->route('dashboard')->with(
                 'flash',
                 FlashMessage::error(
@@ -46,25 +50,36 @@ class DailyClassServices
             );
         }
 
-        $exist = $this->teacher->existTeacher($teacher_id ?? -1);
+        if (!$teacher) {
+            activity('Acceso restringido, se intento crear un referente teórico sin profesor asignado')
+                ->causedBy($user);
 
-        if (!$exist) {
             return redirect()->route('dashboard')->with(
                 'flash',
                 FlashMessage::success(
                     'No se puede crear el Referente Teorico.',
                     'Acceso restringido',
-                    'El profesor relacionado con este usuario no se encuentra.'
+                    'No tienes un profesor asignado.'
                 )
             );
         }
 
-        $year = $this->datesActual->getSchoolYearActual();
-        $moment = $this->datesActual->getSchoolMomentActual();
+        $project = null;
 
-        $project = $this->projectRepository->findOnDate($year, $moment, $teacher_id);
+        if ($id) {
+            $project = $this->projectRepository->find($id);
+        } else {
+
+            $year = $this->datesActual->getSchoolYearActual();
+            $moment = $this->datesActual->getSchoolMomentActual();
+
+            $project = $this->projectRepository->findOnDate($year, $moment, $teacher->id);
+        }
 
         if (!$project) {
+            activity("Proyecto de aprendizaje no encontrado, se intento crear un referente teórico pero no se encontro ningun proyecto; Parametro id=$id")
+                ->causedBy($user);
+
             return redirect()->route('dashboard')->with(
                 'flash',
                 FlashMessage::error(

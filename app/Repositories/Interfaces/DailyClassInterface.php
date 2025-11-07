@@ -8,7 +8,7 @@ use App\DTOs\Summary\DailyClassDTO;
 
 interface DailyClassInterface
 {
-    public function create(DailyClassDTO | DailyClassDetailDTO $dailyClass): DailyClassDTO;
+    public function create(DailyClassDTO | DailyClassDetailDTO $dailyClass): DailyClassDTO | null;
 
     public function find(int $id, ?string $fn = null): DailyClassDTO | DailyClassDetailDTO;
 

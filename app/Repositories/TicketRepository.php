@@ -96,13 +96,13 @@ class TicketRepository extends TransformDTOs implements TicketInterface
 
 
 
-    public function findByLearningProject(int $projectId): array
+    public function findByLearningProject(int $projectId): array | null
     {
         try {
             $ticketModel = Ticket::where('learning_project_id', $projectId)->get();
 
             if (!$ticketModel) {
-                throw new TicketNotFindException();
+                return null;
             }
 
             return $this->transformListDTO($ticketModel);

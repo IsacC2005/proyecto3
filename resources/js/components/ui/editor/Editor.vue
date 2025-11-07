@@ -9,7 +9,6 @@
 <script setup lang="ts">
 import { ref, watch, defineProps, defineEmits, onMounted, computed } from 'vue';
 import { QuillEditor } from '@vueup/vue-quill';
-import Label from '../label/Label.vue';
 
 const props = defineProps({
     modelValue: {

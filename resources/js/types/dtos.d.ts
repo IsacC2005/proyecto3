@@ -19,6 +19,7 @@ export interface Representative {
 
 export interface Student {
     id: number,
+    schoolId: string,
     name: string,
     surname: string,
     grade: Grade,
@@ -78,7 +79,7 @@ export interface User {
     name: string,
     email: string,
     password: string,
-    roles: Role[]
+    roles: number[]
 }
 
 export interface Role {

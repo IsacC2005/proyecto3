@@ -5,10 +5,10 @@
             <h2 class="text-xl sm:text-2xl font-semibold text-indigo-600 mb-6">{{ props.project.title }}</h2>
 
             <div class="flex flex-col flex-wrap sm:flex-row items-center gap-4 mb-8">
-                <button @click="ModalOpen = true"
+                <Link :href="`/daily-class/create/${props.project.id}`"
                     class="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors duration-200">
-                    Crear Referentes Teóricos
-                </button>
+                Crear Referentes Teóricos
+                </Link>
                 <Link :href="`/learning-project/edit/${props.project.id}`"
                     class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors duration-200">
                 Modificar Proyecto
@@ -19,7 +19,7 @@
                 <Link href="/learning-project/notes/" :data="{ projectId: props.project.id }"
                     class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors duration-200">
                 Ver Resumen de notas</Link>
-                <Link :href="`/tickets/${props.project.id}`"
+                <Link :href="`/tickets/index/${props.project.id}`"
                     class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors duration-200">
                 Ver Boletas</Link>
                 <Link :href="`/tickets/create/${props.project.id}`"

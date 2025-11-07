@@ -2,10 +2,11 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import Heading from '@/components/Heading.vue';
 import ReportNote from './Components/ReportNote/ReportNote.vue';
-import { type ReportNote as ReportNoteType } from '@/types/dtos';
+import { LearningProject, type ReportNote as ReportNoteType } from '@/types/dtos';
 
 const props = defineProps<{
-    ReportsNotes: ReportNoteType[]
+    ReportsNotes: ReportNoteType[],
+    project: LearningProject
 }>()
 
 const showDetails = (id: number) => {
@@ -15,7 +16,7 @@ const showDetails = (id: number) => {
 
 <template>
     <AppLayout>
-        <Heading title="Boletas del proyecto de aprendizaje {{ proyecto de aprendizaje }}" />
+        <Heading :title="`Boletas del proyecto de aprendizaje: ${props.project.title}`" />
         <div class="min-h-screen bg-background p-4 sm:p-8 font-sans">
 
             <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">

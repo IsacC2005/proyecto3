@@ -5,12 +5,14 @@ namespace App\Services;
 use App\Constants\TDTO;
 use App\DTOs\Details\TicketDetailDTO;
 use App\DTOs\Summary\TicketDTO;
+use App\Exceptions\LearningProject\LearningProjectNotExistException;
 use App\Jobs\CreateTicketJob;
 use App\Models\LearningProjectQualiteStudent;
 use App\Repositories\Interfaces\LearningProjectInterface;
 use App\Repositories\Interfaces\StudentInterface;
 use App\Repositories\Interfaces\TicketInterface;
 use GrahamCampbell\ResultType\Error;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -32,17 +34,9 @@ class TicketServices
 
 
 
-    public function createShowPage(?int $id)
+    public function createShowPage(?int $id): InertiaResponse | RedirectResponse
     {
-        $teacher_id = Auth::user()->userable_id;
-
-
-
-        if (!$teacher_id) {
-            $teacher_id = -1;
-        }
-
-        $data = [];
+        $teacher_id = $this->getTeacherIdOrFail();
 
         if ($id) {
             $project = $this->project->find($id);
@@ -53,13 +47,16 @@ class TicketServices
             $project = $this->project->findOnDate($year, $moment, $teacher_id);
         }
 
-
-        $data["project"] = $project;
+        if (!$project) {
+            return redirect()->route('learning-project.index');
+        }
 
         $students = $this->student->findStudentByEnrollment($project->enrollmentId);
 
-        $data["students"] = $students;
-        return $data;
+        return Inertia::render('Ticket/Create', [
+            'project' => $project,
+            'students' => $students
+        ]);
     }
 
 
@@ -160,14 +157,36 @@ class TicketServices
     }
 
 
-    public function getAllTicketToProject(?int $projectId = null): InertiaResponse
+    public function getAllTicketToProject(?int $projectId = null): InertiaResponse | RedirectResponse
     {
 
+        $teacher_id = $this->getTeacherIdOrFail();
+        $project = null;
+
+        if ($projectId) {
+            $project = $this->project->find($projectId);
+        } else {
+            $year = $this->datesActual->getSchoolYearActual();
+            $moment = $this->datesActual->getSchoolMomentActual();
+
+            $project = $this->project->findOnDate($year, $moment, $teacher_id);
+        }
+
+        if (!$project) {
+            return redirect()->route('learning-project.index');
+        }
 
         $data = $this->ticket->findByLearningProject($projectId);
 
+        if (!$data) {
+            activity('No se encontro ningun boletin para el proyecto de aprendizaje ' . $projectId)
+                ->causedBy(Auth::user());
+            return redirect()->route('learning-project.index');
+        }
+
         return Inertia::render('Ticket/ListTicket', [
-            'ReportsNotes' => $data
+            'ReportsNotes' => $data,
+            'project' => $project
         ]);
     }
 
@@ -216,7 +235,7 @@ class TicketServices
                 $templateProcessor->setValue($key, (string) $value);
             }
 
-            $fileName = 'boletin_procesado_' . time() . '.docx';
+            $fileName = $ticket->studentName . '_boletin_'  . date('Y-m-d') . '.docx';
             $tempPath = tempnam(sys_get_temp_dir(), 'phpword_template');
 
             $templateProcessor->saveAs($tempPath);
@@ -233,5 +252,21 @@ class TicketServices
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al generar el documento: ' . $e->getMessage()], 500);
         }
+    }
+
+    private function getTeacherIdOrFail(): int
+    {
+        $user = Auth::user();
+
+        $teacher = $user->getTeacherEntity();
+
+        if (is_null($teacher)) {
+            activity('Usuario sin profesor asociado, intentando ver proyectos de aprendizaje.')
+                ->causedBy($user);
+
+            throw new \Exception('Este usuario no tiene un profesor asociado.');
+        }
+
+        return $teacher->id;
     }
 }

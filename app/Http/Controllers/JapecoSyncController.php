@@ -27,7 +27,7 @@ class JapecoSyncController extends Controller
 
             return response()->json($data);
         } catch (\Throwable $th) {
-
+            throw new \Exception($th->getMessage());
 
             if ($th->getCode() === 0) {
             }

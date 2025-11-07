@@ -243,14 +243,19 @@ class StudentRepository extends TransformDTOs implements StudentInterface
         }
     }
 
-    protected function transformToDTO(Model $model): DTOSummary
+    /**
+     * @param Student $model
+     */
+
+    protected function transformToDTO(Model $student): DTOSummary
     {
-        $representative = $model->representative;
+        // $representative = $student->representative;
         return new StudentDTO(
-            id: $model->id,
-            grade: $model->grade,
-            name: $model->name,
-            surname: $model->surname,
+            id: $student->id,
+            schoolId: $student->school_id,
+            grade: $student->grade,
+            name: $student->name,
+            surname: $student->surname,
         );
     }
 

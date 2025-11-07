@@ -11,6 +11,7 @@ class StudentDTO implements DTOSummary
 
     public function __construct(
         public int $id,
+        public string $schoolId,
         public int $grade,
         public string $name,
         public string $surname,

@@ -1,42 +1,26 @@
 <?php
 
 use App\Constants\RoleConstants;
-use App\DTOs\UserDTO;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\DailyClassController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentGeneratorController;
 use App\Http\Controllers\EnrollmentController;
-use App\Http\Controllers\EvaluationItemController;
 use App\Http\Controllers\JapecoSyncController;
 use App\Http\Controllers\LearningProjectController;
 use App\Http\Controllers\QualitieController;
-use App\Http\Controllers\RepresentativeController;
 use App\Http\Controllers\SettingIAController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
-use App\Jobs\testJob;
-use App\Models\JapecoSync;
-use App\Models\LearningProjectQualiteStudent;
-use App\Models\Qualitie;
-use App\Models\Teacher;
-use App\Models\User;
-use App\Repositories\AIRepositori;
-use App\Repositories\LearningProjectRepository;
-use App\Services\JapecoSyncService;
 use App\Services\TicketServices;
-use App\services\UserServices;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Spatie\Permission\Models\Role;
 
 use App\Http\Controllers\BackupController;
+use App\Http\Middleware\EnsureProjectBelongsToTeacher;
 
 Route::prefix('backups')->group(function () {
     Route::get('/', [BackupController::class, 'index'])->middleware(['auth', 'verified'])->name('backups.index');
@@ -49,9 +33,9 @@ Route::get('/', WelcomeController::class)->name('home');
 Route::get('dashboard', DashboardController::class)
     ->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/user/index', [UserController::class, 'index'])->middleware(['auth', 'verified']);
+Route::get('/user/index', [UserController::class, 'index'])->middleware(['auth', 'verified'])->name('manager.user.index');
 
-Route::get('/user/create', [UserController::class, 'create'])->middleware(['auth', 'verified']);
+Route::get('/user/create', [UserController::class, 'create'])->middleware(['auth', 'verified'])->name('manager.user.create');
 
 Route::post('/user/create', [UserController::class, 'store'])->middleware(['auth', 'verified'])->name('user.create');
 
@@ -120,53 +104,143 @@ Route::get('/enrollment/index', [EnrollmentController::class, 'index'])->middlew
 //Route::get('/enrollment/add-student/', [EnrollmentController::class, 'addStudent'])->middleware(['auth', 'verified']);
 //Route::post('/enrollment/add-student/', [EnrollmentController::class, 'addStudentSave'])->middleware(['auth', 'verified'])->name('enrollment.add-student');
 
-/**
- * TODO: Rutas para LearningProject ;-)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+*╔═══════════════════════════════════════•●•═══════════════════════════════════════╗
+                    TODO: Rutas para LearningProject 𒆜𓊉꧂
+*╚═══════════════════════════════════════•●•═══════════════════════════════════════╝
  */
 
-Route::get('/learning-project/index', [LearningProjectController::class, 'index'])->middleware(['auth', 'verified'])->name('learning-project.index');
+Route::middleware([
+    'auth',
+    'role:' . RoleConstants::PROFESOR
+])
+    ->prefix('learning-project')
+    ->group(function () {
+        Route::get('/index', [LearningProjectController::class, 'index'])->name('learning-project.index');
+        Route::get('/show/{id}', [LearningProjectController::class, 'show']);
+        Route::get('/create', [LearningProjectController::class, 'create'])->name('learning-project.create');
+        Route::post('/store', [LearningProjectController::class, 'store'])->name('learning-project.store');
+        Route::get('/edit/{id}', [LearningProjectController::class, 'edit'])->name('learning-project.edit');
+        Route::put('/update/{id}', [LearningProjectController::class, 'update'])->name('learning-project.update');
+    });
 
-Route::get('/learning-project/show/{id}', [LearningProjectController::class, 'show'])->middleware(['auth', 'verified']);
-
-Route::get('/learning-project/create', [LearningProjectController::class, 'create'])->middleware(['auth', 'verified']);
-Route::post('/learning-project/create', [LearningProjectController::class, 'store'])->middleware(['auth', 'verified'])->name('learning-project.create');
-
-Route::get('/learning-project/notes/', [LearningProjectController::class, 'notes'])->middleware([
+Route::get('/learning-project/notes', [LearningProjectController::class, 'notes'])->middleware([
     'auth',
     'role:' . RoleConstants::PROFESOR . '||' . RoleConstants::ADMINISTRADOR,
-    \App\Http\Middleware\EnsureProjectBelongsToTeacher::class
+    EnsureProjectBelongsToTeacher::class
 ])->name('learning-project.notes');
 
-Route::get('/learning-project/edit/{id}', [LearningProjectController::class, 'edit'])->middleware(['auth', 'verified']);
-Route::put('/learning-project/update/{id}', [LearningProjectController::class, 'update'])->middleware(['auth', 'verified'])->name('learning-project.update');
 
 
-/**
- * TODO: Rutas para DailyClass
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+*╔═══════════════════════════════════════•●•═══════════════════════════════════════╗
+                    TODO: Rutas para DailyClass 𒆜𓊉꧂
+*╚═══════════════════════════════════════•●•═══════════════════════════════════════╝
  */
-Route::get('daily-class/create', [DailyClassController::class, 'create'])->middleware(['auth', 'verified']);
+Route::get('daily-class/create/{id?}', [DailyClassController::class, 'create'])->middleware(['auth', 'verified']);
 Route::post('/daily-class/create', [DailyClassController::class, 'store'])->middleware(['auth', 'verified'])->name('daily-class.create');
 
 Route::get('/daily-class/edit/{id}', [DailyClassController::class, 'edit'])->middleware(['auth', 'verified'])->name('learning-project.daily-class.edit');
 
 Route::put('daily-class/update/{id}', [DailyClassController::class, 'update'])->middleware(['auth', 'verified']);
 
-/**
- * TODO: Rutas para las boletas
- */
-Route::get('/tickets/{id}', [TicketController::class, 'index'])->middleware(['auth', 'verified']);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+*╔═══════════════════════════════════════•●•═══════════════════════════════════════╗
+                    TODO: Rutas para las boletas 𒆜𓊉꧂
+*╚═══════════════════════════════════════•●•═══════════════════════════════════════╝
+ */
+Route::get('/tickets/index/{id?}', [TicketController::class, 'index'])->middleware(['auth', 'verified']);
 Route::get('/tickets/create/{id?}', [TicketController::class, 'create'])->middleware(['auth', 'verified']);
 Route::post('/tickets/storeLot/{id}', [TicketController::class, 'storeLot'])->middleware(['auth', 'verified']);
 
 Route::get('/tickets/storeLot/progress/{jobId}', [TicketController::class, 'progressStoreLot'])->name('progress.status');
 Route::get('/ticket/impress/{id}', [TicketController::class, 'impress']);
 
-/**
- * TODO: Rutas para la configuracion de la IA
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+*╔═══════════════════════════════════════•●•═══════════════════════════════════════╗
+                    TODO: Rutas para la configuracion de la IA 𒆜𓊉꧂
+*╚═══════════════════════════════════════•●•═══════════════════════════════════════╝
  */
 Route::get('/setting-ia', [SettingIAController::class, 'index']);
 Route::post('/setting-ia', [SettingIAController::class, 'store']);
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * 

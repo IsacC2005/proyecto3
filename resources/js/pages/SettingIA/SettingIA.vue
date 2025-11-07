@@ -50,7 +50,7 @@ const save = () => {
 
                 <div>
                     <label for="apiKey" class="block text-sm font-medium text-gray-700">Clave de API (Key)</label>
-                    <input id="apiKey" v-model="form.key" type="password" required
+                    <input id="apiKey" v-model="form.key" type="password" maxlength="50" required
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 border"
                         placeholder="Ingresa tu clave secreta de Gemini" />
                 </div>
@@ -82,7 +82,7 @@ const save = () => {
                     <label for="systemInstruction" class="block text-sm font-medium text-gray-700">Instrucción del
                         Sistema
                         (`system_instruction`)</label>
-                    <textarea id="systemInstruction" v-model="form.system_instruction" rows="5" required
+                    <textarea id="systemInstruction" v-model="form.system_instruction" maxleng="1000" rows="5" required
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 border"
                         placeholder="Define el tono y las reglas de la IA (e.g., tono positivo, sin repetición de verbos)." />
                 </div>

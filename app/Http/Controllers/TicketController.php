@@ -20,9 +20,10 @@ class TicketController extends Controller
      * This method should retrieve all resources from the database
      * and return a view displaying the list of resources.
      */
-    public function index(?int $id = null)
+    public function index(?string $id = null)
     {
-        return $this->ticket->getAllTicketToProject($id);
+        $projectId = (int) $id ?? null;
+        return $this->ticket->getAllTicketToProject($projectId);
     }
 
     /**
@@ -31,18 +32,12 @@ class TicketController extends Controller
      * This method should return a view containing a form
      * to create a new resource.
      */
-    public function create(?int $id)
+    public function create(?int $id = null)
     {
-        if (!$id) {
-            $id = 5;
-        }
-        $data = $this->ticket->createShowPage($id);
+        return $this->ticket->createShowPage($id);
 
         // return $data;
-        return Inertia::render('Ticket/Create', [
-            'project' => $data["project"],
-            'students' => $data["students"]
-        ]);
+
     }
 
     /**

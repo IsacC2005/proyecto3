@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('setting_ia', function (Blueprint $table) {
+            $table->id();
             $table->text('system_instruction');
             $table->string('model');
             $table->string('key');

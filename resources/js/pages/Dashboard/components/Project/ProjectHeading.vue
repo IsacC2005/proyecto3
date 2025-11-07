@@ -3,7 +3,7 @@
         <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-[--foreground]">
             {{ props.title }}
         </h1>
-        <p class="mt-1 text-base text-[--muted-foreground]">¡Tu progreso en el proyecto Full Stack!</p>
+        <p class="mt-1 text-base text-[--muted-foreground]">Resumen de proyecto de aprendizaje</p>
     </div>
 </template>
 

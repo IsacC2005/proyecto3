@@ -41,7 +41,7 @@ const submit = () => {
             <div class="grid gap-6">
                 <div class="grid gap-2">
                     <Label for="email">Dirección de correo electrónico</Label>
-                    <Input id="email" type="email" required autofocus :tabindex="1" autocomplete="email"
+                    <Input id="email" type="email" maxlength="100" required autofocus :tabindex="1" autocomplete="email"
                         v-model="form.email" placeholder="email@example.com" />
                     <InputError :message="form.errors.email" />
                 </div>
@@ -49,13 +49,9 @@ const submit = () => {
                 <div class="grid gap-2">
                     <div class="flex items-center justify-between">
                         <Label for="password">Contraseña</Label>
-                        <TextLink v-if="canResetPassword" :href="route('password.request')" class="text-sm"
-                            :tabindex="5">
-                            ¿Olvidaste tu contraseña?
-                        </TextLink>
                     </div>
-                    <Input id="password" type="password" required :tabindex="2" autocomplete="current-password"
-                        v-model="form.password" placeholder="Password" />
+                    <Input id="password" type="password" maxlength="100" required :tabindex="2"
+                        autocomplete="current-password" v-model="form.password" placeholder="Password" />
                     <InputError :message="form.errors.password" />
                 </div>
 

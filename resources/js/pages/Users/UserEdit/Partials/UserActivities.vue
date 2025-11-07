@@ -63,9 +63,9 @@ const formatChanges = (properties: string) => {
                 <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-for="log in props.logs.data" :key="log.id">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ log.description
-                            }}</td>
+                        }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ log.causer_name
-                            }}</td>
+                        }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{
                             log.subject_type ?
                                 log.subject_type.split('\\').pop() : 'N/A' }}</td>
@@ -80,7 +80,7 @@ const formatChanges = (properties: string) => {
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ log.created_at
-                            }}</td>
+                        }}</td>
                     </tr>
                     <tr v-if="logs.data.length === 0">
                         <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">No hay

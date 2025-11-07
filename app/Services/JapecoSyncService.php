@@ -89,8 +89,8 @@ class JapecoSyncService
 
                 $teachersToUpsert[] = [
                     'japeco_id' => $apiTeacher['id'],
-                    'name' => trim($apiTeacher['name'] ?? ''),
-                    'surname' => trim($apiTeacher['surname'] ?? ''),
+                    'name' => trim($apiTeacher['firstName'] ?? ''),
+                    'surname' => trim($apiTeacher['firstLastName'] ?? ''),
                     'idcard' => $idCard === 'NO' ? null : $idCard,
                     'phone' => $phone === 'NO' ? null : $phone,
                     'created_at' => now(),

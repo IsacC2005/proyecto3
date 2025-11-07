@@ -4,7 +4,7 @@
         <!-- {{ props.project }} -->
         <form @submit.prevent="submit" class="m-1 sm:m-8">
             <Label for="title">Titulo del proyecto</Label>
-            <Input v-model="form.title" class="mt-4 mb-8" id="title" type="text"
+            <Input v-model="form.title" class="mt-4 mb-8" maxlength="254" id="title" type="text"
                 placeholder="Nuestros Vecinos del Huerto: Un Viaje al Mundo de los Insectos" />
 
             <Label>Diagnóstico y Propósito</Label>
@@ -28,7 +28,10 @@ import Editor from '@/components/ui/editor/Editor.vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import ButtonSubmit from '@/components/ui/button/ButtonSubmit.vue';
+import { useAlertData } from '@/store/ModalStore';
+import { ContentVeryLong } from './Alerts';
 
+const alertData = useAlertData();
 
 const props = defineProps<{
     project: LearningProject
@@ -37,8 +40,6 @@ const props = defineProps<{
 
 const model = ref(props.project.content);
 
-// Inicializa el formulario de Inertia con los datos del proyecto
-// Esto precarga los campos con los valores existentes
 const form = useForm({
     id: props.project.id,
     title: props.project.title,
@@ -47,7 +48,10 @@ const form = useForm({
 });
 
 const submit = () => {
-    // Asigna el contenido del editor al formulario antes de enviar
+    if (model.value.length > 20) {
+        alertData.showAlert(ContentVeryLong)
+        return;
+    }
     form.content = model.value;
 
     // Usa el método PUT para actualizar el recurso existente

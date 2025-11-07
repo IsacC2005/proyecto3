@@ -29,7 +29,8 @@ class UserController extends Controller
     public function index()
     {
         return Inertia::render('Users/ListUsers', [
-            'users' => $this->userService->findAllUser()
+            'users' => $this->userService->findAllUser(),
+            'roles' => Role::pluck('name', 'id')->all()
         ]);
     }
 
@@ -41,7 +42,15 @@ class UserController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Users/CreateUser');
+        $roles = Role::all();
+        return Inertia::render('Users/CreateUser', [
+            'roles' => $roles->map(function ($role) {
+                return [
+                    'id' => $role->id,
+                    'name' => $role->name
+                ];
+            })
+        ]);
     }
 
     /**
@@ -53,7 +62,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $userDTO = UserFactory::fromRequest($request);
-        $this->userService->createUser($userDTO);
+        return $this->userService->createUser($userDTO);
     }
 
     /**

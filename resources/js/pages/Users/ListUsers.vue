@@ -3,11 +3,13 @@ import Paginator from '@/components/Paginator.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { defineProps } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import { Pagination } from '@/types/dtos';
+import { Pagination, Role } from '@/types/dtos';
 import { User } from '@/types/dtos';
+import Heading from '@/components/Heading.vue';
 
 const props = defineProps<{
     users: Pagination<User>;
+    roles: object
 }>();
 
 const formatRoles = (roles: string[]): string => {
@@ -17,11 +19,7 @@ const formatRoles = (roles: string[]): string => {
 
 <template>
     <AppLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Gestión de Usuarios
-            </h2>
-        </template>
+        <Heading title="Gestión de Usuarios" />
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -73,8 +71,8 @@ const formatRoles = (roles: string[]): string => {
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                         <span
                                             class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800"
-                                            v-for="role in user.roles" :key="role.id">
-                                            {{ role }}
+                                            v-for="role in user.roles" :key="role">
+                                            {{ props.roles[role] }}
                                         </span>
                                     </td>
 

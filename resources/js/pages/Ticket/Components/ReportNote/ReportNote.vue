@@ -116,7 +116,7 @@ const impress = () => {
             class="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0 sm:space-x-2 pt-3 border-t">
             <a :href="`/ticket/impress/${props.reportNote.id}`"
                 class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out shadow-md hover:shadow-lg text-sm">
-                Imprimir {{ props.reportNote.id }}
+                Descargar
             </a>
             <button @click="handleDelete(props.reportNote.id)"
                 class="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out text-sm">

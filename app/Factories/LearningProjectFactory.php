@@ -46,11 +46,11 @@ class LearningProjectFactory implements Factory
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'content' => 'nullable|string',
+            'content' => 'nullable|string|max:100000',
             'schoolMoment' => 'required|integer|in:1,2,3',
             'dailyClasses' => 'required|array',
             'dailyClasses.*.title' => 'required|string|max:255',
-            'dailyClasses.*.content' => 'nullable|string',
+            'dailyClasses.*.content' => 'nullable|string|max:100000',
 
         ]);
 

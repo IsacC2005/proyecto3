@@ -31,10 +31,10 @@ class DailyClassController extends Controller
      * This method should return a view containing a form
      * to create a new resource.
      */
-    public function create()
+    public function create(?string $id = null)
     {
-        return $this->dailyClassServices->createDailyClassShowPage();
-        // Debería mostrar el formulario para crear un nuevo elemento.
+        $projectId = (int) $id ?? null;
+        return $this->dailyClassServices->createDailyClassShowPage($projectId);
     }
 
     /**

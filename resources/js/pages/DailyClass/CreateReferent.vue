@@ -1,7 +1,6 @@
 <template>
     <AppLayout>
         <Heading title="Crear Referente Teórico" />
-        {{ props.projectId + 'asdf' }}
         <ContentPage>
             <FormReferent @submit.prevent="store">
                 <button type="submit"

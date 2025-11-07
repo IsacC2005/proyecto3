@@ -4,7 +4,7 @@
             {{ moments[props.schoolMoment] }}
         </h3>
         <Label for="title">Titulo del proyecto</Label>
-        <Input v-model="form.title" class="mt-4 mb-8" id="title" type="text"
+        <Input v-model="form.title" class="mt-4 mb-8" maxlength="254" id="title" type="text"
             placeholder="Nuestros Vecinos del Huerto: Un Viaje al Mundo de los Insectos" />
 
         <Label>
@@ -44,8 +44,6 @@ const props = defineProps<{
     enrollmentId: number
 }>()
 
-
-
 const form = useForm<LearningProject>({
     title: '',
     content: '',
@@ -56,13 +54,12 @@ const form = useForm<LearningProject>({
         title: '',
         content: '',
         date: new Date()
-
     }],
 });
 
 const submit = () => {
     form.content = model.value;
-    form.post(route('learning-project.create'), {
+    form.post('/learning-project/store', {
         preserveScroll: true,
         onSuccess: () => {
             form.reset();

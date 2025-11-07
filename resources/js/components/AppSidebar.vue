@@ -86,8 +86,7 @@ const mainNavItems: NavItem[] = [
         icon: Notebook,
         children: [
             { title: 'Crear boletas', href: '/tickets/create' },
-            { title: 'Buscar boleta', href: '/tickets' },
-            { title: 'Evaluar Clase', href: '#' }
+            { title: 'Buscar boleta', href: '/tickets/index' },
         ]
     }
 ];

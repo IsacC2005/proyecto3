@@ -219,14 +219,7 @@ class LearningProjectServices
                 activity('Proyecto no encontrado')
                     ->causedBy($user)
                     ->log('Se intento ver las notas del proyecto activo pero no se encontro.');
-                return redirect()->route('dashboard')->with(
-                    'flash',
-                    FlashMessage::error(
-                        'Error',
-                        'No se encontro el proyecto',
-                        "No tienes un proyecto de aprendizaje que se encuentre activo para el $year, Momento $moment."
-                    )
-                );
+                return redirect()->route('learning-project.index');
             }
         }
 
