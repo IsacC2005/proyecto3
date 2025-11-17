@@ -3,6 +3,7 @@ import { onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
 import ContentPage from '@/components/ContentPage.vue';
+import { BreadcrumbItem } from '@/types';
 
 
 const form = useForm({
@@ -21,6 +22,7 @@ interface ApiConfig {
 
 const props = defineProps<{
     initialConfig: ApiConfig;
+    models: string[];
 }>();
 
 onMounted(() => {
@@ -30,17 +32,22 @@ onMounted(() => {
     form.temperature = props.initialConfig.temperature;
 })
 
-const availableModels = ['gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-nano'];
-
 // Función para guardar y emitir el estado actual
 const save = () => {
-    form.post('/setting-ia');
+    form.put('/setting-ia');
 };
+
+const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Configuracion IA',
+        href: '/setting-ia',
+    }
+];
 
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbItems">
         <ContentPage>
             <h2 class="text-2xl font-bold text-indigo-700 mb-6 border-b pb-2">
                 Configuración de la API de Gemini
@@ -50,7 +57,7 @@ const save = () => {
 
                 <div>
                     <label for="apiKey" class="block text-sm font-medium text-gray-700">Clave de API (Key)</label>
-                    <input id="apiKey" v-model="form.key" type="password" maxlength="50" required
+                    <input id="apiKey" v-model="form.key" type="password" maxlength="50"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 border"
                         placeholder="Ingresa tu clave secreta de Gemini" />
                 </div>
@@ -59,7 +66,7 @@ const save = () => {
                     <label for="model" class="block text-sm font-medium text-gray-700">Modelo de IA</label>
                     <select id="model" v-model="form.model"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 border bg-white">
-                        <option v-for="modelName in availableModels" :key="modelName" :value="modelName">
+                        <option v-for="modelName in props.models" :key="modelName" :value="modelName">
                             {{ modelName }}
                         </option>
                     </select>

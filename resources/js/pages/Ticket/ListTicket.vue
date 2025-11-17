@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import Heading from '@/components/Heading.vue';
 import ReportNote from './Components/ReportNote/ReportNote.vue';
 import { LearningProject, type ReportNote as ReportNoteType } from '@/types/dtos';
+import { BreadcrumbItem } from '@/types';
 
 const props = defineProps<{
     ReportsNotes: ReportNoteType[],
@@ -12,10 +13,25 @@ const props = defineProps<{
 const showDetails = (id: number) => {
     console.log(`mostrarndo todos los datos de ${id}`)
 }
+
+const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Lista de proyectos',
+        href: '/learning-project/index',
+    },
+    {
+        title: props.project.title,
+        href: '/learning-project/show/' + props.project.id,
+    },
+    {
+        title: 'Boletas',
+        href: '/tickets/index/' + props.project.id,
+    }
+];
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbItems">
         <Heading :title="`Boletas del proyecto de aprendizaje: ${props.project.title}`" />
         <div class="min-h-screen bg-background p-4 sm:p-8 font-sans">
 

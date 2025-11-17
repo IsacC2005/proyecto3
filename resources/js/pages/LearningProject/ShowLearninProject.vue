@@ -1,5 +1,5 @@
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbItems">
         <Heading title="Detalles del proyecto"></Heading>
         <div class="p-4 sm:p-6 md:p-8">
             <h2 class="text-xl sm:text-2xl font-semibold text-indigo-600 mb-6">{{ props.project.title }}</h2>
@@ -65,6 +65,7 @@ import { defineProps, onMounted, ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { LearningProject } from '@/types/dtos';
 import Heading from '@/components/Heading.vue';
+import { BreadcrumbItem } from '@/types';
 
 const props = defineProps<{
     project: LearningProject,
@@ -92,4 +93,15 @@ const formatDate = (dateObject: any) => {
         day: 'numeric'
     });
 };
+
+const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Lista de proyectos',
+        href: '/learning-project/index',
+    },
+    {
+        title: props.project.title,
+        href: '/learning-project/show/' + props.project.id,
+    }
+];
 </script>

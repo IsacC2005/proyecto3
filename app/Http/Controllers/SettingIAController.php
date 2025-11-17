@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SettingIaRequest;
 use App\Models\SettingIA;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,32 +12,49 @@ class SettingIAController extends Controller
     public function index()
     {
         $data = SettingIA::first();
+
+
+        $models = [
+            'gemini-2.5-flash-lite',
+            'gemini-2.5-flash',
+            'gemini-2.5-pro',
+        ];
+
         return Inertia::render('SettingIA/SettingIA', [
             'initialConfig' => [
                 'system_instruction' => $data->system_instruction ?? '',
                 'model' => $data->model ?? '',
-                'key' => $data->key ?? '',
+                'key' => '',
                 'temperature' => $data->temperature ?? 1
-            ]
+            ],
+            'models' => $models
         ]);
     }
 
-    public function store(Request $request)
+    public function store(SettingIaRequest $request)
     {
-        $validator = $request->validate([
-            'system_instruction' => 'required|string|max:10000',
-            'model' => 'required|string',
-            'key' => 'required|string|max:50',
-            'temperature' => 'required|numeric'
-        ]);
-
-        //  SettingIA::query()->delete(); // Borra todos los registros
 
         $settings = SettingIA::create([
-            'system_instruction' => $request->input('system_instruction'),
-            'model' => $request->input('model'),
-            'key' => $request->input('key'),
-            'temperature' => $request->input('temperature')
+            'system_instruction' => $request['system_instruction'],
+            'model' => $request['model'],
+            'key' => $request['key'],
+            'temperature' => $request['temperature']
         ]);
+    }
+
+
+    public function update(SettingIaRequest $request)
+    {
+        $settings = [
+            'system_instruction' => $request['system_instruction'],
+            'model' => $request['model'],
+            'temperature' => $request['temperature']
+        ];
+
+        if ($request['key']) {
+            $settings['key'] = $request['key'];
+        }
+
+        SettingIA::UpdateOrCreate(['id' => 1], $settings);
     }
 }

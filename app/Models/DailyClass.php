@@ -17,12 +17,18 @@ class DailyClass extends Model
         'date',
         'title',
         'content',
-        'learning_project_id'
+        'learning_project_id',
+        'training_area_id'
     ];
 
     public function learning_project(): BelongsTo
     {
         return $this->belongsTo(LearningProject::class);
+    }
+
+    public function training_area(): BelongsTo
+    {
+        return $this->belongsTo(TrainingArea::class);
     }
 
     public function evaluation_items(): HasMany

@@ -8,6 +8,8 @@ import Label from '@/components/ui/label/Label.vue';
 import InputAccessData from './Components/InputAccessData.vue';
 import ButtonSubmit from '@/components/ui/button/ButtonSubmit.vue';
 import { useUserStore } from '@/store/UserStore';
+import { BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/vue3';
 
 const props = defineProps({
     roles: {
@@ -35,10 +37,18 @@ const submit = () => {
     })
 }
 
+const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Gestión de Usuarios',
+        href: '/user/index',
+    }
+];
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbItems">
+
+        <Head title="Crear usuario" />
         <Heading title="Crear nuevo usuario" />
         <form @submit.prevent="submit">
             <ContentPage>

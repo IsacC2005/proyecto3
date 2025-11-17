@@ -10,6 +10,7 @@ import { ref, computed, onUnmounted } from 'vue';
 import axios from 'axios';
 import { router } from '@inertiajs/vue3';
 import ConnectionStatus from './components/ConnectionStatus.vue';
+import { BreadcrumbItem } from '@/types';
 
 const props = defineProps({
     lastSyncedAt: {
@@ -139,10 +140,16 @@ onUnmounted(() => {
     stopPolling();
 });
 
+const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Sincronización con Japeco',
+        href: '/japeco-sync',
+    }
+];
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbItems">
         <Heading title="Panel de Sincronización de Datos"
             description="Algunos datos importantes como profesores, estudiantes y matriculas, provienen de japeco estos datos se sincronizan cada 15 dias, pero si es necesario puedes sincronizarlos ahora mismo" />
         <ContentPage>

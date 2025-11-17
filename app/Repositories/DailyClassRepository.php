@@ -17,6 +17,7 @@ use App\DTOs\Summary\DTOSummary;
 use Illuminate\Database\Eloquent\Model;
 use App\DTOs\Details\DTODetail;
 use App\DTOs\Details\ItemEvaluationDetailDTO;
+use App\Factories\LearningProjectFactory;
 use App\Models\EvaluationItem;
 use DateTime;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,7 @@ class DailyClassRepository extends TransformDTOs implements DailyClassInterface
             DB::transaction(function () use ($dailyClass, $dailyClassModel) {
                 if ($dailyClass instanceof DailyClassDTO) {
                     $dailyClassModel = DailyClass::create([
+                        'traing_area_id' => $dailyClass->trainingAreaId,
                         'date' => $dailyClass->date->format('Y-m-d'),
                         'title' => $dailyClass->title,
                         'content' => $dailyClass->content,
@@ -48,6 +50,7 @@ class DailyClassRepository extends TransformDTOs implements DailyClassInterface
                     }
                 } else {
                     $dailyClassModel = DailyClass::create([
+                        'training_area_id' => $dailyClass->trainingAreaId,
                         'date' => $dailyClass->date->format('Y-m-d'),
                         'title' => $dailyClass->title,
                         'content' => $dailyClass->content,
@@ -170,7 +173,7 @@ class DailyClassRepository extends TransformDTOs implements DailyClassInterface
 
 
 
-    public function delete($id): void
+    public function delete(int $id): void
     {
         try {
             $dailyClassModel = DailyClass::find($id);
@@ -185,10 +188,16 @@ class DailyClassRepository extends TransformDTOs implements DailyClassInterface
         }
     }
 
+
+    /**
+     * @param DailyClass $model
+     * @return DailyClassDTO
+     */
     protected function transformToDTO(Model $model): DTOSummary
     {
         return new DailyClassDTO(
             id: $model->id,
+            trainingAreaId: $model->training_area_id,
             date: new \DateTime($model->date),
             title: $model->title,
             content: $model->content,
@@ -196,10 +205,16 @@ class DailyClassRepository extends TransformDTOs implements DailyClassInterface
         );
     }
 
+
+    /**
+     * @param DailyClass $model
+     * @return DailyClassDetailDTO
+     */
     protected function transformToDetailDTO(Model $model): DTODetail
     {
         $class = new DailyClassDetailDTO(
             id: $model->id,
+            trainingAreaId: $model->training_area_id,
             date: new \DateTime($model->date),
             title: $model->title,
             content: $model->content,
@@ -212,6 +227,9 @@ class DailyClassRepository extends TransformDTOs implements DailyClassInterface
                 title: $item->title
             ));
         }
+
+        $class->learningProject = LearningProjectFactory::fromArrayDetail(['id' => $model->learning_project->id, 'title' => $model->learning_project->title]);
+
         return $class;
     }
 }

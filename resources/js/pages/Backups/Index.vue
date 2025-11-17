@@ -2,6 +2,8 @@
 import { useForm } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { BreadcrumbItem } from '@/types';
+import Heading from '@/components/Heading.vue';
 
 const props = defineProps({
     backupListOutput: String,
@@ -27,13 +29,19 @@ const cleanBackups = () => {
         });
     }
 };
+
+const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Gestión de Respaldos',
+        href: '/backups',
+    }
+];
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbItems">
+        <Heading title="Gestión de Respaldos de Base de Datos" />
         <div class="container mx-auto p-4">
-            <h1 class="text-3xl font-bold mb-6">Gestión de Respaldos de Base de Datos</h1>
-
             <div v-if="success" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
                 <p>{{ success }}</p>
             </div>

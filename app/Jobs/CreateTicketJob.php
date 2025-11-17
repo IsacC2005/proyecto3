@@ -47,7 +47,6 @@ class CreateTicketJob implements ShouldQueue
 
             $data = Cache::get('ia_pendientes_list', ['data' => []]);
 
-            // 2. Extrae y añade los parámetros del Job actual.
             $data['data'][] = [
                 'projectId' => $this->projectId,
                 'studentId' => $this->studentId,

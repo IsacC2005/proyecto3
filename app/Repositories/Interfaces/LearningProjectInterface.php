@@ -9,7 +9,7 @@ use App\DTOs\PaginationDTO;
 
 interface LearningProjectInterface
 {
-    public function create(LearningProjectDetailDTO $learningProject): LearningProjectDTO;
+    public function create(LearningProjectDTO $learningProject): LearningProjectDTO;
 
     public function existProject(int $id): bool;
 
@@ -32,6 +32,8 @@ interface LearningProjectInterface
     public function getAllEvaluationByProject(int $projectId): array;
 
     public function getAllNoteStudent(int $projectId, int $studentId): array;
+
+    public function getAllNoteStudentLAndPL(int $projectId, int $studentId): array;
 
     public function countStudents(int $projectId): int;
 

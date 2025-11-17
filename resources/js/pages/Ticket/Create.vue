@@ -5,14 +5,13 @@ import StudentTicketTable from './Components/StudentTicketTable.vue';
 import axios from 'axios';
 import { onMounted, onUnmounted, ref } from 'vue';
 import ProgressCreateLot from './Components/ProgressCreateLot.vue';
+import { BreadcrumbItem } from '@/types';
 
-// --- Tipos y Props ---
 const props = defineProps<{
     project: LearningProject,
     students: Student[]
 }>();
 
-// --- Estado de Progreso ---
 const progress = ref(0);
 const statusMessage = ref('A la espera de iniciar la creación masiva.');
 const isFinished = ref(false);
@@ -20,7 +19,6 @@ const isProcessing = ref(false);
 const isVisibleCarge = ref(false);
 let intervalId: any = null;
 
-// --- Funciones de Polling ---
 const fetchProgress = async () => {
     try {
         const response = await axios.get(`/tickets/storeLot/progress/${props.project.id}`);
@@ -34,7 +32,7 @@ const fetchProgress = async () => {
         console.log(hora)
 
         if (isFinished.value) {
-            clearInterval(intervalId); // Detener el polling al finalizar
+            clearInterval(intervalId);
         }
 
     } catch (error) {
@@ -55,7 +53,6 @@ const startPolling = () => {
     isVisibleCarge.value = true;
 }
 
-// --- Función de Creación Masiva ---
 const createAllBoletines = async () => {
     if (isProcessing.value) return;
 
@@ -67,7 +64,6 @@ const createAllBoletines = async () => {
         const response = await axios.post(`/tickets/storeLot/${props.project.id}`);
         console.log('Solicitud de creación enviada:', response.data);
 
-        //  Iniciar el Polling para monitorear
         startPolling();
 
     } catch (error) {
@@ -85,16 +81,30 @@ onMounted(() => {
     });
 })
 
-// --- Limpieza al desmontar ---
 onUnmounted(() => {
     if (intervalId) {
         clearInterval(intervalId);
     }
 });
+
+const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Lista de proyectos',
+        href: '/learning-project/index',
+    },
+    {
+        title: props.project.title,
+        href: '/learning-project/show/' + props.project.id,
+    },
+    {
+        title: 'Crear boletas',
+        href: '/tickets/create/' + props.project.id,
+    }
+];
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbItems">
         <header class="mb-8 p-4 bg-white shadow-md rounded-lg">
             <h1 class="text-3xl font-extrabold text-gray-900 mb-2">
                 Creación de Boletines

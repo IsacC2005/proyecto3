@@ -8,9 +8,11 @@ use App\DTOs\Details\DailyClassDetailDTO;
 use App\DTOs\Summary\DailyClassDTO;
 use App\Exceptions\DailyClass\DailyClassNotCreateException;
 use App\Exceptions\LearningProject\LearningProjectNotFindException;
+use App\Models\TrainingArea;
 use App\Repositories\Interfaces\DailyClassInterface;
 use App\Repositories\Interfaces\LearningProjectInterface;
 use App\Repositories\Interfaces\TeacherInterface;
+use App\Repositories\Interfaces\TrainingAreaInterface;
 use App\Utilities\FlashMessage;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +26,7 @@ class DailyClassServices
     public function __construct(
         private DailyClassInterface $dailyClassRepository,
         private LearningProjectInterface $projectRepository,
+        private TrainingAreaInterface $trainingArea,
         private TeacherInterface $teacher,
         private DatesActual $datesActual
     ) {}
@@ -90,10 +93,13 @@ class DailyClassServices
             );
         }
 
+        $trainingArea = $this->trainingArea->findAll();
+
         return Inertia::render(
             'DailyClass/CreateReferent',
             [
-                'projectId' => $project->id
+                'projectId' => $project->id,
+                'trainingArea' => $trainingArea
             ]
         );
     }

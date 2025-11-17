@@ -28,6 +28,8 @@ class EvaluationServices
 
         $allNote = $this->itemEvaluationRepository->getAllEvaluationByClass($classId);
 
+        //$project = $this->
+
         return Inertia::render('Evaluation/Evaluate', [
             'students' => $students,
             'dailyClass' => $class->toArray(),
@@ -53,7 +55,7 @@ class EvaluationServices
         $students = $this->studentRepository->findStudentByEnrollment($project->enrollmentId);
         $dailyClasses = $this->dailyClassRepository->findByLearningProject($projectId, TDTO::DETAIL);
 
-        $notes = ['PL', 'L', 'EM', 'PM', 'NL'];
+        $notes = ['PL', 'L', 'EP', 'PM', 'SL'];
 
         foreach ($students as $student) {
             /** @var DailyClassDetailDTO $class */

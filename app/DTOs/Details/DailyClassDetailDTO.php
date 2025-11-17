@@ -12,6 +12,7 @@ class DailyClassDetailDTO implements DTODetail
 
     public function __construct(
         public int $id,
+        public int $trainingAreaId,
         public DateTime $date,
         public string $title,
         public string $content,

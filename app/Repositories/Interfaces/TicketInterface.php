@@ -17,6 +17,8 @@ interface TicketInterface
 
     public function findByStudent(int $studentId): array;
 
+    public function findByStudentAndProject(int $studentId, int $projectId): TicketDTO | null;
+
     public function findByLearningProject(int $projectId): array | null;
 
     public function update(TicketDTO $ticket): TicketDTO;

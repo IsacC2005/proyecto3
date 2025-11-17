@@ -2,10 +2,11 @@
 import Paginator from '@/components/Paginator.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { defineProps } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, Head } from '@inertiajs/vue3';
 import { Pagination, Role } from '@/types/dtos';
 import { User } from '@/types/dtos';
 import Heading from '@/components/Heading.vue';
+import { BreadcrumbItem } from '@/types';
 
 const props = defineProps<{
     users: Pagination<User>;
@@ -15,10 +16,19 @@ const props = defineProps<{
 const formatRoles = (roles: string[]): string => {
     return roles.join(', ');
 }
+
+const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Gestión de Usuarios',
+        href: '/user/index',
+    }
+];
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbItems">
+
+        <Head title="Gestión de Usuarios" />
         <Heading title="Gestión de Usuarios" />
 
         <div class="py-12">

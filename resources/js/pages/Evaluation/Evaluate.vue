@@ -8,6 +8,8 @@ import { DailyClass, Student } from '@/types/dtos';
 import { useEvaluateStore } from '@/store/EvaluteReferentStore';
 import { Notes } from '@/store/EvaluteReferentStore';
 import { noteValue } from '@/store/EvaluteReferentStore';
+import FilterBubble from './components/FilterBubble.vue';
+import { BreadcrumbItem } from '@/types';
 
 interface NoteDisorder {
     note: noteValue;
@@ -28,7 +30,7 @@ onMounted(() => {
     evaluateReferent.referent = props.dailyClass;
     console.log(groupNotes(props.allNote));
     evaluateReferent.notes = groupNotes(props.allNote);
-
+    evaluateReferent.filterByName('')
 });
 
 type GroupNotes = Notes[]
@@ -47,10 +49,25 @@ function groupNotes(notesArray: NoteDisorder[]) {
         return acc;
     }, {} as GroupNotes);
 }
+
+const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Lista de proyectos',
+        href: '/learning-project/index',
+    },
+    {
+        title: props.dailyClass.learningProject?.title ?? 'Proyecto',
+        href: '/learning-project/show/' + props.dailyClass.learningProject?.id,
+    },
+    {
+        title: 'Evaluar Referente Teorico',
+        href: `/teacher/evaluate/class?classId=${props.dailyClass.id}`,
+    }
+];
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbItems">
         <div v-if="!props.dailyClass?.indicators.length">
             <Heading title="Esta Clase no tiene indicadores"
                 description="primero tienes que agregar los indicadores de esta clase para poder evaluarla"></Heading>
@@ -60,8 +77,10 @@ function groupNotes(notesArray: NoteDisorder[]) {
             </Link>
 
         </div>
-        <div v-else>
+        <div v-else class="overflow-scroll">
             <Heading title="Lista de estudiantes para evaluar"></Heading>
+
+            <FilterBubble />
             <div class="p-4 sm:p-6 md:p-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <ListStudentEvaluate>

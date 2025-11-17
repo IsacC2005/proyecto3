@@ -16,9 +16,10 @@ export interface Notes {
 export const useEvaluateStore = defineStore("evaluate", {
     state: () => {
         const students = ref<Student[]>();
+        const studentsFilters = ref<Student[]>();
         const referent = ref<DailyClass>();
         const notes = ref<Notes[]>();
-        return { students, referent, notes };
+        return { students, referent, notes, studentsFilters };
     },
     actions: {
         saveNote(studentId: number, indicatorId: number, Note: noteValue) {
@@ -48,6 +49,21 @@ export const useEvaluateStore = defineStore("evaluate", {
             });
 
         },
+        filterByName(name: string) {
+            const nameSearch = name.toLowerCase().trim();
+
+            if (!nameSearch) {
+                this.studentsFilters = this.students;
+                return;
+            }
+
+            this.studentsFilters = this.students?.filter(student => {
+                const nameNormalized = student.name.toLowerCase().trim()
+                const surnameNormalized = student.surname.toLowerCase().trim()
+
+                return nameNormalized.includes(nameSearch) || surnameNormalized.includes(nameSearch)
+            })
+        }
     }
 
 });

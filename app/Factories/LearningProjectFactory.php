@@ -23,19 +23,22 @@ class LearningProjectFactory implements Factory
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',
-            'schoolMoment' => 'required|integer|in:1,2,3'
+            'schoolMoment' => 'required|integer|in:1,2,3',
+            'teacherId' => 'required|integer|exists:teachers,id',
+            'enrollmentId' => 'required|integer|exists:enrollments,id'
         ]);
 
         if ($validator->fails()) {
             throw new ValidationException($validator->messages());
         }
 
-        // Si la validación pasa, crea y retorna el DTO.
         return new LearningProjectDTO(
             id: 0,
             title: $request->input('title'),
             content: $request->input('content'),
-            schoolMoment: $request->input('schoolMoment')
+            schoolMoment: $request->input('schoolMoment'),
+            teacherId: $request->input('teacherId'),
+            enrollmentId: $request->input('enrollmentId')
         );
     }
 
@@ -48,10 +51,6 @@ class LearningProjectFactory implements Factory
             'title' => 'required|string|max:255',
             'content' => 'nullable|string|max:100000',
             'schoolMoment' => 'required|integer|in:1,2,3',
-            'dailyClasses' => 'required|array',
-            'dailyClasses.*.title' => 'required|string|max:255',
-            'dailyClasses.*.content' => 'nullable|string|max:100000',
-
         ]);
 
         if ($validator->fails()) {
@@ -101,13 +100,13 @@ class LearningProjectFactory implements Factory
             enrollment: $enrollment ?? null
         );
 
-        if ($request->input('dailyClasses')) {
-            $data = $request->input('dailyClasses');
+        // if ($request->input('dailyClasses')) {
+        //     $data = $request->input('dailyClasses');
 
-            foreach ($data as $item) {
-                $project->addDailyClasses(DailyClassFactory::fromArray($item));
-            }
-        }
+        //     foreach ($data as $item) {
+        //         $project->addDailyClasses(DailyClassFactory::fromArray($item));
+        //     }
+        // }
 
         return $project;
     }

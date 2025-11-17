@@ -94,6 +94,19 @@ class TicketRepository extends TransformDTOs implements TicketInterface
         }
     }
 
+    public function findByStudentAndProject(int $studentId, int $projectId): TicketDTO | null
+    {
+        $ticket = Ticket::where('learning_project_id', $projectId)
+            ->where('student_id', $studentId)
+            ->first();
+
+        if (!$ticket) {
+            return null;
+        }
+
+        return $this->transformToDTO($ticket);
+    }
+
 
 
     public function findByLearningProject(int $projectId): array | null

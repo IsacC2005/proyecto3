@@ -3,6 +3,9 @@ import { defineProps } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import Paginator from '@/components/Paginator.vue';
 import { Pagination } from '@/types/dtos';
+import { BreadcrumbItem } from '@/types';
+import Heading from '@/components/Heading.vue';
+import { Head } from '@inertiajs/vue3';
 
 type activityLog = {
     id: number
@@ -32,21 +35,32 @@ const formatChanges = (properties) => {
         if (oldValue !== newValue) {
             output += `| ${key}: '${oldValue}' a '${newValue}' `;
         }
-    });
+    })
+
+    if (output.length > 250) {
+        const aux = output.slice(0, 100)
+
+        output = aux + '...'
+    }
 
     return output.trim() || 'Cambios no especificados.';
 };
+
+const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Bitácora de Actividad',
+        href: '/activity-log',
+    }
+];
 </script>
 
 <template>
-    <AppLayout title="Bitácora de Usuarios">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Bitácora de Actividad
-            </h2>
-        </template>
+    <AppLayout :breadcrumbs="breadcrumbItems">
 
-        <div class="py-12">
+        <Head title="Bitácora de Actividad" />
+        <Heading title="Bitácora de Actividad" />
+
+        <div class="pb-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
 

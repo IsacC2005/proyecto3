@@ -57,7 +57,8 @@ export interface DailyClass {
     title: string,
     content: string,
     date: Date,
-    indicators: Indicator[]
+    indicators: Indicator[],
+    learningProject: LearningProject | null
 }
 
 export interface Indicator {
@@ -96,4 +97,9 @@ export interface ReportNote {
     studentSurName: string
     learningProjectId: number
     studentId: number
+}
+
+export interface trainingArea {
+    id: number,
+    title: string
 }

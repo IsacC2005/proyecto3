@@ -27,15 +27,15 @@ use function PHPUnit\Framework\isEmpty;
 class LearningProjectRepository extends TransformDTOs implements LearningProjectInterface
 {
 
-    public function create(LearningProjectDetailDTO $learningProject): LearningProjectDTO
+    public function create(LearningProjectDTO $learningProject): LearningProjectDTO
     {
         try {
             $projectModel = LearningProject::create([
                 'title' => $learningProject->title,
                 'content' => $learningProject->content,
                 'school_moment' => $learningProject->schoolMoment,
-                'teacher_id' => $learningProject->teacher->id,
-                'enrollment_id' => $learningProject->enrollment->id,
+                'teacher_id' => $learningProject->teacherId,
+                'enrollment_id' => $learningProject->enrollmentId,
             ]);
 
             if (!$projectModel) {
@@ -309,6 +309,48 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
         return $AllNote;
     }
 
+    public function getAllNoteStudentLAndPL(int $projectId, int $studentId): array
+    {
+        $project = LearningProject::with([
+            'daily_classes.evaluation_items' => function ($query) use ($studentId) {
+                $query->whereHas('students', function ($q) use ($studentId) {
+                    $q->where('students.id', $studentId)
+                        ->where(function ($subQuery) {
+                            $subQuery->where('evaluation_item_student.note', 'PL')
+                                ->orWhere('evaluation_item_student.note', 'L');
+                        });
+                });
+            },
+            'daily_classes.evaluation_items.students' => function ($query) use ($studentId) {
+                $query->where('students.id', $studentId)
+                    ->withPivot('note');
+            },
+        ])->find($projectId);
+
+        if (!$project) {
+            return [];
+        }
+
+        $AllNote = [];
+
+        foreach ($project->daily_classes as $class) {
+
+            $notes = [];
+            foreach ($class->evaluation_items as $item) {
+                $student = $item->students->first();
+                if ($student) {
+                    $notes[$item->title] = $student->pivot->note;
+                }
+            }
+
+            $AllNote[] = [
+                'classTitle' => $class->title,
+                'notes' => $notes
+            ];
+        }
+        return $AllNote;
+    }
+
 
 
 
@@ -369,6 +411,10 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
         }
     }
 
+    /**
+     * @param LearningProject $model
+     * @return LearningProjectDTO
+     */
     protected function transformToDTO(Model $model): LearningProjectDTO
     {
         //$teacher = $model->teacher;
@@ -385,6 +431,11 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
         );
     }
 
+
+    /**
+     * @param LearningProject $model
+     * @return LearningProjectDetailDTO
+     */
     protected function transformToDetailDTO(Model $model): DTODetail
     {
 
@@ -407,6 +458,7 @@ class LearningProjectRepository extends TransformDTOs implements LearningProject
         foreach ($classes as $class) {
             $project->addDailyClasses(DailyClassFactory::fromArray([
                 'id' => $class->id,
+                'training_area_id' => $class->training_area_id,
                 'date' => $class->date,
                 'title' => $class->title,
                 'content' => $class->content

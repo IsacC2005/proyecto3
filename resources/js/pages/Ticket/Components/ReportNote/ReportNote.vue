@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { ReportNote } from '@/types/dtos';
-import { useForm } from '@inertiajs/vue3';
+import { Link, useForm } from '@inertiajs/vue3';
+import ReportNoteCard from './ReportNoteCard.vue';
+import ReportNoteHead from './ReportNoteHead.vue';
+import ReportNoteContent from './ReportNoteContent.vue';
+import ReportNoteActionsCard from './ReportNoteActionsCard.vue';
 
 const props = defineProps<{
     reportNote: ReportNote
@@ -31,45 +35,18 @@ const reports = ref<Report[]>(initialReports);
 const modalOpen = ref(false);
 const selectedReport = ref<Report | null>(null);
 
-/**
- * Trunca el texto del contenido del boletín para la vista de tarjeta.
- * @param text - El contenido completo.
- * @param limit - Límite de caracteres.
- * @returns El texto truncado.
- */
-const truncateText = (text: string, limit: number = 200): string => {
-    if (!text) return "";
-    return text.length > limit ? text.substring(0, limit) + "..." : text;
-};
+
+
 
 /**
- * Define los estilos de Tailwind para el promedio.
- * @param average - El promedio (ej. 'A', 'B').
- * @returns Clases CSS para el estilo.
- */
-const getAverageStyles = (average: string): string => {
-    const base = "font-bold text-sm px-3 py-1 rounded-full inline-block whitespace-nowrap";
-    switch (average) {
-        case 'A': return `${base} bg-green-100 text-green-700`;
-        case 'B': return `${base} bg-yellow-100 text-yellow-700`;
-        default: return `${base} bg-gray-100 text-gray-700`;
-    }
-};
-
-/**
- * Maneja la acción de eliminación (simulada).
- * @param reportId - ID del boletín a eliminar.
+ * 
+ * @param reportId
  */
 const handleDelete = (reportId: number): void => {
-    // Simulación: Filtrar el reporte eliminado del estado
     reports.value = reports.value.filter(r => r.id !== reportId);
     console.log(`Boletín ${reportId} eliminado.`);
-    // En un entorno real, aquí iría la llamada a la API de Laravel
 };
 
-/**
- * Cierra el modal de detalles.
- */
 const closeModal = (): void => {
     modalOpen.value = false;
     selectedReport.value = null;
@@ -83,49 +60,24 @@ const impress = () => {
 </script>
 
 <template>
-    <!-- Contenedor Principal con Estilos de Fondo y Padding -->
-
-    <!-- Cabecera de la Aplicación -->
-
-    <!-- Grid de Boletines (Responsive) -->
-
-
-    <!-- Iteración sobre la lista de boletines -->
-    <div
-        class="bg-white shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-xl p-5 flex flex-col h-full border border-gray-100">
-        <!-- Cabecera del Boletín (Nombre y Promedio) -->
-        <div class="flex justify-between items-start mb-4 border-b pb-3">
-            <h3 class="text-lg font-extrabold text-gray-800 leading-tight">
-                {{ props.reportNote.studentName }}
-            </h3>
-            <span :class="getAverageStyles(props.reportNote.average)">
-                Literal: {{ props.reportNote.average }}
-            </span>
-        </div>
-
-        <!-- Contenido truncado -->
-        <div class="flex-grow mb-4">
-            <!-- line-clamp-4 es una clase de Tailwind para truncar en 4 líneas -->
-            <p class="text-sm text-gray-600 line-clamp-4">
-                {{ truncateText(props.reportNote.content, 200) }}
-            </p>
-        </div>
-
-        <!-- Pie de la Tarjeta con Acciones -->
-        <div
-            class="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0 sm:space-x-2 pt-3 border-t">
-            <a :href="`/ticket/impress/${props.reportNote.id}`"
+    <ReportNoteCard>
+        <ReportNoteHead :name="props.reportNote.studentName" :average="props.reportNote.average" />
+        <ReportNoteContent :content="props.reportNote.content" />
+        <ReportNoteActionsCard>
+            <a :href="`/tickets/impress/${props.reportNote.id}`"
                 class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out shadow-md hover:shadow-lg text-sm">
                 Descargar
             </a>
+            <Link :href="`/tickets/show/${props.reportNote.id}`" :data="{ studentId: props.reportNote.studentId }"
+                class="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out text-sm">
+            Editar
+            </Link>
             <button @click="handleDelete(props.reportNote.id)"
                 class="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out text-sm">
                 Eliminar
             </button>
-        </div>
-    </div>
-
-    <!-- Mensaje si no hay boletines -->
+        </ReportNoteActionsCard>
+    </ReportNoteCard>
 
     <!-- Modal para Ver Detalles -->
     <div v-if="modalOpen && selectedReport"

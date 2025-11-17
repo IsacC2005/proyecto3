@@ -1,5 +1,66 @@
+<script setup lang="ts">
+import AppLayout from '@/layouts/AppLayout.vue';
+import Heading from '@/components/Heading.vue';
+import FormReferent from './components/FormReferent.vue';
+import ContentPage from '@/components/ContentPage.vue';
+import { useReferenStore } from '@/store/ReferentStore';
+import { useAlertData } from '@/store/ModalStore';
+import { alertInidicatorsPart } from './Alerts';
+import { onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
+import { trainingArea } from '@/types/dtos';
+import { BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/vue3';
+
+const props = defineProps<{
+    projectId: number,
+    trainingArea: trainingArea[]
+}>()
+
+const alertData = useAlertData();
+
+const { showAlert } = alertData;
+
+const data = useReferenStore();
+
+const { ListTrainingArea } = storeToRefs(data);
+
+const { resetForm, form } = data;
+
+onMounted(() => {
+    resetForm();
+    ListTrainingArea.value = props.trainingArea;
+})
+
+const store = () => {
+    if (form.indicators.length === 0 || form.indicators.length % 2 === 1) {
+        form.projectId = props.projectId;
+        form.post(route('daily-class.create'));
+        resetForm();
+    } else {
+        showAlert(alertInidicatorsPart);
+    }
+}
+const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Lista de proyectos',
+        href: '/learning-project/index',
+    },
+    {
+        title: 'Proyecto',
+        href: '/learning-project/show/' + props.projectId,
+    },
+    {
+        title: 'Resumen de calificaciones',
+        href: '/learning-project/notes/',
+    }
+];
+</script>
+
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbItems">
+
+        <Head title="Crear Referente Teórico" />
         <Heading title="Crear Referente Teórico" />
         <ContentPage>
             <FormReferent @submit.prevent="store">
@@ -12,43 +73,3 @@
     </AppLayout>
 
 </template>
-
-<script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import Heading from '@/components/Heading.vue';
-import FormReferent from './components/FormReferent.vue';
-import ContentPage from '@/components/ContentPage.vue';
-import { useReferenStore } from '@/store/ReferentStore';
-import { useAlertData } from '@/store/ModalStore';
-import { alertInidicatorsPart } from './Alerts';
-import { onMounted } from 'vue';
-
-const props = defineProps({
-    projectId: {
-        type: Number,
-        required: true
-    }
-})
-
-const alertData = useAlertData();
-
-const { showAlert } = alertData;
-
-const data = useReferenStore();
-
-const { resetForm, form } = data;
-
-onMounted(() => {
-    resetForm();
-})
-
-const store = () => {
-    if (form.indicators.length === 0 || form.indicators.length % 2 === 1) {
-        form.projectId = props.projectId;
-        form.post(route('daily-class.create'));
-        resetForm();
-    } else {
-        showAlert(alertInidicatorsPart);
-    }
-}
-</script>

@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import Heading from '@/components/Heading.vue';
 import ContentPage from '@/components/ContentPage.vue';
 import UserForm from './Partials/UserForm.vue';
-import { useForm, router } from '@inertiajs/vue3';
+import { useForm, router, Head } from '@inertiajs/vue3';
 import PasswordReset from './Partials/PasswordReset.vue';
 import { User, Role } from '@/types/dtos';
 import { useManagerUsers } from '@/store/ManagerUsers';
@@ -11,6 +11,7 @@ import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { Pagination } from '@/types/dtos';
 import UserActivities from './Partials/UserActivities.vue';
+import { BreadcrumbItem } from '@/types';
 
 type activityLog = {
     id: number
@@ -137,10 +138,23 @@ const formatActivityTime = (timestamp) => {
         minute: '2-digit'
     });
 };
+
+const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Gestión de Usuarios',
+        href: '/user/index',
+    },
+    {
+        title: 'Editar Usuario',
+        href: `/manager/users/edit/${props.initialUser.id}`,
+    }
+];
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbItems">
+
+        <Head title="Editar Usuario" />
         <Heading :title="`Editar Usuario ${props.initialUser.name}`" />
         <ContentPage>
 

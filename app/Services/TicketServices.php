@@ -29,9 +29,22 @@ class TicketServices
         private TicketInterface $ticket,
         private StudentInterface $student,
         private GeminiServices $gemini,
-        private DatesActual $datesActual
+        private DatesActual $datesActual,
+        private CleanText $cleanText
     ) {}
 
+    public function show(int $id, int $studentId): InertiaResponse
+    {
+        $data = $this->ticket->find($id);
+
+        $student = $this->student->findStudentById($studentId);
+
+
+        return Inertia::render('Ticket/ShowReportNote/ShowReportNote', [
+            'data' => $data ?? [],
+            'student' => $student
+        ]);
+    }
 
 
     public function createShowPage(?int $id): InertiaResponse | RedirectResponse
@@ -64,51 +77,24 @@ class TicketServices
 
     public function create(int $projectId, int $studentId)
     {
-        $AllNote = $this->project->getAllNoteStudent($projectId, $studentId);
 
+        $exits  = $this->ticket->findByStudentAndProject($studentId, $projectId);
 
-        $Qualities = '';
-        $QualitiesCollection = DB::table('learning_project_qualitie_student as lqs')
-            ->join('qualities as q', 'lqs.qualitie_id', '=', 'q.id')
-
-            ->where('lqs.learning_project_id', 4)
-            ->where('lqs.student_id', 35741)
-            ->pluck('q.name');
-
-        $QualitiesString = $QualitiesCollection->implode(', ');
-
-        $Qualities = $QualitiesString;
-
-
-
-        $NoteString = "";
-        $clases_aplanadas = [];
-
-        foreach ($AllNote as $clase) {
-            $clase_string = "Referente Teorico: " . $clase['classTitle'];
-            $notas_string = [];
-
-            foreach ($clase['notes'] as $itemTitle => $note) {
-                $notas_string[] = $itemTitle . ": " . $note;
-            }
-
-            if (!empty($notas_string)) {
-                $clase_string .= "; " . implode("; ", $notas_string);
-            }
-
-            $clases_aplanadas[] = $clase_string;
+        if ($exits) {
+            /**
+             * @param TicketDTO | null
+             */
+            $this->recreateContent($exits->id);
+            return;
         }
 
-        $NoteString = implode("\n", $clases_aplanadas);
-
-        $promp = "estas son las cualidades del estudiante: $Qualities ;y estas son sus calificiones: $NoteString";
-
-        $content = $this->gemini->conection($promp);
+        $promp = $this->createPromp($studentId, $projectId);
+        $content = $this->createConent($promp);
 
         $this->ticket->create(new TicketDTO(
             id: 0,
             average: 'A',
-            content: $content,
+            content: $this->cleanText->clean($content),
             suggestions: "",
             studentName: "",
             learningProjectId: $projectId,
@@ -139,7 +125,21 @@ class TicketServices
 
         Cache::put($cacheKey . '_completed', 0, now()->addHours(1));
 
+
+        // $data = Cache::get('ia_pendientes_list', ['data' => []]);
+
+
+        //$this->delete();
+
         foreach ($students as $student) {
+
+            // $data['data'][] = [
+            //     'projectId' => $project->id,
+            //     'studentId' => $student->id,
+            //     'totalStudents' => $totalStudents,
+            //     'cacheKey' => $cacheKey,
+            // ];
+
             CreateTicketJob::dispatch(
                 $projectId,
                 $student->id,
@@ -148,6 +148,8 @@ class TicketServices
             );
         }
 
+
+        // Cache::put('ia_pendientes_list', $data, now()->addDays(7));
 
         Cache::put($cacheKey . '_status', [
             'percentage' => 0,
@@ -189,6 +191,28 @@ class TicketServices
             'project' => $project
         ]);
     }
+
+
+
+    public function recreateContent(int $id)
+    {
+        $ticket = $this->ticket->find($id);
+
+        $promp = $this->createPromp($ticket->studentId, $ticket->learningProjectId);
+        $content = $this->createConent($promp);
+
+        $ticket->content = $this->cleanText->clean($content);
+
+        $this->ticket->update($ticket);
+
+        $data = $this->ticket->find($id);
+
+        $student = $this->student->findStudentById($data->studentId);
+
+        return redirect()->back()
+            ->with('success', '¡El ticket ha sido actualizado exitosamente!');
+    }
+
 
 
     public function impressTicket(int $id)
@@ -253,6 +277,68 @@ class TicketServices
             return response()->json(['error' => 'Error al generar el documento: ' . $e->getMessage()], 500);
         }
     }
+
+
+    private function createPromp(int $studentId, int $projectId): string
+    {
+        $AllNote = $this->project->getAllNoteStudentLAndPL($projectId, $studentId);
+
+
+        $Qualities = '';
+        $QualitiesCollection = DB::table('learning_project_qualitie_student as lqs')
+            ->join('qualities as q', 'lqs.qualitie_id', '=', 'q.id')
+
+            ->where('lqs.learning_project_id', $projectId)
+            ->where('lqs.student_id', $studentId)
+            ->pluck('q.name');
+
+        $QualitiesString = $QualitiesCollection->implode(', ');
+
+        $Qualities = $QualitiesString;
+
+
+
+        $NoteString = "";
+        $clases_aplanadas = [];
+
+        foreach ($AllNote as $clase) {
+            $clase_string = ''; // "Referente Teorico: " . $clase['classTitle'];
+            $notas_string = [];
+
+            foreach ($clase['notes'] as $itemTitle => $note) {
+                $notas_string[] = $itemTitle;
+            }
+
+            if (!empty($notas_string)) {
+                $clase_string .=  implode(". ", $notas_string);
+            }
+
+            $clases_aplanadas[] = $clase_string;
+        }
+
+        $NoteString = implode("\n", $clases_aplanadas);
+
+        $promp = "**Cualidades:** $Qualities . **Logros:** $NoteString";
+
+        return $promp;
+    }
+
+
+
+    private function createConent(string $promp): string
+    {
+        $content = $this->gemini->conection($promp);
+        return $content;
+    }
+
+
+
+    public function update(TicketDTO $ticket)
+    {
+        $this->ticket->update($ticket);
+    }
+
+
 
     private function getTeacherIdOrFail(): int
     {

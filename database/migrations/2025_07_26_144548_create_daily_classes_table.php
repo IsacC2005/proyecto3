@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('daily_classes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('learning_project_id')->constrained()->onDelete('restrict');
+            $table->foreignId('training_area_id')->constrained('training_areas')->onDelete('restrict');
             $table->date('date');
             $table->string('title');
             $table->text('content');

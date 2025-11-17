@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Constants\TDTO;
 use App\Exceptions\LearningProject\LearningProjectNotCreatedException;
+use App\Exports\NotesExport;
 use App\Factories\LearningProjectFactory;
 use App\Http\Requests\GetNotesRequest;
+use App\Http\Requests\learningProjectUpdateRequest;
 use App\Services\LearningProjectServices;
 use App\Services\ResultNoteServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Excel;
 
 use function PHPUnit\Framework\isEmpty;
 use function PHPUnit\Framework\isNumeric;
@@ -63,7 +66,7 @@ class LearningProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $data =  LearningProjectFactory::fromRequestDetail($request);
+        $data =  LearningProjectFactory::fromRequest($request);
 
         return $this->learningProjectServices->storeProject($data);
         ///return response()->json($data->getDailyClasses());
@@ -103,13 +106,15 @@ class LearningProjectController extends Controller
      * This method should validate the request data and update
      * the specified resource in the database.
      */
-    public function update(Request $request, string $id)
+    public function update(learningProjectUpdateRequest $request)
     {
-        if (!isNumeric($id)) {
-            return;
-        }
-        $data = LearningProjectFactory::fromRequest($request);
-        $data->id = (int) $id;
+
+        $data = LearningProjectFactory::fromArray([
+            'id' => $request->input('id'),
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+        ]);
+
 
         $this->learningProjectServices->updateProject($data);
 
@@ -142,6 +147,14 @@ class LearningProjectController extends Controller
         $projectId = $request->validated('projectId');
 
         return $this->learningProjectServices->Notes($projectId);
+    }
+
+
+    public function exportNotes(GetNotesRequest $request)
+    {
+        $id = $request->input('projectId');
+
+        return $this->learningProjectServices->exportNotes($id);
     }
 
 

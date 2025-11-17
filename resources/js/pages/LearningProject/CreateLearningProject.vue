@@ -1,9 +1,7 @@
 <template>
     <AppLayout>
         <template v-if="select">
-            <Heading title="Crear un nuevo Proyecto de Aprendizaje"
-                description="No es necesario que carges todas las clases diarias de tu proyecto de aprendizaje, puedes cargar tan solo el titulo 
-                y el contenido y despues ir agregando las demas clases cuando las necesites y agregarles los indicadores correspondientes" />
+            <Heading title="Crear un nuevo Proyecto de Aprendizaje" />
 
             <FormCreateProject :enrollmentId="props.enrollmentId" :schoolMoment="select" :teacherId="props.teacherId" />
         </template>

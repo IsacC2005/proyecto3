@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\CreateLotTicketJob;
+use App\Models\Ticket;
 use App\Services\TicketServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -48,8 +49,10 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
+        $projectId = $request->input('projectId');
+        $studentId = $request->input('studentId');
 
-        return $this->ticket->create(1, 1);
+        return $this->ticket->create($projectId, $studentId);
         // Debería guardar un nuevo elemento en la base de datos.
     }
 
@@ -93,9 +96,10 @@ class TicketController extends Controller
      * This method should retrieve and display a single resource
      * identified by its ID.
      */
-    public function show(string $id)
+    public function show(string $id, Request $request)
     {
-        // Debería mostrar un elemento específico según su ID.
+
+        return $this->ticket->show((int) $id, (int) $request->input('studentId'));
     }
 
     /**
@@ -117,12 +121,55 @@ class TicketController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Debería actualizar un elemento existente en la base de datos.
+        $this->ticket->update();
     }
 
     public function impress(int $id)
     {
         return $this->ticket->impressTicket($id);
+    }
+
+
+    public function patchLiteral(Request $request, int $id)
+    {
+        $request->validate([
+            'average' => 'required|string:A,B,C,D,E,F'
+        ]);
+
+        $average = $request->input('average');
+
+        /**
+         * @var Ticket
+         */
+        $ticket = Ticket::find($id);
+
+        $ticket->average = $average;
+
+        $ticket->save();
+    }
+
+
+    public function patchContent(Request $request, int $id)
+    {
+        $request->validate([
+            'content' => 'required|string|max:2400'
+        ]);
+
+        $content = $request->input('content');
+
+        /**
+         * @var Ticket
+         */
+        $ticket = Ticket::find($id);
+
+        $ticket->content = $content;
+
+        $ticket->save();
+    }
+
+    public function recreateContent(int $id)
+    {
+        return $this->ticket->recreateContent($id);
     }
 
     /**

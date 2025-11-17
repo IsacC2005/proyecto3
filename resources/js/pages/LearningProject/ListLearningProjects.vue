@@ -1,5 +1,5 @@
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbItems">
         <div v-if="props.projects.data.length > 0" class="p-4 sm:p-6 md:p-8">
             <Heading title="Proyectos de Aprendizaje" />
             <template v-if="props.projects.links.length > 3">
@@ -37,6 +37,7 @@ import { LearningProject, Section, Pagination } from '@/types/dtos';
 import Paginator from '../../components/Paginator.vue';
 import Heading from '@/components/Heading.vue';
 import { Link } from '@inertiajs/vue3';
+import { BreadcrumbItem } from '@/types';
 
 interface groupedProjects {
     section: Section
@@ -46,4 +47,10 @@ interface groupedProjects {
 const props = defineProps<{
     projects: Pagination<groupedProjects>
 }>()
+const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Lista de proyectos',
+        href: '/learning-project/index',
+    },
+];
 </script>

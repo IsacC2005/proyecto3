@@ -29,6 +29,7 @@ class DailyClassFactory implements Factory
 
         return new DailyClassDTO(
             id: 0,
+            trainingAreaId: 0,
             date: new DateTime(),
             title: '',
             content: '',
@@ -40,6 +41,7 @@ class DailyClassFactory implements Factory
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
+            'trainingAreaId' => 'required|Integer|exists:training_areas,id',
             'date' => 'required|date',
             'content' => 'string|nullable',
             'indicators' => ['array', 'nullable', function (string $attribute, mixed $value, Closure $fail) {
@@ -60,6 +62,7 @@ class DailyClassFactory implements Factory
 
         $data = new DailyClassDetailDTO(
             id: 0,
+            trainingAreaId: $request->input('trainingAreaId'),
             date: $request->input('date') ? new DateTime($request->input('date')) : new DateTime(),
             title: $request->input('title'),
             content: $request->input('content') ? $request->input('content') : '',
@@ -82,6 +85,7 @@ class DailyClassFactory implements Factory
     {
         return new DailyClassDTO(
             id: $data['id'] ?? 0,
+            trainingAreaId: $data['trainingAreaId'] ?? 0,
             date: isset($data['date']) ? new DateTime($data['date']) : new DateTime(),
             title: $data['title'] ?? '',
             content: $data['content'] ?? '',
@@ -93,6 +97,7 @@ class DailyClassFactory implements Factory
     {
         return new DailyClassDetailDTO(
             id: $data['id'] ?? 0,
+            trainingAreaId: $data['trainingAreaId'] ?? 0,
             date: isset($data['date']) ? new DateTime($data['date']) : new DateTime(),
             title: $data['title'] ?? '',
             content: $data['content'] ?? '',

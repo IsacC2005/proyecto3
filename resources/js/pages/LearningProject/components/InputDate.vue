@@ -1,6 +1,6 @@
 <template>
     <div class="mt-3 max-w-80 flex flex-col gap-0.5 font-sans-serif">
-        <Label :for="props.id">Selecciona una fecha:</Label>
+        <Label :for="props.id">Selecciona una fecha <span class="text-red-500">*</span></Label>
         <input type="date" @input="emit('update:modelValue', new Date($event.target?.value))" v-model="DateSelect"
             ref="myDateInput" :id="props.id"
             class="bg-input border border-muted-foreground text-foreground text-sm rounded-lg block w-full p-2.5 mt-2"

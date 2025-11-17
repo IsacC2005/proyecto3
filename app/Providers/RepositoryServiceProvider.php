@@ -17,6 +17,7 @@ use App\Repositories\Interfaces\DailyClassInterface;
 use App\Repositories\Interfaces\ItemEvaluationInterface;
 use App\Repositories\Interfaces\LearningProjectInterface;
 use App\Repositories\Interfaces\TicketInterface;
+use App\Repositories\Interfaces\TrainingAreaInterface;
 use App\Repositories\ItemEvaluationRepository;
 use App\Repositories\LearningProjectRepository;
 use App\Repositories\RepresentativeRepository;
@@ -24,6 +25,7 @@ use App\Repositories\RoleRepository;
 use App\Repositories\StudentRepository;
 use App\Repositories\TeacherRepository;
 use App\Repositories\TicketRepository;
+use App\Repositories\TrainingAreaRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -45,6 +47,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(DailyClassInterface::class, DailyClassRepository::class);
         $this->app->bind(ItemEvaluationInterface::class, ItemEvaluationRepository::class);
         $this->app->bind(TicketInterface::class, TicketRepository::class);
+        $this->app->bind(TrainingAreaInterface::class, TrainingAreaRepository::class);
     }
 
     /**

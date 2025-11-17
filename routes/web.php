@@ -2,6 +2,7 @@
 
 use App\Constants\RoleConstants;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DailyClassController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentGeneratorController;
@@ -21,6 +22,11 @@ use Inertia\Inertia;
 
 use App\Http\Controllers\BackupController;
 use App\Http\Middleware\EnsureProjectBelongsToTeacher;
+use App\Models\Attendance;
+use App\Repositories\Interfaces\StudentInterface;
+use App\Services\EvaluationServices;
+use App\Services\LearningProjectServices;
+use App\Services\QualitieServices;
 
 Route::prefix('backups')->group(function () {
     Route::get('/', [BackupController::class, 'index'])->middleware(['auth', 'verified'])->name('backups.index');
@@ -139,14 +145,26 @@ Route::middleware([
         Route::get('/create', [LearningProjectController::class, 'create'])->name('learning-project.create');
         Route::post('/store', [LearningProjectController::class, 'store'])->name('learning-project.store');
         Route::get('/edit/{id}', [LearningProjectController::class, 'edit'])->name('learning-project.edit');
-        Route::put('/update/{id}', [LearningProjectController::class, 'update'])->name('learning-project.update');
+        Route::put('/update', [LearningProjectController::class, 'update'])->name('learning-project.update');
     });
 
-Route::get('/learning-project/notes', [LearningProjectController::class, 'notes'])->middleware([
+Route::middleware([
     'auth',
     'role:' . RoleConstants::PROFESOR . '||' . RoleConstants::ADMINISTRADOR,
     EnsureProjectBelongsToTeacher::class
-])->name('learning-project.notes');
+])->prefix('learning-project')
+    ->group(function () {
+        Route::get('/notes', [LearningProjectController::class, 'notes'])->middleware([
+            'auth',
+            'role:' . RoleConstants::PROFESOR . '||' . RoleConstants::ADMINISTRADOR,
+            EnsureProjectBelongsToTeacher::class
+        ])->name('learning-project.notes');
+
+
+        Route::get('/download-notes', [LearningProjectController::class, 'exportNotes']);
+    });
+
+
 
 
 
@@ -177,6 +195,39 @@ Route::put('daily-class/update/{id}', [DailyClassController::class, 'update'])->
 
 
 
+/*
+*╔═══════════════════════════════════════•●•═══════════════════════════════════════╗
+                    TODO: Rutas para Attendance 𒆜𓊉꧂
+*╚═══════════════════════════════════════•●•═══════════════════════════════════════╝
+ */
+
+Route::get('/attendance', function (StudentInterface $students) {
+    $data = $students->findStudentByLearningProject(1);
+    return Inertia::render('Attendance/TakeAttendance', [
+        'students' => $data
+    ]);
+});
+
+Route::post(
+    '/attendance/test',
+    [AttendanceController::class, 'store']
+    // function () {
+    //     $projectId = 1;
+    //     $studentId = 2449;
+
+    //     Attendance::create([
+    //         'learning_project_id' => $projectId,
+    //         'student_id' => $studentId,
+    //         'day' => now(),
+    //         'attendance' => false
+    //     ]);
+    // }
+);
+
+
+
+
+
 
 
 
@@ -197,14 +248,29 @@ Route::put('daily-class/update/{id}', [DailyClassController::class, 'update'])->
                     TODO: Rutas para las boletas 𒆜𓊉꧂
 *╚═══════════════════════════════════════•●•═══════════════════════════════════════╝
  */
-Route::get('/tickets/index/{id?}', [TicketController::class, 'index'])->middleware(['auth', 'verified']);
-Route::get('/tickets/create/{id?}', [TicketController::class, 'create'])->middleware(['auth', 'verified']);
-Route::post('/tickets/storeLot/{id}', [TicketController::class, 'storeLot'])->middleware(['auth', 'verified']);
+Route::middleware([
+    'auth',
+    'verified'
+])
+    ->prefix('tickets')
+    ->group(
+        function () {
+            Route::get('/index/{id?}', [TicketController::class, 'index'])->name('tickets.index');
+            Route::get('/show/{id}', [TicketController::class, 'show'])->name('tickets.show');
+            Route::get('/create/{id?}', [TicketController::class, 'create'])->name('tickets.create');
+            Route::get('/store', [TicketController::class, 'store'])->name('tickets.store');
+            Route::post('/storeLot/{id}', [TicketController::class, 'storeLot'])->name('tickets.store-lot');
 
-Route::get('/tickets/storeLot/progress/{jobId}', [TicketController::class, 'progressStoreLot'])->name('progress.status');
-Route::get('/ticket/impress/{id}', [TicketController::class, 'impress']);
+            Route::get('/storeLot/progress/{jobId}', [TicketController::class, 'progressStoreLot'])->name('progress.status');
+            Route::get('/impress/{id}', [TicketController::class, 'impress']);
 
+            Route::put('/update', [TicketController::class, 'update']);
 
+            Route::patch('/average/{id}', [TicketController::class, 'patchLiteral']);
+            Route::patch('/content/{id}', [TicketController::class, 'patchContent']);
+            Route::patch('/recreate/{id}', [TicketController::class, 'recreateContent']);
+        }
+    );
 
 
 
@@ -227,11 +293,16 @@ Route::get('/ticket/impress/{id}', [TicketController::class, 'impress']);
                     TODO: Rutas para la configuracion de la IA 𒆜𓊉꧂
 *╚═══════════════════════════════════════•●•═══════════════════════════════════════╝
  */
-Route::get('/setting-ia', [SettingIAController::class, 'index']);
-Route::post('/setting-ia', [SettingIAController::class, 'store']);
-
-
-
+Route::middleware([
+    'auth',
+    'role:' . RoleConstants::ADMINISTRADOR
+])
+    ->prefix('setting-ia')
+    ->group(function () {
+        Route::get('/', [SettingIAController::class, 'index']);
+        Route::post('/', [SettingIAController::class, 'store']);
+        Route::put('/', [SettingIAController::class, 'update']);
+    });
 
 
 
@@ -279,18 +350,49 @@ Route::put('/manager/user/reset-password/{id}', [UserController::class,  'AdminR
 // Route::post('/test', [QualitieController::class, 'store']);
 // Route::post('/test/status', [QualitieController::class, 'storeStatus']);
 
-Route::get('test', function () {
-    $user = [
-        'id' =>  10,
-        'name' => 'isacc',
-        'email' => 'isacc@isacc',
-        'password' => null, // Aunque es null en el JSON, en la DB es string
-        'role' => [],
-        'roleId' => 1,
-        'userable_id' => 9
-    ];
-    return Inertia::render('Users/UserEdit/UserEdit');
+// Route::get('test', function (EvaluationServices $service, QualitieServices $qualitie) {
+//     $service->evaluateRandomToProject(1);
+//     $qualitie->evaluateRandomToProject(1);
+// });
+
+Route::get('/ramdon', function (EvaluationServices $ev) {
+    $ev->evaluateRandomToProject(1);
 });
+
+use App\Exports\UsersExport;
+use App\Repositories\LearningProjectRepository;
+use Maatwebsite\Excel\Facades\Excel;
+
+Route::get('/promp', function (TicketServices $service) {
+    return $service->create(1, 2449);
+});
+
+Route::get('/clean', function (App\Services\CleanText $service) {
+
+    $text = "A";
+
+    return $service->clean($text);
+});
+
+
+
+// Route::get('/test', function (LearningProjectRepository $project) {
+
+
+//     $data = $project->getAllEvaluationByProject(1);
+
+//     //return response()->json($data);
+
+//     // return view('test', [
+//     //     'data' => $data,
+//     //     'referents' => $data['classes']
+//     // ]);
+
+//     return Excel::download(
+//         new UsersExport($data),
+//         'reporte_notas_dinamico.xlsx'
+//     );
+// });
 
 Route::get('/test2', function (TicketServices $servie) {
     $servie->create(5, 36405);

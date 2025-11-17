@@ -8,6 +8,7 @@ use App\DTOs\Details\LearningProjectDetailDTO;
 use App\DTOs\Summary\LearningProjectDTO;
 use App\Exceptions\LearningProject\LearningProjectNotCreatedException;
 use App\Exceptions\LearningProject\LearningProjectNotFindException;
+use App\Exports\NotesExport;
 use App\Repositories\Interfaces\EnrollmentInterface;
 use App\Repositories\Interfaces\LearningProjectInterface;
 use App\Utilities\FlashMessage;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LearningProjectServices
 {
@@ -28,12 +30,12 @@ class LearningProjectServices
 
 
 
-    public function storeProject(LearningProjectDetailDTO $data)
+    public function storeProject(LearningProjectDTO $data)
     {
         try {
             $exist = $this->projectRepository->existProjectByTeacheByYearByMoment(
-                $data->teacher->id,
-                $data->enrollment->id,
+                $data->teacherId,
+                $data->enrollmentId,
                 $data->schoolMoment
             );
             if ($exist) {
@@ -46,14 +48,9 @@ class LearningProjectServices
                     ]
                 ]);
             }
-            DB::transaction(function () use ($data) {
-                $project = $this->projectRepository->create($data);
 
-                foreach ($data->getDailyClasses() as $class) {
-                    $class->learningProjectId = $project->id;
-                    $this->dailyClassServices->createDailyClass($class);
-                }
-            });
+            $this->projectRepository->create($data);
+
             return redirect()->route('learning-project.index')->with('flash', [
                 'alert' => [
                     'title' => '¡Exito!',
@@ -228,6 +225,17 @@ class LearningProjectServices
         return Inertia::render('Notes/ListNotes', [
             'data' => $data
         ]);
+    }
+
+
+    public function exportNotes(int $id)
+    {
+        $data = $this->projectRepository->getAllEvaluationByProject($id);
+
+        return Excel::download(
+            new NotesExport($data),
+            "resumen_notas_$id.xlsx"
+        );
     }
 
 
