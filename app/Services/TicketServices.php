@@ -229,7 +229,7 @@ class TicketServices
 
     private function createWord(TicketDetailDTO $ticket)
     {
-        $templatePath = storage_path('app/templates/template.docx');
+        $templatePath = resource_path('template/template.docx');
 
         if (!file_exists($templatePath)) {
             return response()->json(['error' => 'Template file not found at: ' . $templatePath], 500);
