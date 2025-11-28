@@ -37,8 +37,8 @@ const breadcrumbItems: BreadcrumbItem[] = [
 
             <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
                 <template v-if="props.ReportsNotes.length > 0">
-                    <ReportNote v-for="ReportNote in props.ReportsNotes" :key="ReportNote.id"
-                        @showDetails="showDetails(ReportNote.id)" :reportNote="ReportNote" />
+                    <ReportNote v-for="ReportNoteItem in props.ReportsNotes" :key="ReportNoteItem.id"
+                        @showDetails="showDetails(ReportNoteItem.id)" :reportNote="ReportNoteItem" />
 
                 </template>
                 <div v-else class="md:col-span-2 lg:col-span-3 text-center p-10 bg-white rounded-xl shadow-lg">
